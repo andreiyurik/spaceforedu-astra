@@ -23,6 +23,7 @@ import {
 import { blogPosting, blogBreadcrumb, blogFaqPage } from "@/lib/structured-data";
 import SocialIcon from "@/components/common/SocialIcon.astro";
 import { render } from "astro:content";
+import GithubSlugger from "github-slugger";
 
 export async function getStaticPaths() {
   const posts = await getAllBlogPosts();
@@ -79,18 +80,14 @@ const allLangLinks = [
   ...translations,
 ];
 
+const slugger = new GithubSlugger();
 const headings = (post.body ?? "")
   .split("\n")
   .filter((line) => /^#{2,3}\s/.test(line))
   .map((line) => {
     const level = line.startsWith("### ") ? 3 : 2;
     const text = line.replace(/^#{2,3}\s+/, "").trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-    return { level, text, id };
+    return { level, text, id: slugger.slug(text) };
   });
 
 const pageTitle = `${post.data.title} — Space for Edu`;

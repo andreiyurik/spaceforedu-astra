@@ -58,23 +58,39 @@ function StickyCtaBarInner() {
   return (
     <>
       {/* Mobile: full-width bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden border-t border-[var(--hairline-soft)] bg-white pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center gap-2 px-4 py-3">
-          {waHref && (
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t("public.sticky_cta.whatsapp_aria")}
-              className="flex items-center justify-center shrink-0 h-11 w-11 rounded-lg bg-[#25D366] text-white shadow-sm active:scale-95 transition-transform"
-            >
-              <WhatsAppIcon className="h-5 w-5" />
-            </a>
+      <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden bg-white shadow-[0_-1px_8px_rgba(0,0,0,0.08)] pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-stretch h-[48px]">
+          {hasWhatsApp && (
+            <>
+              <a
+                href={`tel:+${CONTACT_WHATSAPP}`}
+                aria-label={t("a11y.phone_aria")}
+                className="flex items-center justify-center w-13 text-[var(--primary)] active:bg-[var(--surface-card)] transition-colors"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                </svg>
+              </a>
+              <span className="w-px self-stretch my-2 bg-[var(--hairline-soft)]" aria-hidden="true" />
+              <a
+                href={waHref!}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t("public.sticky_cta.whatsapp_aria")}
+                className="flex items-center justify-center w-13 text-[#25D366] active:bg-[var(--surface-card)] transition-colors"
+              >
+                <WhatsAppIcon className="h-5 w-5" />
+              </a>
+              <span className="w-px self-stretch my-2 bg-[var(--hairline-soft)]" aria-hidden="true" />
+            </>
           )}
           <ConsultationDialog>
-            <Button className="flex-1 min-h-[44px] bg-[var(--primary)] hover:bg-[var(--primary-pressed)] border-0 text-white text-base font-bold">
+            <button
+              type="button"
+              className="flex-1 flex items-center justify-center bg-[var(--primary)] text-white text-sm font-bold active:bg-[var(--primary-pressed)] transition-colors"
+            >
               {t("public.sticky_cta.consultation")}
-            </Button>
+            </button>
           </ConsultationDialog>
         </div>
       </div>
