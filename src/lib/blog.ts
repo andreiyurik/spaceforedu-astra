@@ -1,5 +1,5 @@
 import { getCollection } from "astro:content";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import type { Locale } from "./constants";
 
 export async function getBlogPosts(locale: Locale) {
@@ -17,14 +17,18 @@ export async function getAllBlogPosts() {
 }
 
 export function estimateReadingTime(content: string): number {
-  const words = content.trim().split(/\s+/).length;
+  const text = content
+    .replace(/^(import|export)\s.+$/gm, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/^---[\s\S]*?---/m, "");
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
 
 export function extractFaq(body: string): Array<{ q: string; a: string }> {
   const faq: Array<{ q: string; a: string }> = [];
   const faqMatch = body.match(
-    /##\s+(?:Preguntas frecuentes|Frequently asked questions|Часто задаваемые вопросы)\s*\n([\s\S]*?)(?=\n##\s|$)/,
+    /##\s+(?:Preguntas frecuentes|Frequently [Aa]sked [Qq]uestions|FAQ|Часто задаваемые вопросы)\s*\n([\s\S]*?)(?=\n##\s|$)/i,
   );
   if (!faqMatch) return faq;
 
@@ -56,7 +60,7 @@ export async function getTranslations(
 export function getLastModified(filePath: string | undefined, fallback: Date): Date {
   if (!filePath) return fallback;
   try {
-    const iso = execSync(`git log -1 --format=%aI -- "${filePath}"`, {
+    const iso = execFileSync("git", ["log", "-1", "--format=%aI", "--", filePath], {
       encoding: "utf-8",
       timeout: 5000,
     }).trim();

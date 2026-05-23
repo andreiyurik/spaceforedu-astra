@@ -22,6 +22,14 @@ interface Props {
   /** Path portion (without locale) — "homologation", "university", "" for home. */
   page: string;
   ogImage?: string;
+  /** Override canonical URL (e.g. blog posts with slugs). When set, layout skips its own hreflang generation — the caller provides them via slot="head". */
+  canonicalUrl?: string;
+  /** Open Graph object type — default "website", use "article" for blog posts. */
+  ogType?: "website" | "article";
+  /** OG image width in pixels (emitted as og:image:width). */
+  ogImageWidth?: number;
+  /** OG image height in pixels (emitted as og:image:height). */
+  ogImageHeight?: number;
   /** Hide the sticky WhatsApp bubble + mobile CTA bar (for thank-you / privacy pages). */
   hideStickyCta?: boolean;
   /** LCP image — preloaded with high priority. Path under /public. Used only if heroImageSrcset not provided. */
@@ -47,6 +55,10 @@ const {
   locale,
   page,
   ogImage: ogImageProp,
+  canonicalUrl: canonicalUrlProp,
+  ogType = "website",
+  ogImageWidth,
+  ogImageHeight,
   hideStickyCta = false,
   heroImage,
   heroImageType = "image/webp",
@@ -61,7 +73,8 @@ const stickyMessages = getMessages(locale);
 const t = makeT(stickyMessages);
 const skipLabel = t("a11y.skip_to_content");
 
-const canonicalUrl = SITE_URL + publicRoute(page, locale);
+const canonicalUrl = canonicalUrlProp ?? SITE_URL + publicRoute(page, locale);
+const emitLayoutHreflang = !canonicalUrlProp;
 const alternates = LOCALES.map((l) => ({
   locale: l,
   url: SITE_URL + publicRoute(page, l),
@@ -110,11 +123,11 @@ const ogLocaleAlternates = LOCALES
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     {!noindex && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={absoluteOgImage} />
-    {isGeneratedOg && <meta property="og:image:width" content="1200" />}
-    {isGeneratedOg && <meta property="og:image:height" content="630" />}
+    {(ogImageWidth ?? (isGeneratedOg ? 1200 : null)) && <meta property="og:image:width" content={String(ogImageWidth ?? 1200)} />}
+    {(ogImageHeight ?? (isGeneratedOg ? 630 : null)) && <meta property="og:image:height" content={String(ogImageHeight ?? 630)} />}
     {isGeneratedOg && <meta property="og:image:type" content="image/png" />}
     <meta property="og:site_name" content="Space for Edu" />
     <meta property="og:locale" content={ogLocale} />
@@ -176,10 +189,10 @@ const ogLocaleAlternates = LOCALES
     {!noindex && (
       <>
         <link rel="canonical" href={canonicalUrl} />
-        {alternates.map(({ locale: l, url }) => (
+        {emitLayoutHreflang && alternates.map(({ locale: l, url }) => (
           <link rel="alternate" hreflang={l} href={url} />
         ))}
-        <link rel="alternate" hreflang="x-default" href={xDefault} />
+        {emitLayoutHreflang && <link rel="alternate" hreflang="x-default" href={xDefault} />}
       </>
     )}
 
@@ -224,11 +237,14 @@ const ogLocaleAlternates = LOCALES
       import Lenis from "lenis";
 
       let lenis: Lenis | null = null;
+      let rafId: number | null = null;
 
       function initLenis() {
+        if (rafId != null) cancelAnimationFrame(rafId);
         lenis?.destroy();
+        lenis = null;
+        rafId = null;
 
-        // Only enable on non-touch devices — mobile already has native momentum scroll.
         if (window.matchMedia("(hover: none)").matches) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -236,12 +252,11 @@ const ogLocaleAlternates = LOCALES
 
         function raf(time: number) {
           lenis!.raf(time);
-          requestAnimationFrame(raf);
+          rafId = requestAnimationFrame(raf);
         }
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
       }
 
-      // astro:page-load fires on first load and after every View Transition.
       document.addEventListener("astro:page-load", initLenis);
     </script>
   </body>

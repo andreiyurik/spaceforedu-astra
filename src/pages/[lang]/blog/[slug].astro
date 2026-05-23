@@ -13,40 +13,39 @@ import {
 } from "@/lib/constants";
 import {
   getAllBlogPosts,
-  getBlogPosts,
   formatDate,
   estimateReadingTime,
   extractFaq,
-  getTranslations,
   getLastModified,
 } from "@/lib/blog";
 import { blogPosting, blogBreadcrumb, blogFaqPage } from "@/lib/structured-data";
 import SocialIcon from "@/components/common/SocialIcon.astro";
 import { render } from "astro:content";
-import GithubSlugger from "github-slugger";
 
 export async function getStaticPaths() {
-  const posts = await getAllBlogPosts();
-  return posts.map((post) => ({
+  const allPosts = await getAllBlogPosts();
+  return allPosts.map((post) => ({
     params: { lang: post.data.locale, slug: post.data.slug },
-    props: { post },
+    props: { post, allPosts },
   }));
 }
 
-const { post } = Astro.props;
+const { post, allPosts } = Astro.props;
 const { lang } = Astro.params;
 const locale = lang as Locale;
 const messages = getMessages(locale);
 const t = makeT(messages);
 
-const { Content } = await render(post);
+const { Content, headings: rawHeadings } = await render(post);
+const headings = rawHeadings.filter((h) => h.depth === 2 || h.depth === 3)
+  .map((h) => ({ level: h.depth, text: h.text, id: h.slug }));
 const readTime =
   post.data.readingTime ?? estimateReadingTime(post.body ?? "");
 
 const updatedAt = post.data.updatedAt ?? getLastModified(post.filePath, post.data.publishedAt);
 
-const allPosts = await getBlogPosts(locale);
-const related = allPosts
+const sameLangPosts = allPosts.filter((p) => p.data.locale === locale);
+const related = sameLangPosts
   .filter((p) => p.id !== post.id)
   .filter(
     (p) => p.data.tags.some((tag) => post.data.tags.includes(tag)),
@@ -71,25 +70,17 @@ const breadcrumb = blogBreadcrumb(locale, post.data.title, post.data.slug);
 const faq = extractFaq(post.body ?? "");
 const faqSchema = blogFaqPage(faq);
 
-const translations = await getTranslations(
-  post.data.translationKey,
-  locale,
-);
+const translations = post.data.translationKey
+  ? allPosts
+      .filter((p) => p.data.translationKey === post.data.translationKey && p.data.locale !== locale)
+      .map((p) => ({ locale: p.data.locale as Locale, slug: p.data.slug }))
+  : [];
 const allLangLinks = [
   { locale, slug: post.data.slug },
   ...translations,
 ];
 
-const slugger = new GithubSlugger();
-const headings = (post.body ?? "")
-  .split("\n")
-  .filter((line) => /^#{2,3}\s/.test(line))
-  .map((line) => {
-    const level = line.startsWith("### ") ? 3 : 2;
-    const text = line.replace(/^#{2,3}\s+/, "").trim();
-    return { level, text, id: slugger.slug(text) };
-  });
-
+const authorInitial = post.data.author.name.charAt(0).toUpperCase();
 const pageTitle = `${post.data.title} — Space for Edu`;
 const canonicalUrl = `${SITE_URL}/${locale}/blog/${post.data.slug}/`;
 const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
@@ -101,6 +92,10 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
   locale={locale}
   page="blog"
   ogImage={ogImage}
+  ogImageWidth={1200}
+  ogImageHeight={630}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
 >
   <Fragment slot="head">
     {allLangLinks.map(({ locale: l, slug: s }) => (
@@ -185,7 +180,7 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
                 <div
                   class="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
                 >
-                  S
+                  {authorInitial}
                 </div>
                 <div>
                   <div class="font-semibold text-[var(--ink)]">
@@ -282,7 +277,7 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
               <div
                 class="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
               >
-                S
+                {authorInitial}
               </div>
               <div>
                 <div class="font-bold text-sm text-[var(--ink)]">
