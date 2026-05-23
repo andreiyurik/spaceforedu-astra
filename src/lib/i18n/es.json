@@ -4,6 +4,7 @@
     "universidad": "Universidad",
     "espanol": "Español",
     "precios": "Precios",
+    "blog": "Blog",
     "start": "Reservar consulta",
     "start_aria": "Solicitar consulta por WhatsApp",
     "menu": "Menú",
@@ -947,6 +948,22 @@
       "thirdparty_body": "Empleamos Google Tag Manager (Google LLC) para gestionar etiquetas de analítica. Si aceptas las cookies de análisis, GTM puede instalar cookies de Google Analytics. Si rechazas o eliges solo las necesarias, GTM no instala ninguna cookie de seguimiento. Puedes cambiar tu preferencia en cualquier momento desde el botón «Configurar» de abajo.",
       "manage_title": "Gestión de cookies",
       "manage_body": "Puedes bloquear o eliminar las cookies desde la configuración de tu navegador. Hacerlo no afectará al uso del sitio."
+    },
+    "blog": {
+      "title": "Blog",
+      "subtitle": "Artículos expertos",
+      "read_more": "Leer artículo",
+      "all_posts": "Todos los artículos",
+      "min_read": "min de lectura",
+      "published": "Publicado",
+      "updated": "Actualizado",
+      "by": "Por",
+      "share": "Compartir",
+      "related": "Artículos relacionados",
+      "back_to_blog": "Volver al blog",
+      "no_posts": "Próximamente publicaremos artículos. ¡Vuelve pronto!",
+      "tags": "Temas",
+      "all": "Todos"
     },
     "cookie_banner": {
       "title": "Cookies y privacidad",

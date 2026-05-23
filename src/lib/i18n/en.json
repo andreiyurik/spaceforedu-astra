@@ -4,6 +4,7 @@
     "universidad": "University",
     "espanol": "Spanish",
     "precios": "Pricing",
+    "blog": "Blog",
     "start": "Book a consultation",
     "start_aria": "Request a consultation on WhatsApp",
     "menu": "Menu",
@@ -947,6 +948,22 @@
       "thirdparty_body": "We use Google Tag Manager (Google LLC) to manage analytics tags. If you accept analytics cookies, GTM may install Google Analytics cookies. If you decline or choose only necessary cookies, GTM installs no tracking cookies. You can change your preference at any time using the \"Manage preferences\" button below.",
       "manage_title": "Managing cookies",
       "manage_body": "You can block or delete cookies through your browser settings. Doing so will not affect your use of the site."
+    },
+    "blog": {
+      "title": "Blog",
+      "subtitle": "Expert articles",
+      "read_more": "Read article",
+      "all_posts": "All articles",
+      "min_read": "min read",
+      "published": "Published",
+      "updated": "Updated",
+      "by": "By",
+      "share": "Share",
+      "related": "Related articles",
+      "back_to_blog": "Back to blog",
+      "no_posts": "Articles coming soon. Stay tuned!",
+      "tags": "Topics",
+      "all": "All"
     },
     "cookie_banner": {
       "title": "Cookies and privacy",

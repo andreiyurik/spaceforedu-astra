@@ -168,6 +168,88 @@ export function breadcrumbList(
   };
 }
 
+export function blogPosting(params: {
+  locale: Locale;
+  title: string;
+  description: string;
+  slug: string;
+  authorName: string;
+  authorRole: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  image?: string;
+  tags?: string[];
+}): object {
+  const url = `${SITE_URL}/${params.locale}/blog/${params.slug}/`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: params.title,
+    description: params.description,
+    url,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    author: { "@id": ORG_ID },
+    publisher: { "@id": ORG_ID },
+    datePublished: params.publishedAt.toISOString(),
+    ...(params.updatedAt
+      ? { dateModified: params.updatedAt.toISOString() }
+      : { dateModified: params.publishedAt.toISOString() }),
+    ...(params.image
+      ? { image: { "@type": "ImageObject", url: params.image.startsWith("http") ? params.image : SITE_URL + params.image } }
+      : {}),
+    ...(params.tags?.length ? { keywords: params.tags.join(", ") } : {}),
+    inLanguage: params.locale,
+  };
+}
+
+export function blogBreadcrumb(
+  locale: Locale,
+  postTitle: string,
+  postSlug: string,
+): object {
+  const labels = BREADCRUMB_LABELS[locale] ?? BREADCRUMB_LABELS.es;
+  const blogLabel = locale === "ru" ? "Блог" : "Blog";
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: labels.home,
+        item: SITE_URL + publicRoute("", locale),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: blogLabel,
+        item: `${SITE_URL}/${locale}/blog/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: postTitle,
+        item: `${SITE_URL}/${locale}/blog/${postSlug}/`,
+      },
+    ],
+  };
+}
+
+export function blogFaqPage(
+  faq: Array<{ q: string; a: string }>,
+): object | null {
+  if (faq.length === 0) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}
+
 /** Build a FAQPage JSON-LD from i18n keys matching `<prefix>.faq_<i>_q/_a`. */
 export function faqPage(
   messages: Messages,

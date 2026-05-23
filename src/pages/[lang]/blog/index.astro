@@ -1,0 +1,207 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { LOCALES, type Locale } from "@/lib/constants";
+import { getBlogPosts, formatDate, estimateReadingTime } from "@/lib/blog";
+import { getSeo } from "@/lib/seo";
+import { website, breadcrumbList } from "@/lib/structured-data";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = lang as Locale;
+const messages = getMessages(locale);
+const t = makeT(messages);
+const posts = await getBlogPosts(locale);
+const seo = getSeo("blog", locale);
+
+const allTags = [...new Set(posts.flatMap((p) => p.data.tags))];
+
+const CARD_GRADIENTS = [
+  "from-[#E8453C]/10 via-[#E8453C]/5 to-transparent",
+  "from-[#2D7FF9]/10 via-[#2D7FF9]/5 to-transparent",
+  "from-[#103c25]/10 via-[#103c25]/5 to-transparent",
+  "from-[#b76b00]/10 via-[#b76b00]/5 to-transparent",
+  "from-[#7C3AED]/10 via-[#7C3AED]/5 to-transparent",
+  "from-[#0891B2]/10 via-[#0891B2]/5 to-transparent",
+];
+const CARD_ACCENTS = [
+  "text-[#E8453C]",
+  "text-[#2D7FF9]",
+  "text-[#103c25]",
+  "text-[#b76b00]",
+  "text-[#7C3AED]",
+  "text-[#0891B2]",
+];
+---
+
+<PublicLayout
+  title={seo.title}
+  description={seo.description}
+  locale={locale}
+  page="blog"
+>
+  <JsonLd slot="structured-data" data={website()} />
+  <JsonLd
+    slot="structured-data"
+    data={breadcrumbList(locale, t("public.blog.title"), "blog")}
+  />
+
+  <section class="bg-[var(--surface-soft)]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-20">
+      <!-- Header -->
+      <div class="max-w-2xl mb-12">
+        <span class="t-eyebrow">{t("public.blog.title")}</span>
+        <h1
+          class="font-display text-[36px] sm:text-[44px] font-bold tracking-[-0.8px] text-[var(--ink)] mt-3 leading-tight"
+        >
+          {t("public.blog.subtitle")}
+        </h1>
+      </div>
+
+      <!-- Tags filter -->
+      {
+        allTags.length > 0 && (
+          <div
+            class="flex flex-wrap gap-2 mb-10"
+            role="list"
+            aria-label={t("public.blog.tags")}
+            id="blog-tags"
+          >
+            <button
+              type="button"
+              class="pin-chip pin-chip-active cursor-pointer transition-colors"
+              data-tag="*"
+            >
+              {t("public.blog.all")}
+            </button>
+            {allTags.map((tag) => (
+              <button
+                type="button"
+                class="pin-chip cursor-pointer transition-colors"
+                data-tag={tag}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )
+      }
+
+      <!-- Posts grid -->
+      {
+        posts.length === 0 ? (
+          <div class="text-center py-20">
+            <p class="text-lg text-[var(--mute)]">
+              {t("public.blog.no_posts")}
+            </p>
+          </div>
+        ) : (
+          <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3" id="blog-grid">
+            {posts.map((post, i) => {
+              const readTime =
+                post.data.readingTime ?? estimateReadingTime(post.body ?? "");
+              const gradientIdx = i % CARD_GRADIENTS.length;
+              const gradient = CARD_GRADIENTS[gradientIdx];
+              const accent = CARD_ACCENTS[gradientIdx];
+              return (
+                <a
+                  href={`/${locale}/blog/${post.data.slug}/`}
+                  class="group pin-card flex flex-col hover:shadow-[var(--shadow-card)] transition-all duration-200"
+                  data-tags={JSON.stringify(post.data.tags)}
+                >
+                  <div
+                    class={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${gradient} flex items-end p-5 sm:p-6`}
+                  >
+                    {/* Decorative grid pattern */}
+                    <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 20px 20px;" />
+                    {/* Decorative corner accent */}
+                    <svg
+                      class={`absolute top-4 right-4 w-8 h-8 ${accent} opacity-30`}
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5" />
+                      <circle cx="16" cy="16" r="4" fill="currentColor" />
+                    </svg>
+                    <h2 class="relative font-display text-[17px] sm:text-[19px] font-bold leading-snug text-[var(--ink)] line-clamp-3">
+                      {post.data.title}
+                    </h2>
+                  </div>
+                  <div class="flex flex-1 flex-col p-5 sm:p-6 pt-4">
+                    {post.data.tags.length > 0 && (
+                      <div class="flex flex-wrap gap-1.5 mb-3">
+                        {post.data.tags.slice(0, 2).map((tag) => (
+                          <span class="inline-block rounded-full bg-[var(--surface-card)] px-2.5 py-0.5 text-[12px] font-semibold text-[var(--mute)]">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <p class="text-sm text-[var(--mute)] leading-relaxed line-clamp-2 mb-4">
+                      {post.data.description}
+                    </p>
+                    <div class="mt-auto flex items-center justify-between text-[13px] text-[var(--ash)]">
+                      <div class="flex items-center gap-3">
+                        <time datetime={post.data.publishedAt.toISOString()}>
+                          {formatDate(post.data.publishedAt, locale)}
+                        </time>
+                        <span aria-hidden="true">·</span>
+                        <span>
+                          {readTime} {t("public.blog.min_read")}
+                        </span>
+                      </div>
+                      <span
+                        class={`font-semibold ${accent} opacity-0 group-hover:opacity-100 transition-opacity text-[13px]`}
+                      >
+                        &rarr;
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</PublicLayout>
+
+<script>
+  function initBlogFilter() {
+    const container = document.getElementById("blog-tags");
+    const grid = document.getElementById("blog-grid");
+    if (!container || !grid) return;
+
+    const buttons = container.querySelectorAll<HTMLButtonElement>("[data-tag]");
+    const cards = grid.querySelectorAll<HTMLAnchorElement>("[data-tags]");
+
+    function setActive(tag: string) {
+      buttons.forEach((btn) => {
+        const isActive = btn.dataset.tag === tag;
+        btn.classList.toggle("pin-chip-active", isActive);
+      });
+
+      cards.forEach((card) => {
+        const tags: string[] = JSON.parse(card.dataset.tags ?? "[]");
+        const visible = tag === "*" || tags.includes(tag);
+        card.style.display = visible ? "" : "none";
+      });
+    }
+
+    container.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+        "[data-tag]",
+      );
+      if (!btn) return;
+      setActive(btn.dataset.tag!);
+    });
+  }
+
+  document.addEventListener("astro:page-load", initBlogFilter);
+</script>

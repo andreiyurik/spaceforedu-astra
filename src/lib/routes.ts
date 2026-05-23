@@ -9,6 +9,7 @@ export const publicPages = {
   privacyPolicy: "privacy-policy",
   legalNotice: "aviso-legal",
   cookies: "cookies",
+  blog: "blog",
 } as const;
 
 export function publicRoute(page: string, locale: Locale | string): string {

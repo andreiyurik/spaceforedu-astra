@@ -1,0 +1,242 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { type Locale } from "@/lib/constants";
+import {
+  getAllBlogPosts,
+  getBlogPosts,
+  formatDate,
+  estimateReadingTime,
+} from "@/lib/blog";
+import { blogPosting, blogBreadcrumb, blogFaqPage } from "@/lib/structured-data";
+import { extractFaq } from "@/lib/blog";
+import { render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getAllBlogPosts();
+  return posts.map((post) => ({
+    params: { lang: post.data.locale, slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { lang } = Astro.params;
+const locale = lang as Locale;
+const messages = getMessages(locale);
+const t = makeT(messages);
+
+const { Content } = await render(post);
+const readTime =
+  post.data.readingTime ?? estimateReadingTime(post.body ?? "");
+
+const allPosts = await getBlogPosts(locale);
+const related = allPosts
+  .filter((p) => p.id !== post.id)
+  .filter(
+    (p) => p.data.tags.some((tag) => post.data.tags.includes(tag)),
+  )
+  .slice(0, 2);
+
+const articleSchema = blogPosting({
+  locale,
+  title: post.data.title,
+  description: post.data.description,
+  slug: post.data.slug,
+  authorName: post.data.author.name,
+  authorRole: post.data.author.role,
+  publishedAt: post.data.publishedAt,
+  updatedAt: post.data.updatedAt,
+  image: post.data.image,
+  tags: post.data.tags,
+});
+
+const breadcrumb = blogBreadcrumb(locale, post.data.title, post.data.slug);
+
+const faq = extractFaq(post.body ?? "");
+const faqSchema = blogFaqPage(faq);
+
+const pageTitle = `${post.data.title} — Space for Edu`;
+---
+
+<PublicLayout
+  title={pageTitle}
+  description={post.data.description}
+  locale={locale}
+  page="blog"
+
+>
+  <JsonLd slot="structured-data" data={articleSchema} />
+  <JsonLd slot="structured-data" data={breadcrumb} />
+  {faqSchema && <JsonLd slot="structured-data" data={faqSchema} />}
+
+  <article class="bg-[var(--surface-soft)]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+      <!-- Back link -->
+      <a
+        href={`/${locale}/blog/`}
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--mute)] hover:text-[var(--ink)] transition-colors mb-8"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="shrink-0"
+          aria-hidden="true"
+        >
+          <path
+            d="M10 12L6 8l4-4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        {t("public.blog.back_to_blog")}
+      </a>
+
+      <div class="grid lg:grid-cols-[1fr_300px] gap-12 items-start">
+        <!-- Main content -->
+        <div class="min-w-0">
+          <!-- Header -->
+          <header class="mb-10">
+            {
+              post.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  {post.data.tags.map((tag) => (
+                    <span class="inline-block rounded-full bg-[var(--surface-card)] px-3 py-1 text-[12px] font-semibold text-[var(--accent-blue-deep)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )
+            }
+            <h1
+              class="font-display text-[32px] sm:text-[40px] lg:text-[48px] font-bold tracking-[-1px] text-[var(--ink)] leading-[1.1] mb-5"
+            >
+              {post.data.title}
+            </h1>
+            <p class="text-lg text-[var(--mute)] leading-relaxed max-w-2xl mb-6">
+              {post.data.description}
+            </p>
+
+            <div
+              class="flex flex-wrap items-center gap-4 text-sm text-[var(--mute)] border-t border-b border-[var(--hairline-soft)] py-4"
+            >
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
+                >
+                  {post.data.author.name.charAt(0)}
+                </div>
+                <div>
+                  <div class="font-semibold text-[var(--ink)]">
+                    {post.data.author.name}
+                  </div>
+                  <div class="text-[12px] text-[var(--ash)]">
+                    {post.data.author.role}
+                  </div>
+                </div>
+              </div>
+              <span class="hidden sm:inline" aria-hidden="true">·</span>
+              <time datetime={post.data.publishedAt.toISOString()}>
+                {formatDate(post.data.publishedAt, locale)}
+              </time>
+              <span aria-hidden="true">·</span>
+              <span>{readTime} {t("public.blog.min_read")}</span>
+            </div>
+          </header>
+
+          <!-- Article body -->
+          <div class="prose-article">
+            <Content />
+          </div>
+
+          {
+            post.data.updatedAt && (
+              <div class="mt-8 text-sm text-[var(--ash)] italic">
+                {t("public.blog.updated")}: {formatDate(post.data.updatedAt, locale)}
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="hidden lg:block sticky top-24">
+          <!-- Author card -->
+          <div class="pin-card p-6 mb-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-lg shrink-0"
+              >
+                {post.data.author.name.charAt(0)}
+              </div>
+              <div>
+                <div class="font-bold text-[var(--ink)]">
+                  {post.data.author.name}
+                </div>
+                <div class="text-[13px] text-[var(--mute)]">
+                  {post.data.author.role}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {
+            related.length > 0 && (
+              <div class="pin-card p-6">
+                <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-4">
+                  {t("public.blog.related")}
+                </h3>
+                <ul class="space-y-4">
+                  {related.map((r) => (
+                    <li>
+                      <a
+                        href={`/${locale}/blog/${r.data.slug}/`}
+                        class="group block"
+                      >
+                        <div class="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug mb-1">
+                          {r.data.title}
+                        </div>
+                        <div class="text-[12px] text-[var(--ash)]">
+                          {formatDate(r.data.publishedAt, locale)}
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+        </aside>
+      </div>
+
+      <!-- Mobile related posts -->
+      {
+        related.length > 0 && (
+          <div class="lg:hidden mt-12 pt-8 border-t border-[var(--hairline-soft)]">
+            <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-6">
+              {t("public.blog.related")}
+            </h3>
+            <div class="grid gap-6 sm:grid-cols-2">
+              {related.map((r) => (
+                <a
+                  href={`/${locale}/blog/${r.data.slug}/`}
+                  class="group pin-card p-5"
+                >
+                  <div class="font-semibold text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug mb-2">
+                    {r.data.title}
+                  </div>
+                  <div class="text-[13px] text-[var(--ash)]">
+                    {formatDate(r.data.publishedAt, locale)}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </article>
+</PublicLayout>

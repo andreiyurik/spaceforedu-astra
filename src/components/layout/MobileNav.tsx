@@ -7,6 +7,7 @@ import {
   Building2,
   BookOpen,
   CreditCard,
+  Newspaper,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ const NAV_ICONS: Record<string, React.ElementType> = {
   universidad: Building2,
   espanol: BookOpen,
   precios: CreditCard,
+  blog: Newspaper,
 };
 
 export default function MobileNav({
@@ -41,9 +43,9 @@ export default function MobileNav({
 }: {
   locale: string;
   currentPath: string;
-  navLabels: Record<"homologacion" | "universidad" | "espanol" | "precios", string>;
+  navLabels: Record<"homologacion" | "universidad" | "espanol" | "precios" | "blog", string>;
   navHrefs: Record<
-    "homologacion" | "universidad" | "espanol" | "precios" | "home",
+    "homologacion" | "universidad" | "espanol" | "precios" | "blog" | "home",
     string
   >;
   menuLabel: string;
@@ -56,7 +58,7 @@ export default function MobileNav({
   phoneAriaLabel: string;
 }) {
   const [open, setOpen] = useState(false);
-  const keys = ["homologacion", "universidad", "espanol", "precios"] as const;
+  const keys = ["homologacion", "universidad", "espanol", "precios", "blog"] as const;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

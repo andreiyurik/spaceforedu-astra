@@ -8,7 +8,8 @@ type PageKey =
   | "precios"
   | "privacy"
   | "legalNotice"
-  | "cookies";
+  | "cookies"
+  | "blog";
 
 const SEO: Record<PageKey, Record<Locale, { title: string; description: string }>> = {
   home: {
@@ -125,6 +126,23 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
       title: "Юридическая информация — Space for Edu",
       description:
         "Юридические данные Space for Edu в соответствии с испанским законом LSSI-CE.",
+    },
+  },
+  blog: {
+    es: {
+      title: "Blog — Space for Edu",
+      description:
+        "Artículos expertos sobre homologación de títulos, universidades españolas, cursos de español y vida estudiantil en España. Guías actualizadas por el equipo de Space for Edu.",
+    },
+    en: {
+      title: "Blog — Space for Edu",
+      description:
+        "Expert articles on degree homologation, Spanish universities, language courses and student life in Spain. Up-to-date guides by the Space for Edu team.",
+    },
+    ru: {
+      title: "Блог — Space for Edu",
+      description:
+        "Экспертные статьи об омологации дипломов, испанских университетах, курсах испанского и студенческой жизни в Испании. Актуальные гиды от команды Space for Edu.",
     },
   },
   cookies: {
