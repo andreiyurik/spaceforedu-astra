@@ -1,8 +1,27 @@
 ---
 import { publicRoute, publicPages } from "@/lib/routes";
-import { CONTACT_EMAIL, CONTACT_WHATSAPP } from "@/lib/constants";
+import {
+  CONTACT_EMAIL,
+  CONTACT_WHATSAPP,
+  SOCIAL_FACEBOOK,
+  SOCIAL_YOUTUBE,
+  SOCIAL_LINKEDIN,
+  SOCIAL_TELEGRAM,
+  SOCIAL_TWITTER,
+} from "@/lib/constants";
 import { formatPhone } from "@/lib/utils";
 import { getMessages, makeT } from "@/lib/i18n";
+import SocialIcon from "@/components/common/SocialIcon.astro";
+
+const socialLinks = [
+  { name: "whatsapp" as const, href: CONTACT_WHATSAPP ? `https://wa.me/${CONTACT_WHATSAPP}` : "", label: "WhatsApp" },
+  { name: "email" as const, href: CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : "", label: "Email" },
+  { name: "facebook" as const, href: SOCIAL_FACEBOOK, label: "Facebook" },
+  { name: "youtube" as const, href: SOCIAL_YOUTUBE, label: "YouTube" },
+  { name: "linkedin" as const, href: SOCIAL_LINKEDIN, label: "LinkedIn" },
+  { name: "telegram" as const, href: SOCIAL_TELEGRAM, label: "Telegram" },
+  { name: "x" as const, href: SOCIAL_TWITTER, label: "X" },
+].filter((s) => s.href);
 
 interface Props {
   locale: string;
@@ -27,7 +46,7 @@ const year = new Date().getFullYear();
         <p class="text-sm text-[var(--mute)] leading-relaxed max-w-[340px] mb-4">
           {t("footer.tagline")}
         </p>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 mb-5">
           <a
             href={publicRoute(publicPages.home, "es")}
             class="inline-flex items-center gap-2 bg-[var(--surface-card)] rounded-full px-4 min-h-[44px] text-sm font-semibold text-[var(--ink)] hover:bg-[var(--secondary-bg)] transition-colors"
@@ -50,6 +69,23 @@ const year = new Date().getFullYear();
             Русский
           </a>
         </div>
+        {
+          socialLinks.length > 0 && (
+            <div class="flex items-center gap-1">
+              {socialLinks.map(({ name, href, label }) => (
+                <a
+                  href={href}
+                  target={name === "email" ? undefined : "_blank"}
+                  rel={name === "email" ? undefined : "noopener noreferrer"}
+                  aria-label={label}
+                  class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[var(--surface-card)] text-[var(--mute)] hover:bg-[var(--ink)] hover:text-white transition-colors"
+                >
+                  <SocialIcon name={name} size={18} />
+                </a>
+              ))}
+            </div>
+          )
+        }
       </div>
 
       <div>
@@ -142,8 +178,8 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <div class="mt-10 pt-5 border-t border-[var(--hairline-soft)] text-[13px] text-[var(--mute)]">
-      <span>© {year} Space for Edu. {t("footer.rights")}</span>
+    <div class="mt-10 pt-5 border-t border-[var(--hairline-soft)]">
+      <span class="text-[13px] text-[var(--mute)]">© {year} Space for Edu. {t("footer.rights")}</span>
     </div>
   </div>
 </footer>

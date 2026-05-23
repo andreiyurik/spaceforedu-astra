@@ -20,6 +20,7 @@ const blog = defineCollection({
     imageAlt: z.string().optional(),
     tags: z.array(z.string()).default([]),
     readingTime: z.number().optional(),
+    translationKey: z.string().optional(),
   }),
 });
 

@@ -2,15 +2,26 @@
 import PublicLayout from "@/layouts/PublicLayout.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages, makeT } from "@/lib/i18n";
-import { type Locale } from "@/lib/constants";
+import {
+  SITE_URL,
+  DEFAULT_LOCALE,
+  SOCIAL_FACEBOOK,
+  SOCIAL_LINKEDIN,
+  SOCIAL_TWITTER,
+  SOCIAL_TELEGRAM,
+  type Locale,
+} from "@/lib/constants";
 import {
   getAllBlogPosts,
   getBlogPosts,
   formatDate,
   estimateReadingTime,
+  extractFaq,
+  getTranslations,
+  getLastModified,
 } from "@/lib/blog";
 import { blogPosting, blogBreadcrumb, blogFaqPage } from "@/lib/structured-data";
-import { extractFaq } from "@/lib/blog";
+import SocialIcon from "@/components/common/SocialIcon.astro";
 import { render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -31,6 +42,8 @@ const { Content } = await render(post);
 const readTime =
   post.data.readingTime ?? estimateReadingTime(post.body ?? "");
 
+const updatedAt = post.data.updatedAt ?? getLastModified(post.filePath, post.data.publishedAt);
+
 const allPosts = await getBlogPosts(locale);
 const related = allPosts
   .filter((p) => p.id !== post.id)
@@ -47,7 +60,7 @@ const articleSchema = blogPosting({
   authorName: post.data.author.name,
   authorRole: post.data.author.role,
   publishedAt: post.data.publishedAt,
-  updatedAt: post.data.updatedAt,
+  updatedAt,
   image: post.data.image,
   tags: post.data.tags,
 });
@@ -57,7 +70,32 @@ const breadcrumb = blogBreadcrumb(locale, post.data.title, post.data.slug);
 const faq = extractFaq(post.body ?? "");
 const faqSchema = blogFaqPage(faq);
 
+const translations = await getTranslations(
+  post.data.translationKey,
+  locale,
+);
+const allLangLinks = [
+  { locale, slug: post.data.slug },
+  ...translations,
+];
+
+const headings = (post.body ?? "")
+  .split("\n")
+  .filter((line) => /^#{2,3}\s/.test(line))
+  .map((line) => {
+    const level = line.startsWith("### ") ? 3 : 2;
+    const text = line.replace(/^#{2,3}\s+/, "").trim();
+    const id = text
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+    return { level, text, id };
+  });
+
 const pageTitle = `${post.data.title} — Space for Edu`;
+const canonicalUrl = `${SITE_URL}/${locale}/blog/${post.data.slug}/`;
+const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
 ---
 
 <PublicLayout
@@ -65,11 +103,33 @@ const pageTitle = `${post.data.title} — Space for Edu`;
   description={post.data.description}
   locale={locale}
   page="blog"
-
+  ogImage={ogImage}
 >
+  <Fragment slot="head">
+    {allLangLinks.map(({ locale: l, slug: s }) => (
+      <link rel="alternate" hreflang={l} href={`${SITE_URL}/${l}/blog/${s}/`} />
+    ))}
+    {(() => {
+      const def = allLangLinks.find((l) => l.locale === DEFAULT_LOCALE) ?? allLangLinks[0];
+      return <link rel="alternate" hreflang="x-default" href={`${SITE_URL}/${def.locale}/blog/${def.slug}/`} />;
+    })()}
+  </Fragment>
+
   <JsonLd slot="structured-data" data={articleSchema} />
   <JsonLd slot="structured-data" data={breadcrumb} />
   {faqSchema && <JsonLd slot="structured-data" data={faqSchema} />}
+  <JsonLd
+    slot="structured-data"
+    data={{
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: [".prose-article h2", ".prose-article > p:first-of-type", ".prose-article blockquote"],
+      },
+      url: canonicalUrl,
+    }}
+  />
 
   <article class="bg-[var(--surface-soft)]">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-20">
@@ -128,7 +188,7 @@ const pageTitle = `${post.data.title} — Space for Edu`;
                 <div
                   class="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
                 >
-                  {post.data.author.name.charAt(0)}
+                  S
                 </div>
                 <div>
                   <div class="font-semibold text-[var(--ink)]">
@@ -146,6 +206,36 @@ const pageTitle = `${post.data.title} — Space for Edu`;
               <span aria-hidden="true">·</span>
               <span>{readTime} {t("public.blog.min_read")}</span>
             </div>
+
+            <!-- Share -->
+            <div class="flex items-center gap-2 mt-4">
+              <span class="text-[13px] font-semibold text-[var(--mute)]">{t("public.blog.share")}:</span>
+              {[
+                { name: "whatsapp" as const, label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(post.data.title + " " + canonicalUrl)}`, show: true },
+                { name: "x" as const, label: "X / Twitter", href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(canonicalUrl)}`, show: !!SOCIAL_TWITTER },
+                { name: "linkedin" as const, label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`, show: !!SOCIAL_LINKEDIN },
+                { name: "facebook" as const, label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonicalUrl)}`, show: !!SOCIAL_FACEBOOK },
+                { name: "telegram" as const, label: "Telegram", href: `https://t.me/share/url?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(post.data.title)}`, show: !!SOCIAL_TELEGRAM },
+              ].filter((s) => s.show).map(({ name, label, href }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-card)] text-[var(--mute)] hover:bg-[var(--secondary-bg)] hover:text-[var(--ink)] transition-colors"
+                  aria-label={label}
+                >
+                  <SocialIcon name={name} />
+                </a>
+              ))}
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-card)] text-[var(--mute)] hover:bg-[var(--secondary-bg)] hover:text-[var(--ink)] transition-colors"
+                aria-label="Copy link"
+                data-copy-url={canonicalUrl}
+              >
+                <SocialIcon name="link" />
+              </button>
+            </div>
           </header>
 
           <!-- Article body -->
@@ -154,29 +244,54 @@ const pageTitle = `${post.data.title} — Space for Edu`;
           </div>
 
           {
-            post.data.updatedAt && (
+            updatedAt.getTime() !== post.data.publishedAt.getTime() && (
               <div class="mt-8 text-sm text-[var(--ash)] italic">
-                {t("public.blog.updated")}: {formatDate(post.data.updatedAt, locale)}
+                {t("public.blog.updated")}: {formatDate(updatedAt, locale)}
               </div>
             )
           }
         </div>
 
         <!-- Sidebar -->
-        <aside class="hidden lg:block sticky top-24">
+        <aside class="hidden lg:block sticky top-24 space-y-6">
+          <!-- Table of Contents -->
+          {
+            headings.filter((h) => h.level === 2).length > 2 && (
+              <nav class="pin-card p-5" aria-label="Table of contents">
+                <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-3">
+                  {locale === "es" ? "Contenido" : locale === "ru" ? "Содержание" : "Contents"}
+                </h3>
+                <ul class="space-y-1.5 text-[13px]">
+                  {headings
+                    .filter((h) => h.level === 2)
+                    .map((h) => (
+                      <li>
+                        <a
+                          href={`#${h.id}`}
+                          class="block text-[var(--mute)] hover:text-[var(--primary)] transition-colors leading-snug py-0.5"
+                        >
+                          {h.text}
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              </nav>
+            )
+          }
+
           <!-- Author card -->
-          <div class="pin-card p-6 mb-6">
-            <div class="flex items-center gap-3 mb-3">
+          <div class="pin-card p-5">
+            <div class="flex items-center gap-3">
               <div
-                class="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-lg shrink-0"
+                class="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
               >
-                {post.data.author.name.charAt(0)}
+                S
               </div>
               <div>
-                <div class="font-bold text-[var(--ink)]">
+                <div class="font-bold text-sm text-[var(--ink)]">
                   {post.data.author.name}
                 </div>
-                <div class="text-[13px] text-[var(--mute)]">
+                <div class="text-[12px] text-[var(--mute)]">
                   {post.data.author.role}
                 </div>
               </div>
@@ -185,7 +300,7 @@ const pageTitle = `${post.data.title} — Space for Edu`;
 
           {
             related.length > 0 && (
-              <div class="pin-card p-6">
+              <div class="pin-card p-5">
                 <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-4">
                   {t("public.blog.related")}
                 </h3>
@@ -240,3 +355,16 @@ const pageTitle = `${post.data.title} — Space for Edu`;
     </div>
   </article>
 </PublicLayout>
+
+<script>
+  function initCopyLink() {
+    document.querySelectorAll<HTMLButtonElement>("[data-copy-url]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(btn.dataset.copyUrl!);
+        btn.style.color = "var(--primary)";
+        setTimeout(() => (btn.style.color = ""), 1500);
+      });
+    });
+  }
+  document.addEventListener("astro:page-load", initCopyLink);
+</script>

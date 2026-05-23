@@ -1,6 +1,17 @@
 import type { Messages } from "@/lib/i18n";
 import { lookup } from "@/lib/i18n";
-import { SITE_URL, CONTACT_WHATSAPP, CONTACT_EMAIL, LOCALES } from "@/lib/constants";
+import {
+  SITE_URL,
+  CONTACT_WHATSAPP,
+  CONTACT_EMAIL,
+  LOCALES,
+  SOCIAL_FACEBOOK,
+  SOCIAL_YOUTUBE,
+  SOCIAL_LINKEDIN,
+  SOCIAL_TELEGRAM,
+  SOCIAL_TWITTER,
+  SOCIAL_GOOGLE_BUSINESS,
+} from "@/lib/constants";
 import { publicRoute } from "@/lib/routes";
 import type { Locale } from "@/lib/constants";
 
@@ -32,6 +43,17 @@ export function organization(): object {
           },
         }
       : {}),
+    ...(() => {
+      const links = [
+        SOCIAL_FACEBOOK,
+        SOCIAL_YOUTUBE,
+        SOCIAL_LINKEDIN,
+        SOCIAL_TELEGRAM,
+        SOCIAL_TWITTER,
+        SOCIAL_GOOGLE_BUSINESS,
+      ].filter(Boolean);
+      return links.length > 0 ? { sameAs: links } : {};
+    })(),
   };
 }
 

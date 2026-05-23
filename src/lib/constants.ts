@@ -5,6 +5,13 @@ export const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? "https://spaceforedu.
 export const FEATURE_DASHBOARD =
   import.meta.env.PUBLIC_FEATURE_DASHBOARD === "true";
 
+export const SOCIAL_FACEBOOK = import.meta.env.PUBLIC_SOCIAL_FACEBOOK ?? "";
+export const SOCIAL_YOUTUBE = import.meta.env.PUBLIC_SOCIAL_YOUTUBE ?? "";
+export const SOCIAL_LINKEDIN = import.meta.env.PUBLIC_SOCIAL_LINKEDIN ?? "";
+export const SOCIAL_TELEGRAM = import.meta.env.PUBLIC_SOCIAL_TELEGRAM ?? "";
+export const SOCIAL_TWITTER = import.meta.env.PUBLIC_SOCIAL_TWITTER ?? "";
+export const SOCIAL_GOOGLE_BUSINESS = import.meta.env.PUBLIC_SOCIAL_GOOGLE_BUSINESS ?? "";
+
 export const LOCALES = ["es", "en", "ru"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "es";
