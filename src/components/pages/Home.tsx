@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Globe2,
 } from "lucide-react";
+import type { CSSProperties } from "react";
 import { Reveal, AnimatedCounter } from "@/components/public/animations";
 import { Container } from "@/components/public/shared";
 import { ConsultationDialog } from "@/components/public/ConsultationDialog";
@@ -34,6 +35,21 @@ function parseStat(raw: string): { num: number; suffix: string } {
   if (!m) return { num: 0, suffix: raw };
   return { num: parseInt(m[1].replace(/[\s.,]/g, ""), 10), suffix: m[2] };
 }
+
+/** Collage tile layout — kept inline so it survives View-Transition swaps. */
+const tileFrame: CSSProperties = {
+  position: "absolute",
+  borderRadius: "28px",
+  overflow: "hidden",
+  boxShadow:
+    "0 2px 4px rgba(38,34,30,0.05), 0 22px 44px -24px rgba(38,34,30,0.32)",
+};
+const tileImg = (objectPosition = "center"): CSSProperties => ({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  objectPosition,
+});
 
 export function HomePage({
   locale,
@@ -166,11 +182,25 @@ function PageBody({
             </div>
 
             {/* Art-directed collage: student + Almudena + flag + a tenure badge.
-                No floating pills — the imagery carries it. */}
+                No floating pills — the imagery carries it.
+                Layout is set via inline styles (not utility/`.hero-tile`
+                classes) so it survives client-side View-Transition swaps —
+                a custom CSS class can momentarily drop on locale switch,
+                which would collapse the absolute layout. */}
             <Reveal direction="left" delay={120}>
-              <div className="relative mx-auto h-[420px] w-full max-w-[440px] sm:h-[500px] lg:h-[560px] lg:max-w-none">
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  maxWidth: "500px",
+                  marginInline: "auto",
+                  // aspect-ratio (not a utility height class) keeps the collage
+                  // from collapsing when arbitrary classes drop mid View-Transition.
+                  aspectRatio: "10 / 11",
+                }}
+              >
                 {/* Main — student, top-right */}
-                <div className="hero-tile top-0 right-0 h-[64%] w-[64%]">
+                <div className="hero-tile" style={{ ...tileFrame, top: 0, right: 0, height: "64%", width: "64%" }}>
                   <img
                     src={heroMain?.src ?? "/images/hero/hero-student-salamanca-docs.webp"}
                     srcSet={heroMain?.srcSet}
@@ -179,29 +209,41 @@ function PageBody({
                     width={heroMain?.width ?? 1280}
                     height={heroMain?.height ?? 1280}
                     loading="eager"
-                    className="anim-kenburns object-[60%_30%]"
+                    className="anim-kenburns"
+                    style={tileImg("60% 30%")}
                   />
                 </div>
                 {/* Spanish flag — bottom, centre-right */}
-                <div className="hero-tile bottom-0 right-[14%] h-[38%] w-[46%]">
+                <div className="hero-tile" style={{ ...tileFrame, bottom: 0, right: "14%", height: "38%", width: "46%" }}>
                   <img
                     src="/images/lifestyle/spain-flag-waving-blue-sky.webp"
                     alt="Spanish flag waving against a clear blue sky"
                     loading="lazy"
+                    style={tileImg()}
                   />
                 </div>
                 {/* Almudena cathedral — bottom-left */}
-                <div className="hero-tile bottom-[8%] left-0 h-[42%] w-[38%]">
+                <div className="hero-tile" style={{ ...tileFrame, bottom: "8%", left: 0, height: "42%", width: "38%" }}>
                   <img
                     src="/images/lifestyle/madrid-almudena-sunset.webp"
                     alt="Almudena Cathedral and the Royal Palace of Madrid at sunset"
                     loading="lazy"
+                    style={tileImg()}
                   />
                 </div>
                 {/* Tenure badge — mid-left */}
                 <div
-                  className="absolute top-[16%] left-0 flex h-[30%] w-[31%] flex-col items-center justify-center rounded-[24px] p-3 text-center shadow-[0_2px_4px_rgba(38,34,30,0.05)]"
-                  style={{ background: "#f4e9d7" }}
+                  className="flex flex-col items-center justify-center p-3 text-center"
+                  style={{
+                    position: "absolute",
+                    top: "16%",
+                    left: 0,
+                    height: "30%",
+                    width: "31%",
+                    borderRadius: "24px",
+                    background: "#f4e9d7",
+                    boxShadow: "0 2px 4px rgba(38,34,30,0.05)",
+                  }}
                 >
                   <span className="font-display text-[30px] sm:text-[38px] font-bold leading-none tracking-[-0.03em] text-[var(--primary)]">
                     {t(`${H}.pin_hero_badge_years`)}
