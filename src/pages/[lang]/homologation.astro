@@ -1,5 +1,4 @@
 ---
-import { getImage } from "astro:assets";
 import PublicLayout from "@/layouts/PublicLayout.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
 import Container from "@/components/public/Container.astro";
@@ -19,6 +18,7 @@ import { LOCALES, assertLocale } from "@/lib/constants";
 import { publicRoute, publicPages } from "@/lib/routes";
 import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
 import { buildConsultationStrings } from "@/lib/consultation";
+import { setupServiceHero } from "@/lib/service-hero";
 import heroSrc from "@/assets/images/services/homologacion/salamanca-streets-university-garden.webp";
 
 export function getStaticPaths() {
@@ -44,9 +44,7 @@ const serviceLd = service({
 const faqLd = faqPage(messages, PREFIX);
 const breadcrumbLd = breadcrumbList(locale, t("nav.homologacion"), publicPages.homologacion);
 
-const widths = [480, 768, 1024, 1280];
-const heroAvif = await getImage({ src: heroSrc, format: "avif", width: 1280, widths, quality: 70 });
-const heroWebp = await getImage({ src: heroSrc, format: "webp", width: 1280, widths, quality: 80 });
+const { heroAvif, heroWebp } = await setupServiceHero(heroSrc);
 const heroSizes = "(min-width: 1024px) 40vw, 50vw";
 
 const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";

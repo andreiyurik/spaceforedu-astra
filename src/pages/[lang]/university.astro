@@ -1,13 +1,25 @@
 ---
-import { getImage } from "astro:assets";
 import PublicLayout from "@/layouts/PublicLayout.astro";
-import { UniversidadPage } from "@/components/pages/Universidad";
 import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import PinHeroCollage from "@/components/public/pin/PinHeroCollage.astro";
+import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
+import PinServicesCard from "@/components/public/pin/PinServicesCard.astro";
+import PinComparison from "@/components/public/pin/PinComparison.astro";
+import PinPricingTeaser from "@/components/public/pin/PinPricingTeaser.astro";
+import PinRiskReversal from "@/components/public/pin/PinRiskReversal.astro";
+import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
+import CrossSellCard from "@/components/public/CrossSellCard.astro";
+import TimelineSection from "@/components/public/TimelineSection.astro";
+import FaqSection from "@/components/public/FaqSection.astro";
+import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
 import { LOCALES, assertLocale } from "@/lib/constants";
-import { publicPages } from "@/lib/routes";
+import { publicRoute, publicPages } from "@/lib/routes";
 import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
+import { buildConsultationStrings } from "@/lib/consultation";
+import { setupServiceHero } from "@/lib/service-hero";
 import heroSrc from "@/assets/images/lifestyle/graduates-celebration-success.webp";
 
 export function getStaticPaths() {
@@ -20,6 +32,8 @@ const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("universidad", locale);
 
+const PREFIX = "public.universidad";
+
 const serviceLd = service({
   locale,
   name: seo.title,
@@ -28,13 +42,25 @@ const serviceLd = service({
   serviceType: "University admission",
   audience: "International students seeking to enrol in Spanish universities",
 });
-const faqLd = faqPage(messages, "public.universidad");
+const faqLd = faqPage(messages, PREFIX);
 const breadcrumbLd = breadcrumbList(locale, t("nav.universidad"), publicPages.universidad);
 
-const widths = [480, 768, 1024, 1280];
-const heroAvif = await getImage({ src: heroSrc, format: "avif", width: 1280, widths, quality: 70 });
-const heroWebp = await getImage({ src: heroSrc, format: "webp", width: 1280, widths, quality: 80 });
+const { heroAvif, heroWebp } = await setupServiceHero(heroSrc);
 const heroSizes = "(min-width: 1024px) 40vw, 50vw";
+
+const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+const consultationStrings = buildConsultationStrings(t);
+
+const admissionTypes = [
+  { iconName: "book-open", titleKey: "type_grado_title", descKey: "type_grado_desc", metaKey: "type_grado_meta" },
+  { iconName: "award", titleKey: "type_master_title", descKey: "type_master_desc", metaKey: "type_master_meta" },
+  { iconName: "graduation-cap", titleKey: "type_fp_title", descKey: "type_fp_desc", metaKey: "type_fp_meta" },
+];
+
+const riskItems = [
+  { iconName: "shield", n: 1 },
+  { iconName: "shield-check", n: 2 },
+] as const;
 ---
 
 <PublicLayout
@@ -51,16 +77,99 @@ const heroSizes = "(min-width: 1024px) 40vw, 50vw";
   <JsonLd slot="structured-data" data={serviceLd} />
   <JsonLd slot="structured-data" data={breadcrumbLd} />
   {faqLd && <JsonLd slot="structured-data" data={faqLd} />}
-  <UniversidadPage
-    client:idle
-    locale={locale}
-    messages={messages}
-    heroMain={{
+
+  <PinHeroCollage
+    prefix={PREFIX}
+    t={t}
+    consultationStrings={consultationStrings}
+    secondaryHref={preciosHref}
+    main={{
       src: heroWebp.src,
       srcSet: heroWebp.srcSet?.attribute,
       avifSrcSet: heroAvif.srcSet?.attribute,
       width: heroSrc.width,
       height: heroSrc.height,
+      alt: t(`${PREFIX}.hero_img_alt`),
     }}
+    sideRight={{
+      src: "/images/lifestyle/salamanca-university-courtyard-sunset.webp",
+      alt: "University of Salamanca courtyard at sunset",
+    }}
+    sideLeft={{
+      src: "/images/lifestyle/madrid-almudena-sunset.webp",
+      alt: "Madrid skyline with the Royal Palace at sunset",
+    }}
+    pills={[{ kind: "icon", iconName: "clock", labelKey: "pin_hero_pill_2", pos: "bl" }]}
+  />
+
+  <UniversityLogoBar t={t} titleKey="public.precios.trust_bar_title" noBorderTop />
+
+  <section class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_types_title_1`)}
+        accent={t(`${PREFIX}.pin_types_title_accent`)}
+        sub={t(`${PREFIX}.pin_types_sub`)}
+      />
+      <div class="grid gap-4 sm:grid-cols-3">
+        {admissionTypes.map((item, i) => (
+          <PinServicesCard
+            iconName={item.iconName}
+            title={t(`${PREFIX}.${item.titleKey}`)}
+            desc={t(`${PREFIX}.${item.descKey}`)}
+            meta={t(`${PREFIX}.${item.metaKey}`)}
+            delay={i * 80}
+          />
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <PinComparison prefix={PREFIX} t={t} rowCount={5} background="white" />
+
+  <section class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_process_title_1`)}
+        accent={t(`${PREFIX}.pin_process_title_accent`)}
+        sub={t(`${PREFIX}.pin_process_sub`)}
+      />
+      <TimelineSection translationPrefix={PREFIX} t={t} count={5} />
+    </Container>
+  </section>
+
+  <PinPricingTeaser prefix={PREFIX} t={t} consultationStrings={consultationStrings} background="white" />
+
+  <PinRiskReversal prefix={PREFIX} t={t} items={riskItems} background="white" />
+
+  <CrossSellCard
+    title={t(`${PREFIX}.crosssell_title`)}
+    description={t(`${PREFIX}.crosssell_desc`)}
+    links={[
+      { label: t(`${PREFIX}.crosssell_espanol`), href: publicRoute(publicPages.espanol, locale) },
+      { label: t(`${PREFIX}.crosssell_homologacion`), href: publicRoute(publicPages.homologacion, locale) },
+    ]}
+    badgeLabel={t(`${PREFIX}.crosssell_badge`)}
+    badgeIconName="languages"
+  />
+
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_faq_title_1`)}
+        accent={t(`${PREFIX}.pin_faq_title_accent`)}
+        sub={t(`${PREFIX}.pin_faq_sub`)}
+        align="center"
+      />
+      <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
+    </Container>
+  </section>
+
+  <PinFinalCta
+    prefix={PREFIX}
+    t={t}
+    consultationStrings={consultationStrings}
+    bgImage="/images/lifestyle/sevilla-plaza-espana-golden-hour.webp"
+    sideItemCount={5}
   />
 </PublicLayout>
