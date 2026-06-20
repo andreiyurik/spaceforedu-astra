@@ -110,11 +110,6 @@ function PageBody({
     { icon: FileCheck, title: t(`${H}.pin_risk_item_3_title`), desc: t(`${H}.pin_risk_item_3_desc`) },
   ];
 
-  const testimonials = [
-    { quote: t(`${H}.pin_test_1_quote`), name: t(`${H}.pin_test_1_name`), where: t(`${H}.pin_test_1_where`) },
-    { quote: t(`${H}.pin_test_2_quote`), name: t(`${H}.pin_test_2_name`), where: t(`${H}.pin_test_2_where`) },
-  ];
-
   return (
     <>
       {/* ───────────────── Hero ───────────────── */}
@@ -319,33 +314,6 @@ function PageBody({
                   </h3>
                   <p className="mt-2.5 text-[15px] leading-[1.6] text-[var(--mute)]">{desc}</p>
                 </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* ───────────────── Testimonials ───────────────── */}
-      <section className="bg-[var(--surface-soft)]">
-        <Container className="py-16 sm:py-24">
-          <Reveal direction="up">
-            <h2 className="font-display text-[32px] sm:text-[44px] font-bold tracking-[-0.02em] leading-[1.1] text-[var(--ink)]">
-              {t(`${H}.pin_test_title_1`)}{" "}
-              <span className="text-[var(--primary)]">{t(`${H}.pin_test_title_accent`)}</span>
-            </h2>
-          </Reveal>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2">
-            {testimonials.map(({ quote, name, where }, i) => (
-              <Reveal key={name} direction="up" delay={i * 90}>
-                <figure className="flex h-full flex-col rounded-[28px] border border-[var(--hairline-soft)] bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_48px_-28px_rgba(38,34,30,0.30)]">
-                  <blockquote className="flex-1 font-display text-[19px] font-medium leading-[1.5] tracking-[-0.005em] text-[var(--ink-soft)]">
-                    “{quote}”
-                  </blockquote>
-                  <figcaption className="mt-6">
-                    <div className="text-[15px] font-bold text-[var(--ink)]">{name}</div>
-                    <div className="text-[13px] text-[var(--mute)]">{where}</div>
-                  </figcaption>
-                </figure>
               </Reveal>
             ))}
           </div>
