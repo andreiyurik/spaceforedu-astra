@@ -1,0 +1,21 @@
+---
+// Static twin of <PublicSection> from shared.tsx.
+import { cn } from "@/lib/utils";
+import Container from "@/components/public/Container.astro";
+interface Props {
+  class?: string;
+  dots?: boolean;
+}
+const { class: className, dots = false } = Astro.props;
+---
+
+<section class={cn("py-16 sm:py-24 relative", className)}>
+  {dots && (
+    <div
+      class="absolute inset-0 opacity-[0.04] pointer-events-none"
+      style="background-image: radial-gradient(circle, #000 1px, transparent 1px); background-size: 24px 24px;"
+    >
+    </div>
+  )}
+  <Container class="relative"><slot /></Container>
+</section>

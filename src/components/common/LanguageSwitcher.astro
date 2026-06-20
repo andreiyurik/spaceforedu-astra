@@ -1,8 +1,8 @@
 ---
-import { LOCALES } from "@/lib/constants";
+import { LOCALES, type Locale } from "@/lib/constants";
 
 interface Props {
-  locale: string;
+  locale: Locale;
   currentPath: string;
   variant?: "default" | "ghost-dark";
 }

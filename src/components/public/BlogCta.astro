@@ -1,0 +1,74 @@
+---
+import { getMessages, makeT } from "@/lib/i18n";
+import { publicRoute, publicPages, whatsappLink } from "@/lib/routes";
+import { CONTACT_WHATSAPP, type Locale } from "@/lib/constants";
+import { ICON_PATHS } from "@/lib/icon-paths";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = makeT(getMessages(locale));
+const P = "public.blog_cta";
+
+const waHref = CONTACT_WHATSAPP
+  ? whatsappLink(CONTACT_WHATSAPP, t(`${P}.wa_message`))
+  : null;
+const pricingHref = publicRoute(publicPages.precios, locale);
+const wa = ICON_PATHS.whatsapp;
+---
+
+{/* In-article lead magnet. Uses divs/spans (not p/h*) and inline link styles
+   so the surrounding .prose-article rules don't override it. */}
+<aside
+  class="blog-cta my-10 overflow-hidden rounded-[24px] bg-[var(--surface-dark)] text-white"
+  style="color:#fff;"
+>
+  <div class="p-7 sm:p-9">
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.08em] text-white"
+    >
+      {t(`${P}.badge`)}
+    </span>
+
+    <div
+      class="mt-4 font-display text-[24px] sm:text-[28px] font-bold leading-[1.15] tracking-[-0.01em] text-white"
+    >
+      {t(`${P}.title`)}
+    </div>
+
+    <div class="mt-3 max-w-[560px] text-[15px] leading-[1.6] text-white/75">
+      {t(`${P}.body`)}
+    </div>
+
+    <div class="mt-6 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+      {waHref && (
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cta="whatsapp-blog"
+          class="inline-flex h-13 min-h-[52px] items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-7 text-[16px] font-bold transition-colors hover:bg-[#1ebe5b]"
+          style="color:#fff;text-decoration:none;"
+        >
+          <svg viewBox={wa.viewBox} class="h-[22px] w-[22px]" fill="currentColor" aria-hidden="true">
+            <path d={wa.d}></path>
+          </svg>
+          {t(`${P}.wa_button`)}
+        </a>
+      )}
+      <a
+        href={pricingHref}
+        class="inline-flex h-13 min-h-[52px] items-center justify-center rounded-full border border-white/25 px-7 text-[15px] font-bold transition-colors hover:bg-white/10"
+        style="color:#fff;text-decoration:none;"
+      >
+        {t(`${P}.secondary`)}
+      </a>
+    </div>
+
+    <div class="mt-4 text-[13px] text-white/55">
+      {t(`${P}.reassure`)}
+    </div>
+  </div>
+</aside>

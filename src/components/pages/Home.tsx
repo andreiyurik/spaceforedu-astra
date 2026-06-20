@@ -2,57 +2,24 @@ import {
   FileCheck,
   GraduationCap,
   Languages,
-  Clock,
-  Shield,
   ShieldCheck,
-  CreditCard,
-  Bell,
-  FolderOpen,
-  Activity,
-  MessageSquare,
-  ListChecks,
+  HandCoins,
+  ArrowRight,
+  Globe2,
 } from "lucide-react";
-import { Reveal } from "@/components/public/animations";
+import type { CSSProperties } from "react";
+import { Reveal, AnimatedCounter } from "@/components/public/animations";
 import { Container } from "@/components/public/shared";
+import { ConsultationDialog } from "@/components/public/ConsultationDialog";
 import { UniversityLogoBar } from "@/components/public/UniversityLogoBar";
-import { PinHeroCollage } from "@/components/public/pin/PinHeroCollage";
-import { PinServicesGrid } from "@/components/public/pin/PinServicesCard";
 import { PinComparison } from "@/components/public/pin/PinComparison";
-import { PinPricingTeaser } from "@/components/public/pin/PinPricingTeaser";
-import { PinRiskReversal } from "@/components/public/pin/PinRiskReversal";
-import { PinReachSection } from "@/components/public/pin/PinReachSection";
 import { PinFinalCta } from "@/components/public/pin/PinFinalCta";
 import { publicRoute, publicPages } from "@/lib/routes";
-import { FEATURE_DASHBOARD } from "@/lib/constants";
 import { I18nProvider, useTranslation } from "@/lib/i18n/react";
 import type { Messages } from "@/lib/i18n";
 import type { Locale } from "@/lib/constants";
 
-const HOME_PREFIX = "public.home";
-
-const RISK_ITEMS = [
-  { icon: Shield, n: 1 },
-  { icon: ShieldCheck, n: 2 },
-] as const;
-
-const REACH_COUNTRIES = [
-  "Argentina",
-  "Colombia",
-  "Mexico",
-  "Venezuela",
-  "Peru",
-  "Cuba",
-  "Russia",
-  "Ukraine",
-  "Belarus",
-  "Kazakhstan",
-  "Uzbekistan",
-  "Georgia",
-  "Armenia",
-  "Brazil",
-  "Chile",
-  "+5 more",
-] as const;
+const H = "public.home";
 
 interface HeroImageProps {
   src: string;
@@ -62,12 +29,34 @@ interface HeroImageProps {
   height: number;
 }
 
+/** Split a stat string like "1700+" / "98%" into an animatable number + suffix. */
+function parseStat(raw: string): { num: number; suffix: string } {
+  const m = raw.match(/^(\d[\d\s.,]*)(.*)$/);
+  if (!m) return { num: 0, suffix: raw };
+  return { num: parseInt(m[1].replace(/[\s.,]/g, ""), 10), suffix: m[2] };
+}
+
+/** Collage tile layout — kept inline so it survives View-Transition swaps. */
+const tileFrame: CSSProperties = {
+  position: "absolute",
+  borderRadius: "28px",
+  overflow: "hidden",
+  boxShadow:
+    "0 2px 4px rgba(38,34,30,0.05), 0 22px 44px -24px rgba(38,34,30,0.32)",
+};
+const tileImg = (objectPosition = "center"): CSSProperties => ({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  objectPosition,
+});
+
 export function HomePage({
   locale,
   messages,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   heroMain?: HeroImageProps;
 }) {
@@ -82,222 +71,277 @@ function PageBody({
   locale,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   heroMain?: HeroImageProps;
 }) {
   const { t } = useTranslation();
-  const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+  const pricingHref = publicRoute(publicPages.precios, locale) + "#plans";
 
   const services = [
     {
       icon: FileCheck,
-      titleKey: `${HOME_PREFIX}.service_homologacion_title`,
-      descKey: `${HOME_PREFIX}.pin_service_homologation_desc`,
-      metaKey: `${HOME_PREFIX}.pin_service_homologation_meta`,
+      title: t(`${H}.service_homologacion_title`),
+      desc: t(`${H}.pin_service_homologation_desc`),
       href: publicRoute(publicPages.homologacion, locale),
     },
     {
       icon: GraduationCap,
-      titleKey: `${HOME_PREFIX}.service_universidad_title`,
-      descKey: `${HOME_PREFIX}.pin_service_university_desc`,
-      metaKey: `${HOME_PREFIX}.pin_service_university_meta`,
+      title: t(`${H}.service_universidad_title`),
+      desc: t(`${H}.pin_service_university_desc`),
       href: publicRoute(publicPages.universidad, locale),
     },
     {
       icon: Languages,
-      titleKey: `${HOME_PREFIX}.service_espanol_title`,
-      descKey: `${HOME_PREFIX}.pin_service_spanish_desc`,
-      metaKey: `${HOME_PREFIX}.pin_service_spanish_meta`,
+      title: t(`${H}.service_espanol_title`),
+      desc: t(`${H}.pin_service_spanish_desc`),
       href: publicRoute(publicPages.espanol, locale),
     },
   ];
 
+  const stats = [
+    { value: t(`${H}.pin_hero_stat_1_value`), label: t(`${H}.pin_hero_stat_1_label`) },
+    { value: t(`${H}.pin_hero_stat_2_value`), label: t(`${H}.pin_hero_stat_2_label`) },
+    { value: t(`${H}.pin_hero_stat_3_value`), label: t(`${H}.pin_hero_stat_3_label`) },
+  ];
+
+  const risk = [
+    { icon: ShieldCheck, title: t(`${H}.pin_risk_item_1_title`), desc: t(`${H}.pin_risk_item_1_desc`) },
+    { icon: HandCoins, title: t(`${H}.pin_risk_item_2_title`), desc: t(`${H}.pin_risk_item_2_desc`) },
+    { icon: FileCheck, title: t(`${H}.pin_risk_item_3_title`), desc: t(`${H}.pin_risk_item_3_desc`) },
+  ];
+
   return (
     <>
-      <PinHeroCollage
-        prefix={HOME_PREFIX}
-        secondaryHref={preciosHref}
-        main={{
-          src: heroMain?.src ?? "/images/hero/hero-student-salamanca-docs.webp",
-          srcSet: heroMain?.srcSet,
-          avifSrcSet: heroMain?.avifSrcSet,
-          width: heroMain?.width,
-          height: heroMain?.height,
-          alt: t(`${HOME_PREFIX}.hero_img_alt`),
-        }}
-        sideRight={{
-          src: "/images/lifestyle/spain-flag-sky.webp",
-          alt: "Spanish flag waving against a clear blue sky",
-        }}
-        sideLeft={{
-          src: "/images/lifestyle/madrid-almudena-sunset.webp",
-          alt: "Almudena Cathedral and the Royal Palace of Madrid at sunset",
-        }}
-        pills={[
-          { kind: "dot", labelKey: "pin_hero_pill_1" },
-          { kind: "icon", icon: Clock, labelKey: "pin_hero_pill_2" },
-        ]}
-      />
-      <PinServicesGrid prefix={HOME_PREFIX} items={services} columns={3} />
-      <UniversityLogoBar titleKey="public.home.logo_bar_title" noBorderTop />
-      <PinComparison prefix={HOME_PREFIX} rowCount={5} />
-      <PinPricingTeaser prefix={HOME_PREFIX} />
-      <PinRiskReversal prefix={HOME_PREFIX} items={RISK_ITEMS} />
-      {FEATURE_DASHBOARD && <DashboardPreviewSection />}
-      <PinReachSection prefix={HOME_PREFIX} countries={REACH_COUNTRIES} />
-      <PinFinalCta prefix={HOME_PREFIX} sideItemCount={5} />
-    </>
-  );
-}
-
-function DashboardPreviewSection() {
-  const { t } = useTranslation();
-  const navItems = [
-    { key: "overview", icon: Activity, active: true },
-    { key: "documents", icon: FolderOpen },
-    { key: "timeline", icon: ListChecks },
-    { key: "chat", icon: MessageSquare },
-    { key: "notif", icon: Bell },
-    { key: "billing", icon: CreditCard },
-  ];
-
-  const tlSteps = [
-    { n: 1, state: "done" as const },
-    { n: 2, state: "done" as const },
-    { n: 3, state: "done" as const },
-    { n: 4, state: "now" as const },
-    { n: 5, state: "" as const },
-    { n: 6, state: "" as const },
-  ];
-
-  return (
-    <section className="py-20 sm:py-24 bg-[var(--surface-dark)] text-white">
-      <Container>
-        <Reveal direction="up">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-6 mb-9">
-            <h2 className="font-display text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-white leading-[1.1] m-0 max-w-[640px]">
-              {t("public.home.pin_dash_title_1")}{" "}
-              <span className="text-[var(--primary)]">
-                {t("public.home.pin_dash_title_accent")}
-              </span>
-            </h2>
-            <p className="text-[15px] text-[var(--on-dark-mute)] leading-[1.5] max-w-[360px] sm:text-right">
-              {t("public.home.pin_dash_sub")}
-            </p>
-          </div>
-        </Reveal>
-        <Reveal direction="up" delay={100}>
-          <div
-            className="rounded-[32px] p-5 sm:p-6 grid lg:grid-cols-[240px_1fr] gap-4 border min-h-[420px]"
-            style={{ background: "#1a1a16", borderColor: "#2e2e29" }}
-          >
-            <div className="flex flex-col gap-1.5">
-              {navItems.map(({ key, icon: Icon, active }) => (
-                <div
-                  key={key}
-                  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-semibold ${
-                    active ? "bg-white/8 text-white" : "text-white/65"
-                  }`}
-                >
-                  {active ? (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
-                  ) : (
-                    <Icon className="h-3.5 w-3.5 opacity-70" />
-                  )}
-                  {t(`public.home.pin_dash_nav_${key}`)}
-                </div>
-              ))}
-            </div>
-            <div
-              className="rounded-2xl p-5 sm:p-6 flex flex-col gap-4"
-              style={{ background: "#262622" }}
-            >
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  {
-                    k: "status",
-                    val: "pin_dash_kpi_status_value",
-                    meta: "pin_dash_kpi_status_meta",
-                    metaColor: "rgba(255,255,255,0.5)",
-                  },
-                  {
-                    k: "eta",
-                    val: "pin_dash_kpi_eta_value",
-                    meta: "pin_dash_kpi_eta_meta",
-                    metaColor: "#8be0a8",
-                  },
-                  {
-                    k: "docs",
-                    val: "pin_dash_kpi_docs_value",
-                    meta: "pin_dash_kpi_docs_meta",
-                    metaColor: "#8be0a8",
-                  },
-                ].map(({ k, val, meta, metaColor }) => (
-                  <div
-                    key={k}
-                    className="rounded-2xl p-3 sm:p-4 border"
-                    style={{ background: "#1a1a16", borderColor: "#2e2e29" }}
-                  >
-                    <div className="text-[11px] uppercase tracking-[0.1em] font-semibold text-white/55">
-                      {t(`public.home.pin_dash_kpi_${k}`)}
-                    </div>
-                    <div className="font-display text-[20px] sm:text-[24px] font-bold tracking-[-0.02em] mt-1.5">
-                      {t(`public.home.${val}`)}
-                    </div>
-                    <div className="text-[12px] mt-1" style={{ color: metaColor }}>
-                      {t(`public.home.${meta}`)}
-                    </div>
+      {/* ───────────────── Hero ───────────────── */}
+      <section className="bg-[var(--surface-soft)] overflow-hidden">
+        <Container className="pt-12 pb-10 sm:pt-16 sm:pb-12 lg:pt-20">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+            <div>
+              <Reveal direction="up">
+                <span className="t-eyebrow">{t(`${H}.pin_hero_eyebrow`)}</span>
+              </Reveal>
+              <Reveal direction="up" delay={60}>
+                <h1 className="mt-4 font-display font-semibold tracking-[-0.025em] text-[var(--ink)] text-[38px] leading-[1.04] sm:text-[52px] lg:text-[60px]">
+                  {t(`${H}.pin_hero_title_1`)}{" "}
+                  <span className="text-[var(--primary)]">{t(`${H}.pin_hero_title_accent`)}</span>
+                </h1>
+              </Reveal>
+              <Reveal direction="up" delay={120}>
+                <p className="mt-6 max-w-[520px] text-[18px] leading-[1.55] text-[var(--mute)]">
+                  {t(`${H}.pin_hero_subtitle`)}
+                </p>
+              </Reveal>
+              <Reveal direction="up" delay={180}>
+                <div className="mt-8 flex flex-col gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <ConsultationDialog>
+                      <button
+                        type="button"
+                        className="group inline-flex h-14 items-center justify-center gap-2.5 rounded-full bg-[var(--charcoal)] px-8 text-[16px] font-bold text-white shadow-[0_12px_30px_-12px_rgba(38,34,30,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--ink)] hover:shadow-[0_18px_40px_-14px_rgba(38,34,30,0.6)] active:translate-y-0"
+                      >
+                        {t(`${H}.hero_cta_consult`)}
+                        <ArrowRight className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" />
+                      </button>
+                    </ConsultationDialog>
+                    <a
+                      href={pricingHref}
+                      className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[var(--hairline)] bg-white px-7 text-[16px] font-bold text-[var(--ink)] transition-all hover:-translate-y-0.5 hover:bg-[var(--surface-card)] hover:shadow-[0_10px_24px_-12px_rgba(38,34,30,0.25)]"
+                    >
+                      {t(`${H}.pin_hero_cta_secondary`)}
+                    </a>
                   </div>
-                ))}
-              </div>
+                  <span className="pl-1 text-[13px] text-[var(--mute)]">
+                    {t(`${H}.pin_hero_reassure`)}
+                  </span>
+                </div>
+              </Reveal>
+
+              {/* Social-proof row — anchored to the headline, no floating gap */}
+              <Reveal direction="up" delay={240}>
+                <div className="mt-10 grid max-w-[460px] grid-cols-3 gap-4 border-t border-[var(--hairline-soft)] pt-7">
+                  {stats.map(({ value, label }) => {
+                    const { num, suffix } = parseStat(value);
+                    return (
+                      <div key={label}>
+                        <div className="font-display text-[28px] font-bold leading-none tracking-[-0.03em] text-[var(--ink)]">
+                          <AnimatedCounter value={num} suffix={suffix} />
+                        </div>
+                        <div className="mt-2 text-[12px] leading-[1.3] text-[var(--mute)]">
+                          {label}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Reveal>
+            </div>
+
+            {/* Art-directed collage: student + Almudena + flag + a tenure badge.
+                No floating pills — the imagery carries it.
+                Layout is set via inline styles (not utility/`.hero-tile`
+                classes) so it survives client-side View-Transition swaps —
+                a custom CSS class can momentarily drop on locale switch,
+                which would collapse the absolute layout. */}
+            <Reveal direction="left" delay={120}>
               <div
-                className="rounded-2xl p-4 sm:p-5 border"
-                style={{ background: "#1a1a16", borderColor: "#2e2e29" }}
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  maxWidth: "500px",
+                  marginInline: "auto",
+                  // aspect-ratio (not a utility height class) keeps the collage
+                  // from collapsing when arbitrary classes drop mid View-Transition.
+                  aspectRatio: "10 / 11",
+                }}
               >
-                <div className="text-[13px] font-bold text-white mb-3.5">
-                  {t("public.home.pin_dash_tl_heading")}
-                </div>
-                <div
-                  className="flex flex-col gap-2.5 relative"
-                  style={{ paddingLeft: 22 }}
-                >
-                  <div
-                    className="absolute top-1.5 bottom-1.5 w-0.5"
-                    style={{ left: 6, background: "#2e2e29" }}
+                {/* Main — student, top-right */}
+                <div className="hero-tile" style={{ ...tileFrame, top: 0, right: 0, height: "64%", width: "64%" }}>
+                  <img
+                    src={heroMain?.src ?? "/images/hero/hero-student-salamanca-docs.webp"}
+                    srcSet={heroMain?.srcSet}
+                    sizes="(min-width: 1024px) 30vw, 60vw"
+                    alt={t(`${H}.hero_img_alt`)}
+                    width={heroMain?.width ?? 1280}
+                    height={heroMain?.height ?? 1280}
+                    loading="eager"
+                    className="anim-kenburns"
+                    style={tileImg("60% 30%")}
                   />
-                  {tlSteps.map(({ n, state }) => (
-                    <div key={n} className="relative">
-                      <span
-                        className="absolute top-[5px] w-3.5 h-3.5 rounded-full"
-                        style={{
-                          left: -22,
-                          background:
-                            state === "done"
-                              ? "#22a655"
-                              : state === "now"
-                                ? "var(--primary)"
-                                : "#2e2e29",
-                          border: "3px solid #1a1a16",
-                          boxShadow:
-                            state === "now"
-                              ? "0 0 0 4px rgba(232,69,60,0.25)"
-                              : "none",
-                        }}
-                      />
-                      <div className="text-[13px] text-white font-semibold">
-                        {t(`public.home.pin_dash_tl_${n}`)}
-                      </div>
-                      <div className="text-[11px] text-white/50">
-                        {t(`public.home.pin_dash_tl_${n}_when`)}
-                      </div>
-                    </div>
-                  ))}
+                </div>
+                {/* Spanish flag — bottom, centre-right */}
+                <div className="hero-tile" style={{ ...tileFrame, bottom: 0, right: "14%", height: "38%", width: "46%" }}>
+                  <img
+                    src="/images/lifestyle/spain-flag-waving-blue-sky.webp"
+                    alt="Spanish flag waving against a clear blue sky"
+                    loading="lazy"
+                    style={tileImg()}
+                  />
+                </div>
+                {/* Almudena cathedral — bottom-left */}
+                <div className="hero-tile" style={{ ...tileFrame, bottom: "8%", left: 0, height: "42%", width: "38%" }}>
+                  <img
+                    src="/images/lifestyle/madrid-almudena-sunset.webp"
+                    alt="Almudena Cathedral and the Royal Palace of Madrid at sunset"
+                    loading="lazy"
+                    style={tileImg()}
+                  />
+                </div>
+                {/* Tenure badge — mid-left */}
+                <div
+                  className="flex flex-col items-center justify-center p-3 text-center"
+                  style={{
+                    position: "absolute",
+                    top: "16%",
+                    left: 0,
+                    height: "30%",
+                    width: "31%",
+                    borderRadius: "24px",
+                    background: "#f4e9d7",
+                    boxShadow: "0 2px 4px rgba(38,34,30,0.05)",
+                  }}
+                >
+                  <span className="font-display text-[30px] sm:text-[38px] font-bold leading-none tracking-[-0.03em] text-[var(--primary)]">
+                    {t(`${H}.pin_hero_badge_years`)}
+                  </span>
+                  <span className="mt-1.5 text-[10px] sm:text-[11px] font-medium leading-tight text-[var(--mute)]">
+                    {t(`${H}.pin_hero_badge_years_label`)}
+                  </span>
                 </div>
               </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      {/* ───────────────── Logo trust bar (animated marquee) ───────────────── */}
+      <UniversityLogoBar titleKey={`${H}.logo_bar_title`} />
+
+      {/* ───────────────── Three services ───────────────── */}
+      <section className="bg-white">
+        <Container className="py-16 sm:py-24">
+          <Reveal direction="up">
+            <h2 className="max-w-[640px] font-display text-[32px] sm:text-[44px] font-bold tracking-[-0.02em] leading-[1.1] text-[var(--ink)]">
+              {t(`${H}.pin_services_title_1`)}{" "}
+              <span className="text-[var(--primary)]">{t(`${H}.pin_services_title_accent`)}</span>
+            </h2>
+            <p className="mt-4 max-w-[560px] text-[17px] leading-[1.6] text-[var(--mute)]">
+              {t(`${H}.pin_services_sub`)}
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            {services.map(({ icon: Icon, title, desc, href }, i) => (
+              <Reveal key={title} direction="up" delay={i * 90}>
+                <a
+                  href={href}
+                  className="group flex h-full flex-col rounded-[28px] border border-[var(--hairline-soft)] bg-[var(--surface-soft)] p-8 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--hairline)] hover:bg-white hover:shadow-[0_24px_48px_-28px_rgba(38,34,30,0.35)]"
+                >
+                  <Icon className="h-8 w-8 text-[var(--primary)]" aria-hidden="true" strokeWidth={1.6} />
+                  <h3 className="mt-6 font-display text-[21px] font-bold tracking-[-0.01em] text-[var(--ink)]">
+                    {title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-[15px] leading-[1.6] text-[var(--mute)]">{desc}</p>
+                  <span className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--primary)]">
+                    {t(`${H}.pin_service_arrow`).replace(/\s*→\s*$/, "")}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ───────────────── Honest comparison ───────────────── */}
+      <PinComparison prefix={H} rowCount={5} />
+
+      {/* ───────────────── Risk reversal ───────────────── */}
+      <section className="bg-white">
+        <Container className="py-16 sm:py-24">
+          <Reveal direction="up">
+            <h2 className="font-display text-[32px] sm:text-[44px] font-bold tracking-[-0.02em] leading-[1.1] text-[var(--ink)]">
+              {t(`${H}.pin_risk_title_1`)}{" "}
+              <span className="text-[var(--primary)]">{t(`${H}.pin_risk_title_accent`)}</span>
+            </h2>
+          </Reveal>
+          <div className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-3">
+            {risk.map(({ icon: Icon, title, desc }, i) => (
+              <Reveal key={title} direction="up" delay={i * 90}>
+                <div>
+                  <Icon className="h-8 w-8 text-[var(--primary)]" aria-hidden="true" strokeWidth={1.6} />
+                  <h3 className="mt-5 font-display text-[19px] font-bold leading-[1.25] tracking-[-0.01em] text-[var(--ink)]">
+                    {title}
+                  </h3>
+                  <p className="mt-2.5 text-[15px] leading-[1.6] text-[var(--mute)]">{desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ───────────────── Reach ───────────────── */}
+      <section className="bg-white">
+        <Container className="py-16 sm:py-20">
+          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-12">
+            <Globe2 className="h-12 w-12 shrink-0 text-[var(--primary)]" strokeWidth={1.4} aria-hidden="true" />
+            <div>
+              <span className="t-eyebrow">{t(`${H}.pin_reach_eyebrow`)}</span>
+              <h2 className="mt-3 font-display text-[26px] sm:text-[32px] font-bold leading-[1.15] tracking-[-0.015em] text-[var(--ink)]">
+                {t(`${H}.pin_reach_title_1`)}{" "}
+                <span className="text-[var(--primary)]">{t(`${H}.pin_reach_title_accent`)}</span>{" "}
+                {t(`${H}.pin_reach_title_2`)}
+              </h2>
+              <p className="mt-3 max-w-[680px] text-[15px] leading-[1.6] text-[var(--mute)]">
+                {t(`${H}.pin_reach_sub`)}
+              </p>
             </div>
           </div>
-        </Reveal>
-      </Container>
-    </section>
+        </Container>
+      </section>
+
+      {/* ───────────────── Final CTA ───────────────── */}
+      <PinFinalCta prefix={H} sideItemCount={5} />
+    </>
   );
 }

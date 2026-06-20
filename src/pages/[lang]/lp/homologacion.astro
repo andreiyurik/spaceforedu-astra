@@ -1,0 +1,27 @@
+---
+import LpLayout from "@/layouts/LpLayout.astro";
+import { LpHomologacionPage } from "@/components/pages/LpHomologacion";
+import { getMessages, makeT } from "@/lib/i18n";
+import { getSeo } from "@/lib/seo";
+import { LOCALES, CONTACT_WHATSAPP, assertLocale } from "@/lib/constants";
+import { whatsappLink } from "@/lib/routes";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("homologacion", locale);
+
+const heroImage = "/images/hero/hero-student-salamanca-docs.webp";
+const waHref = CONTACT_WHATSAPP
+  ? whatsappLink(CONTACT_WHATSAPP, t("lp.hom.wa_message"))
+  : "#";
+---
+
+<LpLayout title={seo.title} description={seo.description} locale={locale} heroImage={heroImage}>
+  <LpHomologacionPage client:load locale={locale} messages={messages} waHref={waHref} />
+</LpLayout>

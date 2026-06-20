@@ -1,13 +1,30 @@
 ---
-import { getImage } from "astro:assets";
 import PublicLayout from "@/layouts/PublicLayout.astro";
-import { EspanolPage } from "@/components/pages/Espanol";
 import JsonLd from "@/components/common/JsonLd.astro";
+import Reveal from "@/components/public/Reveal.astro";
+import Counter from "@/components/public/Counter.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import PublicHero from "@/components/public/PublicHero.astro";
+import PublicSection from "@/components/public/PublicSection.astro";
+import SectionHeading from "@/components/public/SectionHeading.astro";
+import FeatureIcon from "@/components/public/FeatureIcon.astro";
+import FeatureCardGrid from "@/components/public/FeatureCardGrid.astro";
+import TiltCard from "@/components/public/TiltCard.astro";
+import Card from "@/components/ui/Card.astro";
+import CardContent from "@/components/ui/CardContent.astro";
+import Button from "@/components/ui/Button.astro";
+import TimelineSection from "@/components/public/TimelineSection.astro";
+import FaqSection from "@/components/public/FaqSection.astro";
+import CrossSellCard from "@/components/public/CrossSellCard.astro";
+import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
+import { ConsultationDialogButton } from "@/components/public/ConsultationDialog";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
-import { publicPages } from "@/lib/routes";
+import { LOCALES, assertLocale } from "@/lib/constants";
+import { publicRoute, publicPages } from "@/lib/routes";
 import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
+import { buildConsultationStrings } from "@/lib/consultation";
+import { setupServiceHero } from "@/lib/service-hero";
 import heroSrc from "@/assets/images/services/espanol/students-spanish-class-focused.webp";
 
 export function getStaticPaths() {
@@ -15,10 +32,12 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("espanol", locale);
+
+const E = "public.espanol";
 
 const serviceLd = service({
   locale,
@@ -28,14 +47,48 @@ const serviceLd = service({
   serviceType: "Spanish language course",
   audience: "International students and professionals learning Spanish in Spain or online",
 });
-const faqLd = faqPage(messages, "public.espanol", 5);
+const faqLd = faqPage(messages, E);
 const breadcrumbLd = breadcrumbList(locale, t("nav.espanol"), publicPages.espanol);
 
-const widths = [480, 768, 1024, 1280];
-const heroAvif = await getImage({ src: heroSrc, format: "avif", width: 1280, widths, quality: 70 });
-const heroWebp = await getImage({ src: heroSrc, format: "webp", width: 1280, widths, quality: 80 });
-// Espanol shows hero on mobile too (full-width on small screens, ~40vw on desktop).
+const { heroAvif, heroWebp } = await setupServiceHero(heroSrc);
 const heroSizes = "(min-width: 1024px) 40vw, 90vw";
+const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+const consultationStrings = buildConsultationStrings(t);
+
+const FORMATS = [
+  { iconName: "user", key: "individual" },
+  { iconName: "users", key: "group" },
+  { iconName: "trending-up", key: "intensive" },
+];
+
+const LEVELS = [
+  { level: "A1–A2", iconName: "book-open", key: "beginner", color: "from-emerald-500 to-emerald-600" },
+  { level: "B1–B2", iconName: "briefcase", key: "intermediate", color: "from-brand-secondary to-blue-600" },
+  { level: "C1–C2", iconName: "award", key: "advanced", color: "from-brand-primary to-red-600" },
+];
+
+const ADVANTAGES = [
+  { iconName: "languages", title: t(`${E}.adv_native_title`), desc: t(`${E}.adv_native_desc`) },
+  { iconName: "graduation-cap", title: t(`${E}.adv_dele_title`), desc: t(`${E}.adv_dele_desc`) },
+  { iconName: "brain", title: t(`${E}.adv_method_title`), desc: t(`${E}.adv_method_desc`) },
+  { iconName: "calendar-check", title: t(`${E}.adv_flexible_title`), desc: t(`${E}.adv_flexible_desc`) },
+];
+
+const HERO_STATS = [
+  { value: "100+", key: "students" },
+  { value: "A1–C2", key: "levels" },
+  { value: "3", key: "formats" },
+];
+
+const PROOF = [
+  { value: 100, suffix: "+", key: "students" },
+  { value: 85, suffix: "%", key: "dele" },
+  { value: 4, suffix: "", key: "months" },
+  { value: 15, suffix: "+", key: "years" },
+];
+
+const gradientBtn =
+  "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold px-6 py-3 text-base min-h-[44px] transition-opacity hover:opacity-90 cursor-pointer w-full sm:w-auto";
 ---
 
 <PublicLayout
@@ -53,16 +106,163 @@ const heroSizes = "(min-width: 1024px) 40vw, 90vw";
   <JsonLd slot="structured-data" data={serviceLd} />
   <JsonLd slot="structured-data" data={breadcrumbLd} />
   {faqLd && <JsonLd slot="structured-data" data={faqLd} />}
-  <EspanolPage
-    client:idle
-    locale={locale}
-    messages={messages}
-    heroMain={{
-      src: heroWebp.src,
-      srcSet: heroWebp.srcSet?.attribute,
-      avifSrcSet: heroAvif.srcSet?.attribute,
-      width: heroSrc.width,
-      height: heroSrc.height,
-    }}
+
+  <PublicHero fullBleed title1={t(`${E}.hero_title_1`)} titleAccent={t(`${E}.hero_title_accent`)}>
+    <span slot="subtitle" set:html={t(`${E}.hero_subtitle`)} />
+
+    <div slot="actions" class="flex flex-col sm:flex-row gap-3">
+      <ConsultationDialogButton
+        client:visible
+        strings={consultationStrings}
+        triggerLabel={t(`${E}.cta_trial`)}
+        triggerClass={gradientBtn}
+      />
+      <a href={preciosHref}>
+        <Button variant="outline" size="lg" class="w-full sm:w-auto min-h-[44px] text-base transition-all duration-300">
+          {t(`${E}.cta_pricing`)}
+        </Button>
+      </a>
+    </div>
+
+    <div slot="footer" class="flex flex-wrap items-center gap-x-2 sm:gap-x-6 gap-y-1 text-sm text-muted-foreground">
+      {HERO_STATS.map(({ value, key }, i) => (
+        <div class="flex items-center gap-x-2 sm:gap-x-6">
+          {i > 0 && <span class="text-border">·</span>}
+          <span>
+            <span class="font-semibold text-foreground">{value}</span>{" "}
+            {t(`${E}.hero_stat_${key}`)}
+          </span>
+        </div>
+      ))}
+    </div>
+
+    <div slot="illustration" class="relative">
+      <div class="absolute -inset-4 bg-gradient-to-br from-brand-primary/10 to-brand-secondary/15 rounded-3xl blur-2xl"></div>
+      <picture>
+        {heroAvif.srcSet?.attribute && (
+          <source type="image/avif" srcset={heroAvif.srcSet.attribute} sizes={heroSizes} />
+        )}
+        <img
+          src={heroWebp.src}
+          srcset={heroWebp.srcSet?.attribute}
+          sizes={heroSizes}
+          alt={t(`${E}.hero_img_alt`)}
+          width={heroSrc.width}
+          height={heroSrc.height}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          class="relative rounded-2xl shadow-2xl w-full object-cover aspect-[4/3]"
+        />
+      </picture>
+    </div>
+  </PublicHero>
+
+  {/* ── Formats ── */}
+  <PublicSection class="bg-white">
+    <SectionHeading title={t(`${E}.formats_title`)} subtitle={t(`${E}.formats_subtitle`)} />
+    <div class="grid gap-6 sm:grid-cols-3">
+      {FORMATS.map(({ iconName, key }, i) => (
+        <Reveal direction="up" delay={i * 120}>
+          <TiltCard class="h-full">
+            <Card class="h-full border bg-white transition-all duration-300 hover:shadow-xl hover:shadow-brand-secondary/5 group">
+              <CardContent class="p-8 text-center">
+                <FeatureIcon iconName={iconName} class="mx-auto mb-4" />
+                <h3 class="text-lg font-semibold mb-2">{t(`${E}.format_${key}_title`)}</h3>
+                <p class="text-sm text-muted-foreground">{t(`${E}.format_${key}_desc`)}</p>
+                <p class="text-xs text-[var(--accent-blue-deep)] font-medium mt-3">{t(`${E}.format_${key}_note`)}</p>
+              </CardContent>
+            </Card>
+          </TiltCard>
+        </Reveal>
+      ))}
+    </div>
+  </PublicSection>
+
+  {/* ── Journey / levels ── */}
+  <PublicSection class="bg-slate-50" dots>
+    <SectionHeading title={t(`${E}.journey_title`)} subtitle={t(`${E}.journey_subtitle`)} />
+    <div class="grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
+      {LEVELS.map(({ level, iconName, key, color }, i) => (
+        <Reveal direction="up" delay={i * 150}>
+          <TiltCard class="h-full">
+            <Card class="h-full border bg-white transition-all duration-300 hover:shadow-xl hover:shadow-brand-secondary/5 group overflow-hidden">
+              <CardContent class="p-0">
+                <div class={`bg-gradient-to-r ${color} px-6 py-4 text-white`}>
+                  <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold">{level}</span>
+                    <LucideIcon name={iconName} class="h-6 w-6 opacity-80" />
+                  </div>
+                  <p class="text-sm opacity-90 font-medium mt-1">{t(`${E}.journey_${key}_label`)}</p>
+                </div>
+                <div class="p-6 space-y-3">
+                  {[1, 2, 3].map((j) => (
+                    <div class="flex items-start gap-2.5">
+                      <LucideIcon name="target" class="h-4 w-4 text-brand-secondary mt-0.5 shrink-0" />
+                      <span class="text-sm text-muted-foreground">{t(`${E}.journey_${key}_${j}`)}</span>
+                    </div>
+                  ))}
+                  <p class="text-xs font-medium text-foreground pt-2 border-t">{t(`${E}.journey_${key}_time`)}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TiltCard>
+        </Reveal>
+      ))}
+    </div>
+  </PublicSection>
+
+  {/* ── Steps ── */}
+  <PublicSection class="bg-white">
+    <SectionHeading title={t(`${E}.steps_title`)} subtitle={t(`${E}.steps_subtitle`)} />
+    <TimelineSection translationPrefix={E} t={t} count={4} keyPattern="step" />
+  </PublicSection>
+
+  {/* ── Advantages ── */}
+  <PublicSection class="bg-slate-50" dots>
+    <SectionHeading title={t(`${E}.adv_title`)} subtitle={t(`${E}.adv_subtitle`)} />
+    <FeatureCardGrid items={ADVANTAGES} columns={4} />
+  </PublicSection>
+
+  {/* ── Proof ── */}
+  <PublicSection class="bg-white">
+    <SectionHeading title={t(`${E}.proof_title`)} subtitle={t(`${E}.proof_subtitle`)} />
+    <div class="grid gap-4 sm:gap-8 sm:grid-cols-4 max-w-4xl mx-auto text-center">
+      {PROOF.map(({ value, suffix, key }, i) => (
+        <Reveal direction="up" delay={i * 150}>
+          <div class="p-4 sm:p-6">
+            <div class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent">
+              <Counter value={value} suffix={suffix} />
+            </div>
+            <p class="mt-2 text-sm text-muted-foreground font-medium">{t(`${E}.proof_${key}`)}</p>
+          </div>
+        </Reveal>
+      ))}
+    </div>
+  </PublicSection>
+
+  <CrossSellCard
+    title={t(`${E}.crosssell_title`)}
+    description={t(`${E}.crosssell_desc`)}
+    links={[
+      { label: t(`${E}.crosssell_homologacion`), href: publicRoute(publicPages.homologacion, locale) },
+      { label: t(`${E}.crosssell_universidad`), href: publicRoute(publicPages.universidad, locale) },
+    ]}
+    badgeLabel={t(`${E}.crosssell_badge`)}
+    badgeIconName="house"
+  />
+
+  {/* ── FAQ ── */}
+  <PublicSection class="bg-white">
+    <SectionHeading title={t(`${E}.faq_title`)} />
+    <FaqSection translationPrefix={E} t={t} messages={messages} />
+  </PublicSection>
+
+  <PinFinalCta
+    prefix={E}
+    t={t}
+    consultationStrings={consultationStrings}
+    bgImage="/images/lifestyle/spain-flag-waving-blue-sky.webp"
+    sideItemCount={5}
   />
 </PublicLayout>

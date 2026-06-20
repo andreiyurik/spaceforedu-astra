@@ -1,13 +1,24 @@
 ---
-import { getImage } from "astro:assets";
 import PublicLayout from "@/layouts/PublicLayout.astro";
-import { HomologacionPage } from "@/components/pages/Homologacion";
 import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import PinHeroCollage from "@/components/public/pin/PinHeroCollage.astro";
+import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
+import PinServicesCard from "@/components/public/pin/PinServicesCard.astro";
+import PinComparison from "@/components/public/pin/PinComparison.astro";
+import PinPricingTeaser from "@/components/public/pin/PinPricingTeaser.astro";
+import PinRiskReversal from "@/components/public/pin/PinRiskReversal.astro";
+import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
+import CrossSellCard from "@/components/public/CrossSellCard.astro";
+import TimelineSection from "@/components/public/TimelineSection.astro";
+import FaqSection from "@/components/public/FaqSection.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
-import { publicPages } from "@/lib/routes";
+import { LOCALES, assertLocale } from "@/lib/constants";
+import { publicRoute, publicPages } from "@/lib/routes";
 import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
+import { buildConsultationStrings } from "@/lib/consultation";
+import { setupServiceHero } from "@/lib/service-hero";
 import heroSrc from "@/assets/images/services/homologacion/salamanca-streets-university-garden.webp";
 
 export function getStaticPaths() {
@@ -15,10 +26,12 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("homologacion", locale);
+
+const PREFIX = "public.homologacion";
 
 const serviceLd = service({
   locale,
@@ -28,13 +41,25 @@ const serviceLd = service({
   serviceType: "Degree homologation",
   audience: "International students and professionals with foreign degrees seeking official recognition in Spain",
 });
-const faqLd = faqPage(messages, "public.homologacion", 5);
+const faqLd = faqPage(messages, PREFIX);
 const breadcrumbLd = breadcrumbList(locale, t("nav.homologacion"), publicPages.homologacion);
 
-const widths = [480, 768, 1024, 1280];
-const heroAvif = await getImage({ src: heroSrc, format: "avif", width: 1280, widths, quality: 70 });
-const heroWebp = await getImage({ src: heroSrc, format: "webp", width: 1280, widths, quality: 80 });
+const { heroAvif, heroWebp } = await setupServiceHero(heroSrc);
 const heroSizes = "(min-width: 1024px) 40vw, 50vw";
+
+const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+const consultationStrings = buildConsultationStrings(t);
+
+const whatItems = [
+  { iconName: "scale", titleKey: "what_legal_title", descKey: "what_legal_desc", metaKey: "what_legal_meta" },
+  { iconName: "building-2", titleKey: "what_work_title", descKey: "what_work_desc", metaKey: "what_work_meta" },
+  { iconName: "file-check", titleKey: "what_study_title", descKey: "what_study_desc", metaKey: "what_study_meta" },
+];
+
+const riskItems = [
+  { iconName: "shield", n: 1 },
+  { iconName: "shield-check", n: 2 },
+] as const;
 ---
 
 <PublicLayout
@@ -51,16 +76,96 @@ const heroSizes = "(min-width: 1024px) 40vw, 50vw";
   <JsonLd slot="structured-data" data={serviceLd} />
   <JsonLd slot="structured-data" data={breadcrumbLd} />
   {faqLd && <JsonLd slot="structured-data" data={faqLd} />}
-  <HomologacionPage
-    client:idle
-    locale={locale}
-    messages={messages}
-    heroMain={{
+
+  <PinHeroCollage
+    prefix={PREFIX}
+    t={t}
+    consultationStrings={consultationStrings}
+    secondaryHref={preciosHref}
+    main={{
       src: heroWebp.src,
       srcSet: heroWebp.srcSet?.attribute,
       avifSrcSet: heroAvif.srcSet?.attribute,
       width: heroSrc.width,
       height: heroSrc.height,
+      alt: t(`${PREFIX}.hero_img_alt`),
     }}
+    sideRight={{
+      src: "/images/lifestyle/spain-flag-waving-blue-sky.webp",
+      alt: "Spanish flag waving against a clear blue sky",
+    }}
+    sideLeft={{
+      src: "/images/lifestyle/madrid-almudena-sunset.webp",
+      alt: "Almudena Cathedral and Royal Palace of Madrid at sunset",
+    }}
+  />
+
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_what_title_1`)}
+        accent={t(`${PREFIX}.pin_what_title_accent`)}
+        sub={t(`${PREFIX}.pin_what_sub`)}
+      />
+      <div class="grid gap-4 sm:grid-cols-3">
+        {whatItems.map((item, i) => (
+          <PinServicesCard
+            iconName={item.iconName}
+            title={t(`${PREFIX}.${item.titleKey}`)}
+            desc={t(`${PREFIX}.${item.descKey}`)}
+            meta={t(`${PREFIX}.${item.metaKey}`)}
+            delay={i * 80}
+          />
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <PinComparison prefix={PREFIX} t={t} rowCount={5} />
+
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_process_title_1`)}
+        accent={t(`${PREFIX}.pin_process_title_accent`)}
+        sub={t(`${PREFIX}.pin_process_sub`)}
+      />
+      <TimelineSection translationPrefix={PREFIX} t={t} count={4} />
+    </Container>
+  </section>
+
+  <PinPricingTeaser prefix={PREFIX} t={t} consultationStrings={consultationStrings} />
+
+  <PinRiskReversal prefix={PREFIX} t={t} items={riskItems} />
+
+  <CrossSellCard
+    title={t(`${PREFIX}.crosssell_title`)}
+    description={t(`${PREFIX}.crosssell_desc`)}
+    links={[
+      { label: t(`${PREFIX}.crosssell_espanol`), href: publicRoute(publicPages.espanol, locale) },
+      { label: t(`${PREFIX}.crosssell_universidad`), href: publicRoute(publicPages.universidad, locale) },
+    ]}
+    badgeLabel={t(`${PREFIX}.crosssell_badge`)}
+    badgeIconName="languages"
+  />
+
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_faq_title_1`)}
+        accent={t(`${PREFIX}.pin_faq_title_accent`)}
+        sub={t(`${PREFIX}.pin_faq_sub`)}
+        align="center"
+      />
+      <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
+    </Container>
+  </section>
+
+  <PinFinalCta
+    prefix={PREFIX}
+    t={t}
+    consultationStrings={consultationStrings}
+    bgImage="/images/lifestyle/madrid-almudena-sunset.webp"
+    sideItemCount={5}
   />
 </PublicLayout>

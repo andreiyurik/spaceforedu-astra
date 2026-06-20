@@ -1,0 +1,34 @@
+---
+// Static twin of PinSectionHead.tsx.
+import Reveal from "@/components/public/Reveal.astro";
+
+interface Props {
+  title1: string;
+  accent: string;
+  sub: string;
+  align?: "split" | "center";
+}
+const { title1, accent, sub, align = "split" } = Astro.props;
+---
+
+{align === "center" ? (
+  <Reveal direction="up">
+    <div class="text-center mb-10 sm:mb-12 max-w-3xl mx-auto">
+      <h2 class="font-display text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-[var(--ink)] leading-[1.1] m-0">
+        {title1} <span class="text-[var(--primary)]">{accent}</span>
+      </h2>
+      <p class="mt-4 text-[15px] text-[var(--mute)] leading-[1.5]">{sub}</p>
+    </div>
+  </Reveal>
+) : (
+  <Reveal direction="up">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-6 mb-9">
+      <h2 class="font-display text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-[var(--ink)] leading-[1.1] m-0 max-w-[640px]">
+        {title1} <span class="text-[var(--primary)]">{accent}</span>
+      </h2>
+      <p class="text-[15px] text-[var(--mute)] leading-[1.5] max-w-[360px] sm:text-right">
+        {sub}
+      </p>
+    </div>
+  </Reveal>
+)}

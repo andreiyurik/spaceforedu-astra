@@ -1,0 +1,19 @@
+---
+// Static twin of <FeatureIcon> from shared.tsx.
+import { cn } from "@/lib/utils";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+interface Props {
+  iconName: string;
+  class?: string;
+}
+const { iconName, class: className } = Astro.props;
+---
+
+<div
+  class={cn(
+    "inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-primary/10 text-brand-primary",
+    className,
+  )}
+>
+  <LucideIcon name={iconName} class="h-6 w-6" />
+</div>

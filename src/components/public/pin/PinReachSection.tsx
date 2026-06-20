@@ -7,13 +7,11 @@ export function PinReachSection({
   prefix,
   countries,
   illustrationSrc = "/images/world.svg",
-  illustrationAlt = "World map showing client origins",
   background = "soft",
 }: {
   prefix: string;
   countries: readonly string[];
   illustrationSrc?: string;
-  illustrationAlt?: string;
   background?: "soft" | "white";
 }) {
   const { t } = useTranslation();

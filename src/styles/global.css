@@ -8,8 +8,9 @@
    Warm-cream chrome + saturated coral. Three radii, no shadows except modal.
    ========================================================================== */
 :root {
-  /* Brand & accent */
-  --primary: #E8453C;
+  /* Brand & accent. --primary tuned to #D0342A so white-on-coral buttons clear
+     WCAG AA (4.5:1); the brighter #E8453C only reached 3.92:1. */
+  --primary: #D0342A;
   --primary-pressed: #C9342C;
   --on-primary: #ffffff;
   --accent-blue: #2D7FF9;
@@ -34,7 +35,7 @@
   --body-color: #33332e;
   --charcoal: #262622;
   --mute: #62625b;
-  --ash: #91918c;
+  --ash: #71716a;
   --stone: #c8c8c1;
   --on-dark: #ffffff;
   --on-dark-mute: rgba(255, 255, 255, 0.7);
@@ -89,7 +90,7 @@
   --font-display: "Inter Tight Variable", "Inter Tight", "Inter Variable", "Inter", -apple-system, system-ui, sans-serif;
 
   /* Brand */
-  --color-brand-primary: #E8453C;
+  --color-brand-primary: #D0342A;
   --color-brand-primary-pressed: #C9342C;
   --color-brand-secondary: #2D7FF9;
 
@@ -105,7 +106,7 @@
   --color-ink-soft: #211922;
   --color-body: #33332e;
   --color-mute: #62625b;
-  --color-ash: #91918c;
+  --color-ash: #71716a;
   --color-stone: #c8c8c1;
 
   /* Hairlines */
@@ -153,6 +154,8 @@
     background: var(--canvas);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
   body {
     background: var(--surface-soft);
@@ -297,6 +300,204 @@
 /* ==========================================================================
    Animations (kept from prior system)
    ========================================================================== */
+/* ==========================================================================
+   Blog article prose
+   ========================================================================== */
+.prose-article {
+  color: var(--body-color);
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 720px;
+}
+.prose-article h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  color: var(--ink);
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+}
+.prose-article h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+.prose-article h4 {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.prose-article p {
+  margin-bottom: 1.25em;
+}
+.prose-article a {
+  color: var(--accent-blue-deep);
+  text-decoration: underline;
+  text-decoration-color: rgba(45, 127, 249, 0.3);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s;
+}
+.prose-article a:hover {
+  text-decoration-color: var(--accent-blue-deep);
+}
+.prose-article strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+.prose-article ul,
+.prose-article ol {
+  margin-bottom: 1.25em;
+  padding-left: 1.5em;
+}
+.prose-article ul {
+  list-style-type: disc;
+}
+.prose-article ol {
+  list-style-type: decimal;
+}
+.prose-article li {
+  margin-bottom: 0.4em;
+}
+.prose-article li::marker {
+  color: var(--ash);
+}
+.prose-article blockquote {
+  border-left: 3px solid var(--primary);
+  margin: 1.5em 0;
+  padding: 0.75em 1.25em;
+  background: var(--surface-card);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.prose-article blockquote p:last-child {
+  margin-bottom: 0;
+}
+.prose-article table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.prose-article th {
+  text-align: left;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 10px 14px;
+  background: var(--surface-card);
+  border-bottom: 2px solid var(--hairline);
+}
+.prose-article td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hairline-soft);
+}
+.prose-article tr:last-child td {
+  border-bottom: none;
+}
+.prose-article hr {
+  border: none;
+  border-top: 1px solid var(--hairline-soft);
+  margin: 2em 0;
+}
+.prose-article img {
+  border-radius: var(--r-sm);
+  margin: 1.5em 0;
+}
+.prose-article code {
+  background: var(--surface-card);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.prose-article pre {
+  background: var(--surface-dark);
+  color: var(--on-dark);
+  padding: 1em 1.25em;
+  border-radius: var(--r-sm);
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.prose-article pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Slow, premium photo zoom on load (Ken Burns). */
+@keyframes kenburns {
+  0% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.anim-kenburns {
+  animation: kenburns 9s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-kenburns { animation: none; }
+}
+
+/* Hero collage tile — soft elevation + warm grade, like an art-directed print. */
+.hero-tile {
+  position: absolute;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface-card);
+  box-shadow:
+    0 2px 4px rgba(38, 34, 30, 0.05),
+    0 22px 44px -24px rgba(38, 34, 30, 0.32);
+  isolation: isolate;
+}
+.hero-tile > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.02);
+}
+.hero-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 244, 230, 0.08) 0%, rgba(38, 34, 30, 0.05) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* Editorial photo frame: warm grade + soft elevation. */
+.photo-frame {
+  position: relative;
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(38, 34, 30, 0.04),
+    0 24px 48px -24px rgba(38, 34, 30, 0.28);
+  isolation: isolate;
+}
+.photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Warm, subtle grade to unify stock imagery with the cream palette. */
+  background:
+    linear-gradient(180deg, rgba(255, 244, 230, 0.10) 0%, rgba(38, 34, 30, 0.06) 100%);
+  mix-blend-mode: multiply;
+}
+.photo-frame > img {
+  filter: saturate(1.06) contrast(1.02);
+}
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -312,4 +513,24 @@
 @keyframes pin-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(232, 69, 60, 0.35); }
   50% { box-shadow: 0 0 0 6px rgba(232, 69, 60, 0); }
+}
+
+/* Scroll-reveal for static .astro sections (see <Reveal> + the reveal observer
+   in PublicLayout). Hidden state is gated on `.js` so no-JS users always see
+   content, and on no-preference so reduced-motion users skip the animation. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .js .reveal-up { transform: translateY(2rem); }
+  .js .reveal-down { transform: translateY(-2rem); }
+  .js .reveal-left { transform: translateX(2rem); }
+  .js .reveal-right { transform: translateX(-2rem); }
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
 }

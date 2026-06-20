@@ -4,7 +4,7 @@ import { lookup, interpolate } from "./index";
 import type { Locale } from "@/lib/constants";
 
 interface I18nValue {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
 }
 
@@ -15,7 +15,7 @@ export function I18nProvider({
   messages,
   children,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   children: ReactNode;
 }) {
@@ -35,7 +35,10 @@ export function useTranslation() {
   const { locale, messages } = useI18n();
   const t = (key: string, params?: Record<string, string | number>): string => {
     const raw = lookup(messages, key);
-    if (raw === undefined) return key;
+    if (raw === undefined) {
+      if (import.meta.env.DEV) console.warn(`[i18n] missing key: ${key}`);
+      return key;
+    }
     return interpolate(raw, params);
   };
   return { t, locale };

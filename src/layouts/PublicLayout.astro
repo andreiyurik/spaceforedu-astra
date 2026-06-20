@@ -14,14 +14,24 @@ import { getMessages, makeT } from "@/lib/i18n";
 import { organization } from "@/lib/structured-data";
 import interTightLatin from "@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url";
 import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import interTightCyrillic from "@fontsource-variable/inter-tight/files/inter-tight-cyrillic-wght-normal.woff2?url";
+import interCyrillic from "@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url";
 
 interface Props {
   title: string;
   description?: string;
-  locale: string;
+  locale: Locale;
   /** Path portion (without locale) — "homologation", "university", "" for home. */
   page: string;
   ogImage?: string;
+  /** Override canonical URL (e.g. blog posts with slugs). When set, layout skips its own hreflang generation — the caller provides them via slot="head". */
+  canonicalUrl?: string;
+  /** Open Graph object type — default "website", use "article" for blog posts. */
+  ogType?: "website" | "article";
+  /** OG image width in pixels (emitted as og:image:width). */
+  ogImageWidth?: number;
+  /** OG image height in pixels (emitted as og:image:height). */
+  ogImageHeight?: number;
   /** Hide the sticky WhatsApp bubble + mobile CTA bar (for thank-you / privacy pages). */
   hideStickyCta?: boolean;
   /** LCP image — preloaded with high priority. Path under /public. Used only if heroImageSrcset not provided. */
@@ -47,6 +57,10 @@ const {
   locale,
   page,
   ogImage: ogImageProp,
+  canonicalUrl: canonicalUrlProp,
+  ogType = "website",
+  ogImageWidth,
+  ogImageHeight,
   hideStickyCta = false,
   heroImage,
   heroImageType = "image/webp",
@@ -61,7 +75,8 @@ const stickyMessages = getMessages(locale);
 const t = makeT(stickyMessages);
 const skipLabel = t("a11y.skip_to_content");
 
-const canonicalUrl = SITE_URL + publicRoute(page, locale);
+const canonicalUrl = canonicalUrlProp ?? SITE_URL + publicRoute(page, locale);
+const emitLayoutHreflang = !canonicalUrlProp;
 const alternates = LOCALES.map((l) => ({
   locale: l,
   url: SITE_URL + publicRoute(page, l),
@@ -93,12 +108,22 @@ const ogLocale = OG_LOCALE[locale] ?? `${locale}_${locale.toUpperCase()}`;
 const ogLocaleAlternates = LOCALES
   .filter((l) => l !== locale)
   .map((l) => OG_LOCALE[l] ?? `${l}_${l.toUpperCase()}`);
+
+// Preload the font subset that matches the page language. Russian copy renders
+// in the Cyrillic range, so preloading the Latin subset on /ru/ guarantees a
+// FOUT (headings flash the fallback). Pick the subset by locale.
+const useCyrillic = locale === "ru";
+const interTightFont = useCyrillic ? interTightCyrillic : interTightLatin;
+const interFont = useCyrillic ? interCyrillic : interLatin;
 ---
 
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="UTF-8" />
+    {/* Add `.js` before paint so scroll-reveal sections start hidden only when
+        JS can animate them in — no-JS users never see a blank section. */}
+    <script is:inline>document.documentElement.classList.add("js");</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
@@ -110,11 +135,11 @@ const ogLocaleAlternates = LOCALES
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     {!noindex && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={absoluteOgImage} />
-    {isGeneratedOg && <meta property="og:image:width" content="1200" />}
-    {isGeneratedOg && <meta property="og:image:height" content="630" />}
+    {(ogImageWidth ?? (isGeneratedOg ? 1200 : null)) && <meta property="og:image:width" content={String(ogImageWidth ?? 1200)} />}
+    {(ogImageHeight ?? (isGeneratedOg ? 630 : null)) && <meta property="og:image:height" content={String(ogImageHeight ?? 630)} />}
     {isGeneratedOg && <meta property="og:image:type" content="image/png" />}
     <meta property="og:site_name" content="Space for Edu" />
     <meta property="og:locale" content={ogLocale} />
@@ -125,14 +150,14 @@ const ogLocaleAlternates = LOCALES
     <link
       rel="preload"
       as="font"
-      href={interTightLatin}
+      href={interTightFont}
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
       as="font"
-      href={interLatin}
+      href={interFont}
       type="font/woff2"
       crossorigin="anonymous"
     />
@@ -176,13 +201,19 @@ const ogLocaleAlternates = LOCALES
     {!noindex && (
       <>
         <link rel="canonical" href={canonicalUrl} />
-        {alternates.map(({ locale: l, url }) => (
+        {emitLayoutHreflang && alternates.map(({ locale: l, url }) => (
           <link rel="alternate" hreflang={l} href={url} />
         ))}
-        <link rel="alternate" hreflang="x-default" href={xDefault} />
+        {emitLayoutHreflang && <link rel="alternate" hreflang="x-default" href={xDefault} />}
       </>
     )}
 
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Space for Edu Blog"
+      href={`/${locale}/blog/rss.xml`}
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -191,6 +222,7 @@ const ogLocaleAlternates = LOCALES
 
     {!noindex && <JsonLd data={organization()} />}
     <slot name="structured-data" />
+    <slot name="head" />
     <GtmHead />
   </head>
   <body class="min-h-screen bg-background text-foreground antialiased">
@@ -209,7 +241,7 @@ const ogLocaleAlternates = LOCALES
       <Footer locale={locale} />
     </div>
     {!hideStickyCta && (
-      <StickyCtaBar client:load locale={locale as Locale} messages={stickyMessages} />
+      <StickyCtaBar client:load locale={locale} messages={stickyMessages} />
     )}
     <CookieBanner locale={locale} />
 
@@ -217,11 +249,14 @@ const ogLocaleAlternates = LOCALES
       import Lenis from "lenis";
 
       let lenis: Lenis | null = null;
+      let rafId: number | null = null;
 
       function initLenis() {
+        if (rafId != null) cancelAnimationFrame(rafId);
         lenis?.destroy();
+        lenis = null;
+        rafId = null;
 
-        // Only enable on non-touch devices — mobile already has native momentum scroll.
         if (window.matchMedia("(hover: none)").matches) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -229,13 +264,96 @@ const ogLocaleAlternates = LOCALES
 
         function raf(time: number) {
           lenis!.raf(time);
-          requestAnimationFrame(raf);
+          rafId = requestAnimationFrame(raf);
         }
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
       }
 
-      // astro:page-load fires on first load and after every View Transition.
       document.addEventListener("astro:page-load", initLenis);
+    </script>
+
+    <script>
+      // Scroll-reveal for static .astro <Reveal> sections. One shared observer
+      // per page; reduced-motion users get content shown immediately.
+      function initReveal() {
+        const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-visible)");
+        if (els.length === 0) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          els.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                obs.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.1 },
+        );
+        els.forEach((el) => obs.observe(el));
+      }
+
+      document.addEventListener("astro:page-load", initReveal);
+    </script>
+
+    <script>
+      // Count-up for <Counter> spans + 3D tilt for <TiltCard> wrappers. Both are
+      // no-ops on pages without the respective elements, and both bail under
+      // reduced-motion (the counter just leaves its final value in place).
+      function initCounters() {
+        const els = document.querySelectorAll<HTMLElement>("[data-counter]");
+        if (els.length === 0) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              obs.unobserve(entry.target);
+              const el = entry.target as HTMLElement;
+              const value = Number(el.dataset.value ?? "0");
+              const suffix = el.dataset.suffix ?? "";
+              const duration = 1200;
+              const step = 16;
+              const increment = value / (duration / step);
+              let current = 0;
+              const id = window.setInterval(() => {
+                current += increment;
+                if (current >= value) {
+                  el.textContent = `${value}${suffix}`;
+                  window.clearInterval(id);
+                } else {
+                  el.textContent = `${Math.floor(current)}${suffix}`;
+                }
+              }, step);
+            }
+          },
+          { threshold: 0.1 },
+        );
+        els.forEach((el) => obs.observe(el));
+      }
+
+      function initTilt() {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
+          el.addEventListener("pointermove", (e) => {
+            const r = el.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            el.style.transform = `perspective(600px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg)`;
+          });
+          el.addEventListener("pointerleave", () => {
+            el.style.transform = "";
+          });
+        });
+      }
+
+      document.addEventListener("astro:page-load", () => {
+        initCounters();
+        initTilt();
+      });
     </script>
   </body>
 </html>

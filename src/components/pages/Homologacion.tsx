@@ -3,7 +3,6 @@ import {
   Building2,
   Scale,
   Languages,
-  Clock,
   Shield,
   ShieldCheck,
 } from "lucide-react";
@@ -64,7 +63,7 @@ export function HomologacionPage({
   messages,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   heroMain?: HeroImageProps;
 }) {
@@ -79,7 +78,7 @@ function PageBody({
   locale,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   heroMain?: HeroImageProps;
 }) {
   const { t } = useTranslation();
@@ -106,10 +105,6 @@ function PageBody({
           src: "/images/lifestyle/madrid-almudena-sunset.webp",
           alt: "Almudena Cathedral and Royal Palace of Madrid at sunset",
         }}
-        pills={[
-          { kind: "dot", labelKey: "pin_hero_pill_1" },
-          { kind: "icon", icon: Clock, labelKey: "pin_hero_pill_2" },
-        ]}
       />
 
       <section className="py-16 sm:py-20 bg-white">
@@ -170,7 +165,7 @@ function PageBody({
             sub={t(`${PREFIX}.pin_faq_sub`)}
             align="center"
           />
-          <FaqSection translationPrefix={PREFIX} count={5} />
+          <FaqSection translationPrefix={PREFIX} />
         </Container>
       </section>
 

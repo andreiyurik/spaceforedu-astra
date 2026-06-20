@@ -1,0 +1,49 @@
+---
+// Static twin of the CollagePicture helper in PinHeroCollage.tsx.
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  srcSet?: string;
+  avifSrcSet?: string;
+  sizes: string;
+  loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+}
+const {
+  src, alt, width, height, srcSet, avifSrcSet,
+  sizes, loading = "lazy", fetchpriority,
+} = Astro.props;
+---
+
+{avifSrcSet ? (
+  <picture>
+    <source type="image/avif" srcset={avifSrcSet} sizes={sizes} />
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      srcset={srcSet}
+      sizes={sizes}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding="async"
+      class="w-full h-full object-cover"
+    />
+  </picture>
+) : (
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    srcset={srcSet}
+    sizes={sizes}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding="async"
+    class="w-full h-full object-cover"
+  />
+)}

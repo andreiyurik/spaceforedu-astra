@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Clock, Flame, MessageCircle, CheckCircle2, Shield } from "lucide-react";
+import { Clock, Flame, MessageCircle, CheckCircle2, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,27 +13,35 @@ import {
 import { CONTACT_WHATSAPP } from "@/lib/constants";
 import { whatsappLink } from "@/lib/routes";
 import { useTranslation } from "@/lib/i18n/react";
-
-const CONSULTATION_ITEMS = [
-  "consultation_dialog_item_1",
-  "consultation_dialog_item_2",
-  "consultation_dialog_item_3",
-  "consultation_dialog_item_4",
-] as const;
+import {
+  buildConsultationStrings,
+  type ConsultationStrings,
+} from "@/lib/consultation";
 
 const SUCCESS_AUTO_CLOSE_MS = 2500;
 
 /**
- * Reads strings under `public.homologacion.consultation_dialog_*` regardless
- * of which page opens the dialog — the copy is service-agnostic.
+ * Trigger + dialog for the consultation flow, driven entirely by resolved
+ * `strings` so it needs no i18n context. Two thin wrappers feed it:
+ *  - <ConsultationDialog> for React pages (resolves strings from the ambient
+ *    <I18nProvider> and uses caller-supplied `children` as the trigger).
+ *  - <ConsultationDialogButton> for Astro leaf islands (strings resolved
+ *    server-side and passed as props — keeps the serialized island payload to a
+ *    handful of strings instead of the whole message bundle — with its own
+ *    trigger button).
  */
-export function ConsultationDialog({ children }: { children: React.ReactNode }) {
-  const { t } = useTranslation();
+function ConsultationDialogView({
+  strings,
+  trigger,
+}: {
+  strings: ConsultationStrings;
+  trigger: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [success, setSuccess] = useState(false);
-  const prefix = "public.homologacion";
-  const waText = t(`${prefix}.consultation_dialog_wa_message`);
-  const href = CONTACT_WHATSAPP ? whatsappLink(CONTACT_WHATSAPP, waText) : "#";
+  const href = CONTACT_WHATSAPP
+    ? whatsappLink(CONTACT_WHATSAPP, strings.waMessage)
+    : "#";
 
   // Reset success state whenever the dialog fully closes.
   useEffect(() => {
@@ -50,43 +58,37 @@ export function ConsultationDialog({ children }: { children: React.ReactNode }) 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         {success ? (
           <div className="py-6 text-center space-y-4">
             <div className="mx-auto inline-flex rounded-full bg-[var(--success-pale)] p-4">
               <CheckCircle2 className="h-10 w-10 text-[var(--success-deep)]" />
             </div>
-            <DialogTitle className="text-xl">
-              {t("public.consultation_success.title")}
-            </DialogTitle>
+            <DialogTitle className="text-xl">{strings.successTitle}</DialogTitle>
             <DialogDescription className="text-sm">
-              {t("public.consultation_success.desc")}
+              {strings.successDesc}
             </DialogDescription>
           </div>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-lg">
-                {t(`${prefix}.consultation_dialog_title`)}
-              </DialogTitle>
-              <DialogDescription>
-                {t(`${prefix}.consultation_dialog_desc`)}
-              </DialogDescription>
+              <DialogTitle className="text-lg">{strings.title}</DialogTitle>
+              <DialogDescription>{strings.desc}</DialogDescription>
             </DialogHeader>
 
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="gap-1">
                 <Clock className="h-3 w-3" />
-                {t(`${prefix}.consultation_dialog_duration`)}
+                {strings.duration}
               </Badge>
             </div>
 
             <div className="space-y-3">
-              {CONSULTATION_ITEMS.map((key) => (
-                <div key={key} className="flex items-start gap-3">
+              {strings.items.map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
                   <CheckCircle2 className="h-4 w-4 text-[var(--success-deep)] mt-0.5 shrink-0" />
-                  <span className="text-sm">{t(`${prefix}.${key}`)}</span>
+                  <span className="text-sm">{item}</span>
                 </div>
               ))}
             </div>
@@ -94,7 +96,7 @@ export function ConsultationDialog({ children }: { children: React.ReactNode }) 
             <div className="flex items-center gap-2 rounded-lg bg-[var(--warn-pale)] border border-[var(--warn-hairline)] px-3 py-2">
               <Flame className="h-4 w-4 text-[var(--warn-amber)] shrink-0" />
               <span className="text-sm font-medium text-[var(--warn-amber)]">
-                {t(`${prefix}.consultation_dialog_spots`)}
+                {strings.spots}
               </span>
             </div>
 
@@ -110,17 +112,53 @@ export function ConsultationDialog({ children }: { children: React.ReactNode }) 
                 className="w-full min-h-[44px] text-base bg-[#25D366] hover:bg-[#1ebe57] border-0 transition-colors duration-150"
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
-                {t(`${prefix}.consultation_dialog_wa_button`)}
+                {strings.waButton}
               </Button>
             </a>
 
             <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
               <Shield className="h-3 w-3" />
-              {t(`${prefix}.consultation_dialog_wa_hint`)}
+              {strings.waHint}
             </div>
           </>
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** React-page usage: trigger is supplied as children; strings come from context. */
+export function ConsultationDialog({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation();
+  return (
+    <ConsultationDialogView strings={buildConsultationStrings(t)} trigger={children} />
+  );
+}
+
+/** Astro leaf-island usage: strings resolved server-side, own trigger button. */
+export function ConsultationDialogButton({
+  strings,
+  triggerLabel,
+  triggerClass,
+  arrow = false,
+}: {
+  strings: ConsultationStrings;
+  triggerLabel: string;
+  triggerClass?: string;
+  /** Render a trailing arrow that slides on hover (the trigger must use `group`). */
+  arrow?: boolean;
+}) {
+  return (
+    <ConsultationDialogView
+      strings={strings}
+      trigger={
+        <button type="button" className={triggerClass}>
+          {triggerLabel}
+          {arrow && (
+            <ArrowRight className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" />
+          )}
+        </button>
+      }
+    />
   );
 }

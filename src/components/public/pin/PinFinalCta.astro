@@ -1,0 +1,81 @@
+---
+// Static twin of PinFinalCta.tsx. The primary CTA is a ConsultationDialog leaf
+// island; everything else is static.
+import Reveal from "@/components/public/Reveal.astro";
+import Container from "@/components/public/Container.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import { ConsultationDialogButton } from "@/components/public/ConsultationDialog";
+import { CONTACT_WHATSAPP } from "@/lib/constants";
+import { whatsappLink } from "@/lib/routes";
+import type { ConsultationStrings } from "@/lib/consultation";
+
+interface Props {
+  prefix: string;
+  t: (key: string) => string;
+  consultationStrings: ConsultationStrings;
+  bgImage?: string;
+  bgColor?: string;
+  sideItemCount?: number;
+  background?: "soft" | "white";
+}
+const {
+  prefix,
+  t,
+  consultationStrings,
+  bgImage = "/images/lifestyle/salamanca-university-courtyard-sunset.webp",
+  bgColor = "#C9342C",
+  sideItemCount = 5,
+  background = "soft",
+} = Astro.props;
+const waHref = CONTACT_WHATSAPP ? whatsappLink(CONTACT_WHATSAPP) : "#";
+const sectionBg = background === "white" ? "bg-white" : "bg-[var(--surface-soft)]";
+const sideItems = Array.from({ length: sideItemCount }, (_, i) => i + 1);
+---
+
+<section class={`py-12 sm:py-16 ${sectionBg}`}>
+  <Container>
+    <Reveal direction="up">
+      <div
+        class="relative rounded-[32px] p-10 sm:p-14 grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:items-center text-white overflow-hidden"
+        style={`background-color: ${bgColor}; background-image: url(${bgImage}); background-size: cover; background-position: center; background-blend-mode: multiply;`}
+      >
+        <div>
+          <h2 class="font-display text-[32px] sm:text-[44px] lg:text-[48px] font-bold tracking-[-0.025em] leading-[1.05] m-0 mb-4 text-white">
+            {t(`${prefix}.pin_final_title`)}
+          </h2>
+          <p class="text-[16px] leading-[1.5] text-white/90 m-0 mb-6 max-w-[520px]">
+            {t(`${prefix}.pin_final_sub`)}
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <ConsultationDialogButton
+              client:visible
+              strings={consultationStrings}
+              triggerLabel={t(`${prefix}.pin_final_cta_primary`)}
+              triggerClass="pin-btn pin-btn-on-red h-12 px-6 text-[15px]"
+            />
+            {waHref !== "#" && (
+              <a href={waHref} target="_blank" rel="noopener noreferrer">
+                <button class="pin-btn pin-btn-on-red-ghost h-12 px-6 text-[15px]">
+                  {t(`${prefix}.pin_final_cta_secondary`)}
+                </button>
+              </a>
+            )}
+          </div>
+        </div>
+        <div class="bg-black/25 border border-white/20 rounded-2xl p-6">
+          <h3 class="text-[15px] font-bold text-white m-0 mb-2.5">
+            {t(`${prefix}.pin_final_side_title`)}
+          </h3>
+          <ul class="list-none p-0 m-0 flex flex-col gap-2.5">
+            {sideItems.map((n) => (
+              <li class="text-[13px] text-white/85 flex items-start gap-2">
+                <LucideIcon name="circle-check" class="h-4 w-4 mt-0.5 shrink-0 text-white" />
+                {t(`${prefix}.pin_final_side_${n}`)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Reveal>
+  </Container>
+</section>

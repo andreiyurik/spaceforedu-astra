@@ -1,8 +1,10 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
+import rehypeSlug from "rehype-slug";
 
 const SITE = "https://spaceforedu.com";
 
@@ -16,6 +18,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    mdx({ rehypePlugins: [rehypeSlug] }),
     sitemap({
       i18n: {
         defaultLocale: "es",

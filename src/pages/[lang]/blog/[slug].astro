@@ -1,0 +1,344 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import {
+  SITE_URL,
+  DEFAULT_LOCALE,
+  SOCIAL_FACEBOOK,
+  SOCIAL_LINKEDIN,
+  SOCIAL_TWITTER,
+  SOCIAL_TELEGRAM,
+  assertLocale,
+  type Locale,
+} from "@/lib/constants";
+import {
+  getAllBlogPosts,
+  estimateReadingTime,
+  extractFaq,
+  getLastModified,
+} from "@/lib/blog";
+import { blogPosting, blogBreadcrumb, blogFaqPage } from "@/lib/structured-data";
+import SocialIcon from "@/components/common/SocialIcon.astro";
+import { render } from "astro:content";
+
+export async function getStaticPaths() {
+  const allPosts = await getAllBlogPosts();
+  return allPosts.map((post) => ({
+    params: { lang: post.data.locale, slug: post.data.slug },
+    props: { post, allPosts },
+  }));
+}
+
+const { post, allPosts } = Astro.props;
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+
+const { Content, headings: rawHeadings } = await render(post);
+const headings = rawHeadings.filter((h) => h.depth === 2 || h.depth === 3)
+  .map((h) => ({ level: h.depth, text: h.text, id: h.slug }));
+const readTime =
+  post.data.readingTime ?? estimateReadingTime(post.body ?? "");
+
+const updatedAt = post.data.updatedAt ?? getLastModified(post.filePath, post.data.publishedAt);
+
+const sameLangPosts = allPosts.filter((p) => p.data.locale === locale);
+const related = sameLangPosts
+  .filter((p) => p.id !== post.id)
+  .filter(
+    (p) => p.data.tags.some((tag) => post.data.tags.includes(tag)),
+  )
+  .slice(0, 2);
+
+const articleSchema = blogPosting({
+  locale,
+  title: post.data.title,
+  description: post.data.description,
+  slug: post.data.slug,
+  authorName: post.data.author.name,
+  authorRole: post.data.author.role,
+  publishedAt: post.data.publishedAt,
+  updatedAt,
+  image: post.data.image,
+  tags: post.data.tags,
+});
+
+const breadcrumb = blogBreadcrumb(locale, post.data.title, post.data.slug);
+
+const faq = extractFaq(post.body ?? "");
+const faqSchema = blogFaqPage(faq);
+
+const translations = post.data.translationKey
+  ? allPosts
+      .filter((p) => p.data.translationKey === post.data.translationKey && p.data.locale !== locale)
+      .map((p) => ({ locale: p.data.locale as Locale, slug: p.data.slug }))
+  : [];
+const allLangLinks = [
+  { locale, slug: post.data.slug },
+  ...translations,
+];
+
+const authorInitial = post.data.author.name.charAt(0).toUpperCase();
+const pageTitle = `${post.data.title} — Space for Edu`;
+const canonicalUrl = `${SITE_URL}/${locale}/blog/${post.data.slug}/`;
+const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
+---
+
+<PublicLayout
+  title={pageTitle}
+  description={post.data.description}
+  locale={locale}
+  page="blog"
+  ogImage={ogImage}
+  ogImageWidth={1200}
+  ogImageHeight={630}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+>
+  <Fragment slot="head">
+    {allLangLinks.map(({ locale: l, slug: s }) => (
+      <link rel="alternate" hreflang={l} href={`${SITE_URL}/${l}/blog/${s}/`} />
+    ))}
+    {(() => {
+      const def = allLangLinks.find((l) => l.locale === DEFAULT_LOCALE) ?? allLangLinks[0];
+      return <link rel="alternate" hreflang="x-default" href={`${SITE_URL}/${def.locale}/blog/${def.slug}/`} />;
+    })()}
+  </Fragment>
+
+  <JsonLd slot="structured-data" data={articleSchema} />
+  <JsonLd slot="structured-data" data={breadcrumb} />
+  {faqSchema && <JsonLd slot="structured-data" data={faqSchema} />}
+  <JsonLd
+    slot="structured-data"
+    data={{
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: [".prose-article h2", ".prose-article > p:first-of-type", ".prose-article blockquote"],
+      },
+      url: canonicalUrl,
+    }}
+  />
+
+  <article class="bg-[var(--surface-soft)]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+      <!-- Back link -->
+      <a
+        href={`/${locale}/blog/`}
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--mute)] hover:text-[var(--ink)] transition-colors mb-8"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          class="shrink-0"
+          aria-hidden="true"
+        >
+          <path
+            d="M10 12L6 8l4-4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        {t("public.blog.back_to_blog")}
+      </a>
+
+      <div class="grid lg:grid-cols-[1fr_300px] gap-12 items-start">
+        <!-- Main content -->
+        <div class="min-w-0">
+          <!-- Header -->
+          <header class="mb-10">
+            {
+              post.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  {post.data.tags.map((tag) => (
+                    <span class="inline-block rounded-full bg-[var(--surface-card)] px-3 py-1 text-[12px] font-semibold text-[var(--accent-blue-deep)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )
+            }
+            <h1
+              class="font-display text-[32px] sm:text-[40px] lg:text-[48px] font-bold tracking-[-1px] text-[var(--ink)] leading-[1.1] mb-5"
+            >
+              {post.data.title}
+            </h1>
+            <p class="text-lg text-[var(--mute)] leading-relaxed max-w-2xl mb-6">
+              {post.data.description}
+            </p>
+
+            <div
+              class="flex flex-wrap items-center gap-4 text-sm text-[var(--mute)] border-t border-b border-[var(--hairline-soft)] py-4"
+            >
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
+                >
+                  {authorInitial}
+                </div>
+                <div>
+                  <div class="font-semibold text-[var(--ink)]">
+                    {post.data.author.name}
+                  </div>
+                  <div class="text-[12px] text-[var(--ash)]">
+                    {post.data.author.role}
+                  </div>
+                </div>
+              </div>
+              <span class="hidden sm:inline" aria-hidden="true">·</span>
+              <span>{readTime} {t("public.blog.min_read")}</span>
+            </div>
+
+            <!-- Share -->
+            <div class="flex items-center gap-2 mt-4">
+              <span class="text-[13px] font-semibold text-[var(--mute)]">{t("public.blog.share")}:</span>
+              {[
+                { name: "whatsapp" as const, label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(post.data.title + " " + canonicalUrl)}`, show: true },
+                { name: "x" as const, label: "X / Twitter", href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(canonicalUrl)}`, show: !!SOCIAL_TWITTER },
+                { name: "linkedin" as const, label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`, show: !!SOCIAL_LINKEDIN },
+                { name: "facebook" as const, label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonicalUrl)}`, show: !!SOCIAL_FACEBOOK },
+                { name: "telegram" as const, label: "Telegram", href: `https://t.me/share/url?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(post.data.title)}`, show: !!SOCIAL_TELEGRAM },
+              ].filter((s) => s.show).map(({ name, label, href }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-card)] text-[var(--mute)] hover:bg-[var(--secondary-bg)] hover:text-[var(--ink)] transition-colors"
+                  aria-label={label}
+                >
+                  <SocialIcon name={name} />
+                </a>
+              ))}
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-card)] text-[var(--mute)] hover:bg-[var(--secondary-bg)] hover:text-[var(--ink)] transition-colors"
+                aria-label="Copy link"
+                data-copy-url={canonicalUrl}
+              >
+                <SocialIcon name="link" />
+              </button>
+            </div>
+          </header>
+
+          <!-- Article body -->
+          <div class="prose-article">
+            <Content />
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="hidden lg:block sticky top-24 space-y-6">
+          <!-- Table of Contents -->
+          {
+            headings.filter((h) => h.level === 2).length > 2 && (
+              <nav class="pin-card p-5" aria-label="Table of contents">
+                <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-3">
+                  {locale === "es" ? "Contenido" : locale === "ru" ? "Содержание" : "Contents"}
+                </h3>
+                <ul class="space-y-1.5 text-[13px]">
+                  {headings
+                    .filter((h) => h.level === 2)
+                    .map((h) => (
+                      <li>
+                        <a
+                          href={`#${h.id}`}
+                          class="block text-[var(--mute)] hover:text-[var(--primary)] transition-colors leading-snug py-0.5"
+                        >
+                          {h.text}
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              </nav>
+            )
+          }
+
+          <!-- Author card -->
+          <div class="pin-card p-5">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-sm shrink-0"
+              >
+                {authorInitial}
+              </div>
+              <div>
+                <div class="font-bold text-sm text-[var(--ink)]">
+                  {post.data.author.name}
+                </div>
+                <div class="text-[12px] text-[var(--mute)]">
+                  {post.data.author.role}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {
+            related.length > 0 && (
+              <div class="pin-card p-5">
+                <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-4">
+                  {t("public.blog.related")}
+                </h3>
+                <ul class="space-y-4">
+                  {related.map((r) => (
+                    <li>
+                      <a
+                        href={`/${locale}/blog/${r.data.slug}/`}
+                        class="group block"
+                      >
+                        <div class="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                          {r.data.title}
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+        </aside>
+      </div>
+
+      <!-- Mobile related posts -->
+      {
+        related.length > 0 && (
+          <div class="lg:hidden mt-12 pt-8 border-t border-[var(--hairline-soft)]">
+            <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--ink)] mb-6">
+              {t("public.blog.related")}
+            </h3>
+            <div class="grid gap-6 sm:grid-cols-2">
+              {related.map((r) => (
+                <a
+                  href={`/${locale}/blog/${r.data.slug}/`}
+                  class="group pin-card p-5"
+                >
+                  <div class="font-semibold text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug">
+                    {r.data.title}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </article>
+</PublicLayout>
+
+<script>
+  function initCopyLink() {
+    document.querySelectorAll<HTMLButtonElement>("[data-copy-url]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(btn.dataset.copyUrl!);
+        btn.style.color = "var(--primary)";
+        setTimeout(() => (btn.style.color = ""), 1500);
+      });
+    });
+  }
+  document.addEventListener("astro:page-load", initCopyLink);
+</script>

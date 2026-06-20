@@ -1,0 +1,44 @@
+---
+// Static twin of PinServicesCard.tsx (single card).
+import Reveal from "@/components/public/Reveal.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+
+interface Props {
+  iconName: string;
+  title: string;
+  desc: string;
+  meta?: string;
+  href?: string;
+  arrow?: string;
+  delay?: number;
+}
+const { iconName, title, desc, meta, href, arrow = "→", delay = 0 } = Astro.props;
+
+const cls =
+  "block h-full bg-white rounded-2xl p-7 border border-[var(--hairline-soft)] hover:border-[var(--ash)] hover:-translate-y-0.5 transition-all duration-200 group";
+const Tag = href ? "a" : "div";
+---
+
+<Reveal direction="up" delay={delay}>
+  <Tag class={href ? cls : cls.replace("block ", "")} href={href}>
+    <div class="flex flex-col gap-3.5 h-full">
+      <div class="w-11 h-11 rounded-2xl bg-[var(--surface-card)] text-[var(--primary)] flex items-center justify-center">
+        <LucideIcon name={iconName} class="h-5 w-5" />
+      </div>
+      <h3 class="text-[20px] font-semibold text-[var(--ink)] tracking-[-0.01em] m-0">
+        {title}
+      </h3>
+      <p class="text-[14px] leading-[1.5] text-[var(--mute)] flex-1 m-0">
+        {desc}
+      </p>
+      <div class="flex items-center justify-between text-[13px] font-bold text-[var(--ink)]">
+        {meta && <span class="text-[var(--mute)] font-medium">{meta}</span>}
+        {href && (
+          <span class="inline-flex items-center gap-1.5 text-[var(--ink-soft)]">
+            {arrow}
+          </span>
+        )}
+      </div>
+    </div>
+  </Tag>
+</Reveal>

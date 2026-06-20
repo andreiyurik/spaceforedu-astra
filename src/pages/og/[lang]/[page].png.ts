@@ -1,5 +1,5 @@
 import type { APIRoute, GetStaticPaths } from "astro";
-import { LOCALES } from "@/lib/constants";
+import { LOCALES, assertLocale } from "@/lib/constants";
 import { getSeo } from "@/lib/seo";
 import { generateOgPng } from "@/lib/og-image";
 
@@ -12,8 +12,9 @@ export const getStaticPaths: GetStaticPaths = () =>
 
 export const GET: APIRoute = async ({ params }) => {
   const { lang, page } = params as { lang: string; page: OgPageKey };
-  const seo = getSeo(page, lang);
-  const png = await generateOgPng(seo.title, seo.description, lang);
+  const locale = assertLocale(lang);
+  const seo = getSeo(page, locale);
+  const png = await generateOgPng(seo.title, seo.description, locale);
 
   return new Response(Buffer.from(png), {
     headers: {

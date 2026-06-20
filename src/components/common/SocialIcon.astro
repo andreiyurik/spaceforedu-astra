@@ -1,0 +1,27 @@
+---
+import { ICON_PATHS } from "@/lib/icon-paths";
+
+interface Props {
+  name: "whatsapp" | "x" | "linkedin" | "facebook" | "telegram" | "youtube" | "email" | "link";
+  size?: number;
+}
+
+const { name, size = 14 } = Astro.props;
+
+const icon = ICON_PATHS[name];
+const w = name === "whatsapp" ? size + 2 : size;
+---
+
+<svg
+  width={w}
+  height={w}
+  viewBox={icon.viewBox}
+  fill={icon.fill ? "currentColor" : "none"}
+  stroke={icon.fill ? undefined : "currentColor"}
+  stroke-width={icon.fill ? undefined : "2"}
+  stroke-linecap={icon.fill ? undefined : "round"}
+  stroke-linejoin={icon.fill ? undefined : "round"}
+  aria-hidden="true"
+>
+  <path d={icon.d} />
+</svg>

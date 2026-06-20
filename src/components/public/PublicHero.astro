@@ -1,0 +1,52 @@
+---
+// Static twin of <PublicHero> from shared.tsx. Slots: subtitle, actions,
+// footer, illustration. Presence of the `illustration` slot switches the grid
+// to the two-column layout (matching the React `illustration` prop check).
+import Container from "@/components/public/Container.astro";
+import Reveal from "@/components/public/Reveal.astro";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  title1: string;
+  titleAccent: string;
+  fullBleed?: boolean;
+}
+const { title1, titleAccent, fullBleed = false } = Astro.props;
+const hasIllustration = Astro.slots.has("illustration");
+const hasActions = Astro.slots.has("actions");
+const hasFooter = Astro.slots.has("footer");
+---
+
+<section class={cn("bg-[var(--surface-soft)] pt-16 pb-8 sm:pt-20", fullBleed && "overflow-hidden")}>
+  <Container>
+    <div class={cn("grid gap-12 lg:gap-16 items-center", hasIllustration ? "lg:grid-cols-[1.1fr_1fr]" : "max-w-3xl")}>
+      <div>
+        <Reveal direction="up">
+          <h1 class="font-display text-[40px] sm:text-[56px] lg:text-[64px] font-semibold tracking-[-0.022em] text-[var(--ink)] leading-[1.05]">
+            {title1} <span class="text-[var(--primary)]">{titleAccent}</span>
+          </h1>
+        </Reveal>
+        <Reveal direction="up" delay={80}>
+          <div class="mt-5 text-[18px] leading-[1.5] text-[var(--mute)] max-w-[520px]">
+            <slot name="subtitle" />
+          </div>
+        </Reveal>
+        {hasActions && (
+          <Reveal direction="up" delay={160}>
+            <div class="mt-8"><slot name="actions" /></div>
+          </Reveal>
+        )}
+        {hasFooter && (
+          <Reveal direction="up" delay={220}>
+            <div class="mt-6"><slot name="footer" /></div>
+          </Reveal>
+        )}
+      </div>
+      {hasIllustration && (
+        <Reveal direction="left" delay={100}>
+          <slot name="illustration" />
+        </Reveal>
+      )}
+    </div>
+  </Container>
+</section>

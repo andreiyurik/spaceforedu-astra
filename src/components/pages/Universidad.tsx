@@ -65,7 +65,7 @@ export function UniversidadPage({
   messages,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   heroMain?: HeroImageProps;
 }) {
@@ -80,7 +80,7 @@ function PageBody({
   locale,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   heroMain?: HeroImageProps;
 }) {
   const { t } = useTranslation();
@@ -108,8 +108,7 @@ function PageBody({
           alt: "Madrid skyline with the Royal Palace at sunset",
         }}
         pills={[
-          { kind: "dot", labelKey: "pin_hero_pill_1" },
-          { kind: "icon", icon: Clock, labelKey: "pin_hero_pill_2" },
+          { kind: "icon", icon: Clock, labelKey: "pin_hero_pill_2", pos: "bl" },
         ]}
       />
 
@@ -176,13 +175,13 @@ function PageBody({
             sub={t(`${PREFIX}.pin_faq_sub`)}
             align="center"
           />
-          <FaqSection translationPrefix={PREFIX} count={5} />
+          <FaqSection translationPrefix={PREFIX} />
         </Container>
       </section>
 
       <PinFinalCta
         prefix={PREFIX}
-        bgImage="/images/lifestyle/salamanca-university-courtyard-sunset.webp"
+        bgImage="/images/lifestyle/sevilla-plaza-espana-golden-hour.webp"
         sideItemCount={5}
       />
     </>

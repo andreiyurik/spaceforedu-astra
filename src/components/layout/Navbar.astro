@@ -1,13 +1,13 @@
 ---
 import { publicRoute, publicPages, whatsappLink } from "@/lib/routes";
-import { CONTACT_WHATSAPP } from "@/lib/constants";
+import { CONTACT_WHATSAPP, type Locale } from "@/lib/constants";
 import { getMessages, makeT } from "@/lib/i18n";
 import { formatPhone } from "@/lib/utils";
 import MobileNav from "@/components/layout/MobileNav.tsx";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher.astro";
 
 interface Props {
-  locale: string;
+  locale: Locale;
   currentPath: string;
 }
 
@@ -20,6 +20,7 @@ const navLinks = [
   { key: "universidad", href: publicRoute(publicPages.universidad, locale) },
   { key: "espanol", href: publicRoute(publicPages.espanol, locale) },
   { key: "precios", href: publicRoute(publicPages.precios, locale) },
+  { key: "blog", href: publicRoute(publicPages.blog, locale) },
 ];
 
 const waHref = CONTACT_WHATSAPP ? whatsappLink(CONTACT_WHATSAPP) : "";
@@ -95,12 +96,14 @@ const homeHref = publicRoute(publicPages.home, locale);
           universidad: t("nav.universidad"),
           espanol: t("nav.espanol"),
           precios: t("nav.precios"),
+          blog: t("nav.blog"),
         }}
         navHrefs={{
           homologacion: publicRoute(publicPages.homologacion, locale),
           universidad: publicRoute(publicPages.universidad, locale),
           espanol: publicRoute(publicPages.espanol, locale),
           precios: publicRoute(publicPages.precios, locale),
+          blog: publicRoute(publicPages.blog, locale),
           home: homeHref,
         }}
         menuLabel={t("nav.menu")}

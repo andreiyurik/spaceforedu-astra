@@ -18,12 +18,11 @@ import { Reveal, TiltCard, AnimatedCounter } from "@/components/public/animation
 import {
   FeatureIcon,
   GradientButton,
-  OutlineCtaButton,
   PublicHero,
-  PublicCta,
   PublicSection,
   SectionHeading,
 } from "@/components/public/shared";
+import { PinFinalCta } from "@/components/public/pin/PinFinalCta";
 import { ConsultationDialog } from "@/components/public/ConsultationDialog";
 import { CrossSellCard } from "@/components/public/CrossSellCard";
 import { FaqSection } from "@/components/public/FaqSection";
@@ -59,7 +58,7 @@ export function EspanolPage({
   messages,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   heroMain?: HeroImageProps;
 }) {
@@ -82,7 +81,7 @@ function PageBody({
   locale,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   heroMain?: HeroImageProps;
 }) {
   const { t } = useTranslation();
@@ -176,7 +175,7 @@ function PageBody({
                     <p className="text-sm text-muted-foreground">
                       {t(`public.espanol.format_${key}_desc`)}
                     </p>
-                    <p className="text-xs text-brand-secondary font-medium mt-3">
+                    <p className="text-xs text-[var(--accent-blue-deep)] font-medium mt-3">
                       {t(`public.espanol.format_${key}_note`)}
                     </p>
                   </CardContent>
@@ -296,26 +295,14 @@ function PageBody({
 
       <PublicSection className="bg-white">
         <SectionHeading title={t("public.espanol.faq_title")} />
-        <FaqSection translationPrefix="public.espanol" count={5} />
+        <FaqSection translationPrefix="public.espanol" />
       </PublicSection>
 
-      <PublicCta
-        title={t("public.espanol.cta_title")}
-        subtitle={t("public.espanol.cta_subtitle")}
+      <PinFinalCta
+        prefix="public.espanol"
         bgImage="/images/lifestyle/spain-flag-waving-blue-sky.webp"
-        overlayClass="bg-red-700/60"
-      >
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <ConsultationDialog>
-            <GradientButton className="w-full sm:w-auto">
-              {t("public.espanol.cta_trial")}
-            </GradientButton>
-          </ConsultationDialog>
-          <OutlineCtaButton href={preciosHref}>
-            {t("public.espanol.cta_pricing")}
-          </OutlineCtaButton>
-        </div>
-      </PublicCta>
+        sideItemCount={5}
+      />
     </>
   );
 }

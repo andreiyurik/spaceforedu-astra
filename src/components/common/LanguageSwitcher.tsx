@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { FlagIcon } from "@/components/common/FlagIcon";
-import { LOCALES } from "@/lib/constants";
+import { LOCALES, type Locale } from "@/lib/constants";
 
 const LANGUAGES = [
   { code: "es", label: "Español", countryCode: "es" },
@@ -17,7 +17,7 @@ const LANGUAGES = [
 
 interface LanguageSwitcherProps {
   /** Current locale of the rendered page. */
-  locale: string;
+  locale: Locale;
   /** Pathname including locale prefix, e.g. "/es/homologation/". */
   currentPath: string;
   /** Use on dark backgrounds (e.g. sidebar, dark panel). */

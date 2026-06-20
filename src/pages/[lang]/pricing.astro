@@ -1,25 +1,89 @@
 ---
 import PublicLayout from "@/layouts/PublicLayout.astro";
-import { PreciosPage } from "@/components/pages/Precios";
 import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import Reveal from "@/components/public/Reveal.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import { ConsultationDialogButton } from "@/components/public/ConsultationDialog";
+import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
+import FaqSection from "@/components/public/FaqSection.astro";
+import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
+import PinPricingPlan from "@/components/public/pin/PinPricingPlan.astro";
+import PinRiskReversal from "@/components/public/pin/PinRiskReversal.astro";
+import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
+import { LOCALES, assertLocale, FEATURE_DASHBOARD } from "@/lib/constants";
 import { publicPages } from "@/lib/routes";
 import { faqPage, breadcrumbList } from "@/lib/structured-data";
+import { buildConsultationStrings } from "@/lib/consultation";
 
 export function getStaticPaths() {
   return LOCALES.map((lang) => ({ params: { lang } }));
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("precios", locale);
 
-const faqLd = faqPage(messages, "public.precios", 7);
+const PREFIX = "public.precios";
+
+const faqLd = faqPage(messages, PREFIX);
 const breadcrumbLd = breadcrumbList(locale, t("nav.precios"), publicPages.precios);
+const consultationStrings = buildConsultationStrings(t);
+
+const PLAN_KEYS = ["basico", "completo", "premium"] as const;
+const PLANS = [
+  { key: "basico", features: 4, highlighted: false, badgeKey: undefined as string | undefined },
+  { key: "completo", features: 8, highlighted: true, badgeKey: "popular" },
+  { key: "premium", features: 8, highlighted: false, badgeKey: "plan_premium_badge" },
+] as const;
+
+const INCLUDED_ICONS = ["monitor", "message-circle", "bar-chart-3", "shield-check"];
+
+const COMPARISON_MATRIX: readonly (readonly [boolean, boolean, boolean])[] = [
+  [true, true, true],
+  [true, true, true],
+  [true, true, true],
+  [true, true, true],
+  [false, true, true],
+  [false, true, true],
+  [false, true, true],
+  [false, true, true],
+  [false, false, true],
+  [false, false, true],
+  [false, false, true],
+  [false, false, true],
+];
+
+const HERO_STRIP_IMAGES = [
+  { src: "/images/services/homologacion/salamanca-streets-university-garden.webp", alt: "Salamanca historic university quarter" },
+  { src: "/images/services/espanol/students-spanish-class-focused.webp", alt: "Spanish class with native teacher" },
+  { src: "/images/lifestyle/graduates-celebration-success.webp", alt: "International graduates celebrating" },
+];
+
+const riskItems = [
+  { iconName: "shield", n: 1 },
+  { iconName: "shield-check", n: 2 },
+] as const;
+
+const includedLabel = t(`${PREFIX}.compare_included`);
+const notIncludedLabel = t(`${PREFIX}.compare_not_included`);
+
+const plans = PLANS.map((plan) => {
+  const features = Array.from({ length: plan.features }, (_, i) => t(`${PREFIX}.plan_${plan.key}_feature_${i + 1}`));
+  const cleanPrice = t(`${PREFIX}.plan_${plan.key}_price`).replace(/^€\s*/, "");
+  const footnoteKey = `${PREFIX}.plan_${plan.key}_footnote`;
+  const footnoteRaw = t(footnoteKey);
+  return {
+    ...plan,
+    features,
+    cleanPrice,
+    footnote: footnoteRaw !== footnoteKey ? footnoteRaw : undefined,
+  };
+});
 ---
 
 <PublicLayout
@@ -30,5 +94,288 @@ const breadcrumbLd = breadcrumbList(locale, t("nav.precios"), publicPages.precio
 >
   <JsonLd slot="structured-data" data={breadcrumbLd} />
   {faqLd && <JsonLd slot="structured-data" data={faqLd} />}
-  <PreciosPage client:idle locale={locale} messages={messages} />
+
+  {/* ── Hero ── */}
+  <section class="bg-[var(--surface-soft)] pt-20 pb-12 sm:pt-24 sm:pb-16">
+    <Container>
+      <div class="max-w-3xl mx-auto text-center">
+        <Reveal direction="up">
+          <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[var(--hairline-soft)] px-4 py-1.5 text-[12px] font-semibold text-[var(--ink)] mb-6">
+            <LucideIcon name="shield-check" class="h-3.5 w-3.5 text-[var(--success-deep)] shrink-0" />
+            <span>{t(`${PREFIX}.hero_guarantee_badge`)}</span>
+          </span>
+        </Reveal>
+        <Reveal direction="up" delay={50}>
+          <h1 class="font-display text-[40px] sm:text-[56px] lg:text-[64px] font-semibold tracking-[-0.022em] text-[var(--ink)] leading-[1.05] m-0">
+            {t(`${PREFIX}.hero_title_1`)}{" "}
+            <span class="text-[var(--primary)]">{t(`${PREFIX}.hero_title_accent`)}</span>
+          </h1>
+        </Reveal>
+        <Reveal direction="up" delay={100}>
+          <p class="mt-5 text-[18px] leading-[1.5] text-[var(--mute)] max-w-[560px] mx-auto">
+            {t(`${PREFIX}.hero_subtitle`)}
+          </p>
+        </Reveal>
+        <Reveal direction="up" delay={150}>
+          <div class="mt-8 flex flex-col items-center gap-4">
+            <ConsultationDialogButton
+              client:visible
+              strings={consultationStrings}
+              triggerLabel={t(`${PREFIX}.hero_action_verify`)}
+              triggerClass="pin-btn pin-btn-primary h-12 px-6 text-[15px]"
+            />
+            <a
+              href="#plans"
+              class="text-[14px] font-medium text-[var(--mute)] hover:text-[var(--ink)] transition-colors min-h-[44px] inline-flex items-center"
+            >
+              <span class="border-b border-transparent hover:border-[var(--ink)] transition-colors">
+                {t(`${PREFIX}.hero_secondary_link`)}
+              </span>
+              <span aria-hidden="true" class="ml-1.5">→</span>
+            </a>
+          </div>
+        </Reveal>
+        <Reveal direction="up" delay={200}>
+          <div class="mt-12 grid grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
+            {HERO_STRIP_IMAGES.map(({ src, alt }, idx) => (
+              <div class="rounded-2xl overflow-hidden bg-[var(--surface-card)] aspect-[4/3]">
+                <img
+                  src={src}
+                  alt={alt}
+                  width="600"
+                  height="450"
+                  loading={idx === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </Container>
+  </section>
+
+  <UniversityLogoBar t={t} titleKey="public.precios.trust_bar_title" noBorderTop />
+
+  {/* ── How it works ── */}
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.how_works_title`)}
+        accent=""
+        sub={t(`${PREFIX}.how_works_subtitle`)}
+        align="center"
+      />
+      <div class="grid gap-12 sm:gap-10 sm:grid-cols-3 max-w-5xl mx-auto">
+        {[1, 2, 3].map((n) => (
+          <Reveal direction="up" delay={(n - 1) * 120}>
+            <div class="text-center">
+              <div aria-hidden="true" class="font-display text-[64px] sm:text-[72px] font-bold tracking-[-0.03em] text-[var(--hairline)] leading-none select-none">
+                {String(n).padStart(2, "0")}
+              </div>
+              <div aria-hidden="true" class="mx-auto my-5 h-px w-10 bg-[var(--primary)]"></div>
+              <h3 class="text-[20px] sm:text-[22px] font-bold text-[var(--ink)] tracking-[-0.01em] mb-2">
+                {t(`${PREFIX}.hero_step_${n}_title`)}
+              </h3>
+              <p class="text-[14px] leading-[1.5] text-[var(--mute)] max-w-xs mx-auto">
+                {t(`${PREFIX}.hero_step_${n}_desc`)}
+              </p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  {/* ── Plans ── */}
+  <section id="plans" class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_pricing_title_1`)}
+        accent={t(`${PREFIX}.pin_pricing_title_accent`)}
+        sub={t(`${PREFIX}.pin_pricing_sub`)}
+        align="center"
+      />
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+        {plans.map((plan) => (
+          <PinPricingPlan
+            title={t(`${PREFIX}.plan_${plan.key}_title`)}
+            desc={t(`${PREFIX}.plan_${plan.key}_desc`)}
+            price={plan.cleanPrice}
+            unit={t(`${PREFIX}.plan_${plan.key}_unit`)}
+            features={plan.features}
+            footnote={plan.footnote}
+            cta={t(`${PREFIX}.choose_plan`)}
+            ctaVariant={plan.highlighted ? "primary" : "secondary"}
+            featured={plan.highlighted}
+            popLabel={plan.badgeKey ? t(`${PREFIX}.${plan.badgeKey}`) : undefined}
+            consultationStrings={consultationStrings}
+          />
+        ))}
+      </div>
+      <Reveal direction="up" delay={100}>
+        <div class="mt-8 max-w-6xl mx-auto rounded-2xl border border-[var(--hairline-soft)] bg-white px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-5">
+          <div class="flex items-start gap-4 flex-1">
+            <div class="w-10 h-10 rounded-full bg-[var(--primary)]/10 flex items-center justify-center shrink-0 mt-0.5">
+              <LucideIcon name="languages" class="h-5 w-5 text-[var(--primary)]" />
+            </div>
+            <div>
+              <p class="text-[18px] font-semibold text-[var(--ink)] m-0">
+                {t(`${PREFIX}.spanish_courses_title`)}
+              </p>
+              <div class="flex flex-wrap gap-2 mt-2">
+                {(["badge_1", "badge_2", "badge_3"] as const).map((k) => (
+                  <span class="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--ink)] bg-[var(--surface-soft)] rounded-full px-3 py-1">
+                    <LucideIcon name="check" class="h-3 w-3 text-[var(--primary)] shrink-0" strokeWidth={2.5} />
+                    {t(`${PREFIX}.spanish_courses_${k}`)}
+                  </span>
+                ))}
+              </div>
+              <p class="text-[13px] text-[var(--mute)] mt-2.5 m-0">
+                {t(`${PREFIX}.spanish_courses_desc`)}
+              </p>
+            </div>
+          </div>
+          <ConsultationDialogButton
+            client:visible
+            strings={consultationStrings}
+            triggerLabel={t(`${PREFIX}.cta_consult`)}
+            triggerClass="pin-btn pin-btn-secondary h-10 px-5 text-[13px] shrink-0"
+          />
+        </div>
+      </Reveal>
+    </Container>
+  </section>
+
+  {FEATURE_DASHBOARD && (
+    <section class="py-16 sm:py-20 bg-white">
+      <Container>
+        <PinSectionHead title1={t(`${PREFIX}.included_title`)} accent="" sub="" align="center" />
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          {INCLUDED_ICONS.map((iconName, i) => (
+            <Reveal direction="up" delay={i * 80}>
+              <div class="text-center space-y-3">
+                <div aria-hidden="true" class="mx-auto w-12 h-12 rounded-2xl bg-[var(--surface-card)] flex items-center justify-center">
+                  <LucideIcon name={iconName} class="h-5 w-5 text-[var(--primary)]" />
+                </div>
+                <h3 class="font-semibold text-[14px] sm:text-[15px] text-[var(--ink)]">
+                  {t(`${PREFIX}.included_${i + 1}_title`)}
+                </h3>
+                <p class="text-[13px] sm:text-[14px] text-[var(--mute)] leading-[1.5]">
+                  {t(`${PREFIX}.included_${i + 1}_desc`)}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )}
+
+  {/* ── Comparison table ── */}
+  <section class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead title1={t(`${PREFIX}.compare_title`)} accent="" sub="" align="center" />
+      <Reveal direction="up" delay={100}>
+        <div class="max-w-5xl mx-auto bg-white rounded-[32px] border border-[var(--hairline-soft)] overflow-hidden">
+          {/* Mobile */}
+          <div class="sm:hidden divide-y divide-[var(--hairline-soft)]">
+            {COMPARISON_MATRIX.map((row, i) => (
+              <div class="p-5">
+                <div class="text-[14px] font-semibold text-[var(--ink)] leading-snug mb-3">
+                  {t(`${PREFIX}.compare_feature_${i + 1}`)}
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  {PLAN_KEYS.map((planKey, j) => (
+                    <div
+                      class={`flex items-center gap-1.5 text-[12px] px-2.5 py-1 rounded-full border ${
+                        row[j]
+                          ? "bg-[var(--success-pale)] text-[var(--success-deep)] border-[var(--success-pale)]"
+                          : "bg-[var(--surface-card)] text-[var(--mute)] border-[var(--hairline-soft)]"
+                      }`}
+                      aria-label={`${t(`${PREFIX}.plan_${planKey}_title`)}: ${row[j] ? includedLabel : notIncludedLabel}`}
+                    >
+                      {row[j] ? (
+                        <LucideIcon name="check" class="h-3 w-3" strokeWidth={3} />
+                      ) : (
+                        <LucideIcon name="minus" class="h-3 w-3" />
+                      )}
+                      <span class="font-semibold">{t(`${PREFIX}.plan_${planKey}_title`)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Desktop */}
+          <table class="hidden sm:table w-full">
+            <thead>
+              <tr class="bg-[var(--surface-card)]">
+                <th class="text-left py-4 px-6 text-[13px] font-semibold text-[var(--mute)]">
+                  {t(`${PREFIX}.compare_feature`)}
+                </th>
+                {PLAN_KEYS.map((planKey) => (
+                  <th class={`py-4 px-6 text-center text-[14px] font-bold ${planKey === "completo" ? "text-[var(--primary)]" : "text-[var(--ink)]"}`}>
+                    {t(`${PREFIX}.plan_${planKey}_title`)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARISON_MATRIX.map((row, i) => (
+                <tr class="border-t border-[var(--hairline-soft)]">
+                  <td class="py-4 px-6 text-[14px] text-[var(--ink)] font-medium">
+                    {t(`${PREFIX}.compare_feature_${i + 1}`)}
+                  </td>
+                  {row.map((included, j) => (
+                    <td class="py-4 px-6 text-center" style={PLAN_KEYS[j] === "completo" ? "background: rgba(232,69,60,0.04)" : undefined}>
+                      {included ? (
+                        <>
+                          <span class="sr-only">{includedLabel}</span>
+                          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[var(--success-pale)] text-[var(--success-deep)] mx-auto">
+                            <LucideIcon name="check" class="h-3.5 w-3.5" strokeWidth={3} />
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span class="sr-only">{notIncludedLabel}</span>
+                          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[var(--surface-card)] text-[var(--ash)] mx-auto">
+                            <LucideIcon name="minus" class="h-3.5 w-3.5" />
+                          </span>
+                        </>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Reveal>
+    </Container>
+  </section>
+
+  <PinRiskReversal prefix={PREFIX} t={t} items={riskItems} background="white" />
+
+  {/* ── FAQ ── */}
+  <section class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pin_faq_title_1`)}
+        accent={t(`${PREFIX}.pin_faq_title_accent`)}
+        sub={t(`${PREFIX}.pin_faq_sub`)}
+        align="center"
+      />
+      <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
+    </Container>
+  </section>
+
+  <PinFinalCta
+    prefix={PREFIX}
+    t={t}
+    consultationStrings={consultationStrings}
+    bgImage="/images/services/homologacion/salamanca-streets-university-garden.webp"
+    sideItemCount={5}
+  />
 </PublicLayout>

@@ -4,6 +4,7 @@
     "universidad": "University",
     "espanol": "Spanish",
     "precios": "Pricing",
+    "blog": "Blog",
     "start": "Book a consultation",
     "start_aria": "Request a consultation on WhatsApp",
     "menu": "Menu",
@@ -224,15 +225,16 @@
       "pin_test_3_name": "Luciana B.",
       "pin_test_3_where": "Bogotá → Granada · Law",
       "pin_final_title": "Start with an expert consultation on your documents.",
-      "pin_final_sub": "Send us your transcript. Within 48 hours, an expert will tell you whether Spain will recognize your degree, in how long, and what it will cost. No card, no commitment.",
-      "pin_final_cta_primary": "Upload my transcript",
+      "pin_final_sub": "Send us your transcript. Within 48 hours, an expert will tell you whether Spain will recognize your degree, in how long, and what it will cost.",
+      "pin_final_cta_primary": "Get an expert consultation",
       "pin_final_cta_secondary": "Talk on WhatsApp",
       "pin_final_side_title": "What we'll send back",
       "pin_final_side_1": "Whether your case is viable",
       "pin_final_side_2": "Estimated timeline (months)",
       "pin_final_side_3": "Total cost, all-in",
       "pin_final_side_4": "Risks & mitigations",
-      "pin_final_side_5": "Recommended path (homologation vs equivalence)"
+      "pin_final_side_5": "Recommended path (homologation vs equivalence)",
+      "hero_cta_consult": "Get an expert consultation"
     },
     "homologacion": {
       "hero_title_1": "Degree Homologation",
@@ -368,7 +370,7 @@
       "pin_hero_subtitle": "Personal advisor, ministry filing, sworn translations and apostilles handled. We move your homologation forward while you live your life — public profession or further study, both routes covered.",
       "pin_hero_cta_primary": "Start my homologation",
       "pin_hero_cta_secondary": "See pricing",
-      "pin_hero_reassure": "30-min expert consultation on eligibility. No commitment.",
+      "pin_hero_reassure": "30-min expert consultation on eligibility.",
       "pin_hero_pill_1": "1700+ dossiers filed",
       "pin_hero_pill_2": "6–12 months typical",
       "pin_hero_badge_years": "1700+",
@@ -470,7 +472,7 @@
       "pin_faq_sub": "What clients ask before booking — answered up front.",
       "pin_final_title": "Bring back your profession in Spain.",
       "pin_final_sub": "30-minute expert consultation on eligibility. We'll review your degree, country of origin and target profession, and tell you, honestly, what's possible.",
-      "pin_final_cta_primary": "Book my eligibility call",
+      "pin_final_cta_primary": "Get an expert consultation",
       "pin_final_cta_secondary": "Talk on WhatsApp",
       "pin_final_side_title": "What you'll leave the call with",
       "pin_final_side_1": "Eligibility verdict — homologation, equivalencia or alternative",
@@ -558,7 +560,7 @@
       "pin_hero_subtitle": "Program selection, application support, EVAU/PCE coordination, enrollment. We handle the entire admission process — public and private universities, undergraduate, master, and FP.",
       "pin_hero_cta_primary": "Find my program",
       "pin_hero_cta_secondary": "See pricing",
-      "pin_hero_reassure": "30-min expert consultation. No commitment.",
+      "pin_hero_reassure": "30-min expert consultation.",
       "pin_hero_pill_1": "1700+ admissions",
       "pin_hero_pill_2": "From 4 months to admission",
       "pin_hero_badge_years": "80+",
@@ -647,7 +649,7 @@
       "pin_test_3_where": "Caracas → Madrid · FP Superior",
       "pin_final_title": "Pick your university. We handle the rest.",
       "pin_final_sub": "30-minute expert consultation, strategy-focused. We'll map your profile against current admission cycles and tell you, honestly, where you can get in.",
-      "pin_final_cta_primary": "Book my strategy call",
+      "pin_final_cta_primary": "Get an expert consultation",
       "pin_final_cta_secondary": "Talk on WhatsApp",
       "pin_final_side_title": "What you'll leave the call with",
       "pin_final_side_1": "Shortlist of 5 programs matched to your profile",
@@ -755,7 +757,17 @@
       "faq_5_q": "How are you different from a regular language school?",
       "faq_5_a": "We work exclusively with Russian-speaking students in Spain. We know the context: homologation, NIE, university admission. Our teachers understand the typical challenges of transitioning from Russian to Spanish. Plus a personal dashboard with progress tracking.",
       "cta_title": "Start speaking Spanish",
-      "cta_subtitle": "Trial lesson with an expert consultation. Your teacher will assess your level and create a study plan."
+      "cta_subtitle": "Trial lesson with an expert consultation. Your teacher will assess your level and create a study plan.",
+      "pin_final_title": "Start speaking Spanish",
+      "pin_final_sub": "A trial class with an expert: we assess your level and design a study plan tailored to you.",
+      "pin_final_cta_primary": "Book a trial class",
+      "pin_final_cta_secondary": "Chat on WhatsApp",
+      "pin_final_side_title": "What you'll get from the trial class",
+      "pin_final_side_1": "Assessment of your current level (A1–C2)",
+      "pin_final_side_2": "Personalized study plan",
+      "pin_final_side_3": "Recommended format and intensity",
+      "pin_final_side_4": "Realistic goal — DELE / SIELE if relevant",
+      "pin_final_side_5": "Schedule and next steps"
     },
     "precios": {
       "hero_title_1": "98% of cases — successful.",
@@ -892,7 +904,7 @@
       "pin_faq_sub": "What clients ask before booking — answered up front.",
       "pin_final_title": "Choose your plan. We'll handle the rest.",
       "pin_final_sub": "30-minute expert consultation before you pay anything. Worst case: you leave with a clear plan and a realistic budget.",
-      "pin_final_cta_primary": "Book my discovery call",
+      "pin_final_cta_primary": "Get an expert consultation",
       "pin_final_cta_secondary": "Talk on WhatsApp",
       "pin_final_side_title": "What you'll leave the call with",
       "pin_final_side_1": "Eligibility verdict for your case",
@@ -948,6 +960,22 @@
       "manage_title": "Managing cookies",
       "manage_body": "You can block or delete cookies through your browser settings. Doing so will not affect your use of the site."
     },
+    "blog": {
+      "title": "Blog",
+      "subtitle": "Expert articles",
+      "read_more": "Read article",
+      "all_posts": "All articles",
+      "min_read": "min read",
+      "published": "Published",
+      "updated": "Updated",
+      "by": "By",
+      "share": "Share",
+      "related": "Related articles",
+      "back_to_blog": "Back to blog",
+      "no_posts": "Articles coming soon. Stay tuned!",
+      "tags": "Topics",
+      "all": "All"
+    },
     "cookie_banner": {
       "title": "Cookies and privacy",
       "body": "We use technical cookies necessary for the site to function. With your permission we may also use analytics cookies to understand how the site is used. We do not use advertising cookies.",
@@ -961,6 +989,38 @@
       "analytics_desc": "Help us understand how the site is used so we can improve it. Anonymous.",
       "manage": "Configure",
       "close_aria": "Close"
+    },
+    "blog_cta": {
+      "badge": "An expert reply within 48 hours",
+      "title": "Find out if your degree will be recognised",
+      "body": "Book a consultation: send a photo of your degree and transcript — an expert will review your case and give you the verdict on homologation, real timelines and the cost.",
+      "wa_button": "Send my degree on WhatsApp",
+      "secondary": "See pricing",
+      "reassure": "1,700+ cases · 98% favourable since 2009",
+      "wa_message": "Hi! I'd like to book a consultation for the homologation of my degree. I'm attaching a photo of my degree and transcript."
+    }
+  },
+  "lp": {
+    "hom": {
+      "eyebrow": "Official recognition before the Ministry",
+      "subtitle": "A personal tutor handles your case from start to finish. You track every step in real time.",
+      "wa_cta": "Message us on WhatsApp",
+      "wa_reassure": "Reply in minutes",
+      "chip_years": "15+ years of experience",
+      "chip_ministry": "Filed with the Ministry of Education",
+      "chip_world": "Clients worldwide",
+      "logos_title": "Our clients study at Spain's top universities",
+      "why_title": "Why people",
+      "why_accent": "trust us",
+      "risk_title": "We don't charge until we review your case",
+      "risk_desc": "First an expert studies your file and gives you a realistic assessment. If we can't help, we'll tell you.",
+      "proof_eyebrow": "Real case",
+      "steps_title": "How it",
+      "steps_accent": "works",
+      "final_title": "Start your homologation",
+      "final_accent": "today",
+      "final_sub": "Talk to an expert on WhatsApp and get a realistic assessment of your case.",
+      "wa_message": "Hi, I want to homologate my degree in Spain. Can you help me?"
     }
   }
 }

@@ -1,13 +1,15 @@
 import { Reveal } from "@/components/public/animations";
-import { useTranslation } from "@/lib/i18n/react";
+import { useTranslation, useI18n } from "@/lib/i18n/react";
+import { countFaq } from "@/lib/i18n";
 
 interface FaqSectionProps {
   translationPrefix: string;
-  count: number;
 }
 
-export function FaqSection({ translationPrefix, count }: FaqSectionProps) {
+export function FaqSection({ translationPrefix }: FaqSectionProps) {
   const { t } = useTranslation();
+  const { messages } = useI18n();
+  const count = countFaq(messages, translationPrefix);
 
   return (
     <Reveal direction="up" delay={100}>
