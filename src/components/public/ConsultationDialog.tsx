@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Clock, Flame, MessageCircle, CheckCircle2, Shield } from "lucide-react";
+import { Clock, Flame, MessageCircle, CheckCircle2, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -140,15 +140,25 @@ export function ConsultationDialogButton({
   strings,
   triggerLabel,
   triggerClass,
+  arrow = false,
 }: {
   strings: ConsultationStrings;
   triggerLabel: string;
   triggerClass?: string;
+  /** Render a trailing arrow that slides on hover (the trigger must use `group`). */
+  arrow?: boolean;
 }) {
   return (
     <ConsultationDialogView
       strings={strings}
-      trigger={<button className={triggerClass}>{triggerLabel}</button>}
+      trigger={
+        <button type="button" className={triggerClass}>
+          {triggerLabel}
+          {arrow && (
+            <ArrowRight className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" />
+          )}
+        </button>
+      }
     />
   );
 }

@@ -1,0 +1,19 @@
+---
+// Static twin of the React <Button>. Reuses the same cva definition so the
+// resolved classes are identical. Renders a <button>; wrap in <a> for links.
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "link";
+  size?: "default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
+  class?: string;
+  type?: "button" | "submit" | "reset";
+}
+const { variant = "default", size = "default", class: className, type = "button" } = Astro.props;
+const cls = cn(buttonVariants({ variant, size, className }));
+---
+
+<button class={cls} data-slot="button" data-variant={variant} data-size={size} type={type}>
+  <slot />
+</button>

@@ -1,0 +1,34 @@
+---
+// Static twin of <FeatureCardGrid>. Items are pre-resolved {iconName,title,desc}.
+import { cn } from "@/lib/utils";
+import Reveal from "@/components/public/Reveal.astro";
+import FeatureIcon from "@/components/public/FeatureIcon.astro";
+
+interface FeatureItem {
+  iconName: string;
+  title: string;
+  desc: string;
+}
+interface Props {
+  items: readonly FeatureItem[];
+  columns?: 2 | 3 | 4;
+}
+const { items, columns = 3 } = Astro.props;
+const colClass: Record<2 | 3 | 4, string> = {
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-2 lg:grid-cols-4",
+};
+---
+
+<div class={cn("grid gap-6", colClass[columns])}>
+  {items.map(({ iconName, title, desc }, i) => (
+    <Reveal direction="up" delay={i * 100}>
+      <div class="flex flex-col items-center text-center p-6 rounded-2xl bg-white border border-border hover:shadow-lg transition-shadow duration-300 h-full">
+        <FeatureIcon iconName={iconName} class="mb-4" />
+        <h3 class="text-base font-semibold text-[var(--ink)] mb-2">{title}</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+      </div>
+    </Reveal>
+  ))}
+</div>

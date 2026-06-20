@@ -298,5 +298,62 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
 
       document.addEventListener("astro:page-load", initReveal);
     </script>
+
+    <script>
+      // Count-up for <Counter> spans + 3D tilt for <TiltCard> wrappers. Both are
+      // no-ops on pages without the respective elements, and both bail under
+      // reduced-motion (the counter just leaves its final value in place).
+      function initCounters() {
+        const els = document.querySelectorAll<HTMLElement>("[data-counter]");
+        if (els.length === 0) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              obs.unobserve(entry.target);
+              const el = entry.target as HTMLElement;
+              const value = Number(el.dataset.value ?? "0");
+              const suffix = el.dataset.suffix ?? "";
+              const duration = 1200;
+              const step = 16;
+              const increment = value / (duration / step);
+              let current = 0;
+              const id = window.setInterval(() => {
+                current += increment;
+                if (current >= value) {
+                  el.textContent = `${value}${suffix}`;
+                  window.clearInterval(id);
+                } else {
+                  el.textContent = `${Math.floor(current)}${suffix}`;
+                }
+              }, step);
+            }
+          },
+          { threshold: 0.1 },
+        );
+        els.forEach((el) => obs.observe(el));
+      }
+
+      function initTilt() {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
+          el.addEventListener("pointermove", (e) => {
+            const r = el.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            el.style.transform = `perspective(600px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg)`;
+          });
+          el.addEventListener("pointerleave", () => {
+            el.style.transform = "";
+          });
+        });
+      }
+
+      document.addEventListener("astro:page-load", () => {
+        initCounters();
+        initTilt();
+      });
+    </script>
   </body>
 </html>

@@ -1,0 +1,13 @@
+---
+// Static twin of <AnimatedCounter>. Renders the final value (so no-JS and
+// reduced-motion users see the real number); the global counter script in
+// PublicLayout animates it up from 0 when it scrolls into view.
+interface Props {
+  value: number;
+  suffix?: string;
+  class?: string;
+}
+const { value, suffix = "", class: className } = Astro.props;
+---
+
+<span data-counter data-value={value} data-suffix={suffix} class={className}>{value}{suffix}</span>

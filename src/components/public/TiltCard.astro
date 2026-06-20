@@ -1,0 +1,12 @@
+---
+// Static twin of <TiltCard>. The 3D mouse-tilt is driven by the global tilt
+// handler in PublicLayout (data-tilt); reduced-motion users get no tilt.
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div data-tilt class:list={["transition-transform duration-200 ease-out", className]}>
+  <slot />
+</div>

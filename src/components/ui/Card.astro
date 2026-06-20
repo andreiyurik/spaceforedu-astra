@@ -1,0 +1,20 @@
+---
+// Static twin of <Card> from ui/card.tsx.
+import { cn } from "@/lib/utils";
+interface Props {
+  class?: string;
+  size?: "default" | "sm";
+}
+const { class: className, size = "default" } = Astro.props;
+---
+
+<div
+  data-slot="card"
+  data-size={size}
+  class={cn(
+    "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10",
+    className,
+  )}
+>
+  <slot />
+</div>

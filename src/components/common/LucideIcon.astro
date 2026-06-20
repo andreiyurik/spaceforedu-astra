@@ -27,11 +27,10 @@ const children = LUCIDE_PATHS[name] ?? [];
   class={className}
   aria-hidden="true"
 >
-  {children.map((child) =>
-    child[0] === "circle" ? (
-      <circle cx={child[1].cx} cy={child[1].cy} r={child[1].r} />
-    ) : (
-      <path d={child[1].d} />
-    ),
-  )}
+  {children.map((child) => {
+    if (child[0] === "circle") return <circle cx={child[1].cx} cy={child[1].cy} r={child[1].r} />;
+    if (child[0] === "rect") return <rect width={child[1].width} height={child[1].height} x={child[1].x} y={child[1].y} rx={child[1].rx} />;
+    if (child[0] === "line") return <line x1={child[1].x1} x2={child[1].x2} y1={child[1].y1} y2={child[1].y2} />;
+    return <path d={child[1].d} />;
+  })}
 </svg>
