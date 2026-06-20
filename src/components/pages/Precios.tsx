@@ -102,7 +102,7 @@ export function PreciosPage({
       <FaqBlock />
       <PinFinalCta
         prefix={PREFIX}
-        bgImage="/images/lifestyle/spain-flag-waving-blue-sky.webp"
+        bgImage="/images/services/homologacion/salamanca-streets-university-garden.webp"
         sideItemCount={5}
       />
     </I18nProvider>

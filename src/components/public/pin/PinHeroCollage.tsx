@@ -22,6 +22,8 @@ export interface PinHeroPill {
   kind: "dot" | "icon";
   icon?: LucideIcon;
   labelKey: string;
+  /** Explicit placement on the collage. Defaults to index-based (first = top-right, second = bottom-left). */
+  pos?: "tr" | "bl";
 }
 
 export function PinHeroCollage({
@@ -39,7 +41,7 @@ export function PinHeroCollage({
   main: CollageImage;
   sideRight: CollageImage;
   sideLeft: CollageImage;
-  pills: [PinHeroPill, PinHeroPill];
+  pills?: PinHeroPill[];
   badgeValueKey?: string;
   badgeLabelKey?: string;
 }) {
@@ -136,10 +138,11 @@ export function PinHeroCollage({
                   {k(badgeLabelKey)}
                 </small>
               </div>
-              {pills.map((pill, i) => {
+              {pills?.map((pill, i) => {
                 const Icon = pill.icon;
+                const placement = pill.pos ?? (i === 0 ? "tr" : "bl");
                 const pos =
-                  i === 0
+                  placement === "tr"
                     ? "top-[36%] right-[-8px]"
                     : "bottom-[2%] left-[40%]";
                 return (

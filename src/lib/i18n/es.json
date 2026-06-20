@@ -225,15 +225,16 @@
       "pin_test_3_name": "Luciana B.",
       "pin_test_3_where": "Bogotá → Granada · Derecho",
       "pin_final_title": "Empiece con una consulta con un experto sobre sus documentos.",
-      "pin_final_sub": "Envíenos su expediente. En 48 horas, un experto le dirá si España reconocerá su título, en cuánto tiempo y cuánto costará. Sin tarjeta, sin compromiso.",
-      "pin_final_cta_primary": "Subir mi expediente",
+      "pin_final_sub": "Envíenos su expediente. En 48 horas, un experto le dirá si España reconocerá su título, en cuánto tiempo y cuánto costará.",
+      "pin_final_cta_primary": "Consultar con un experto",
       "pin_final_cta_secondary": "Hablar por WhatsApp",
       "pin_final_side_title": "Lo que le enviaremos",
       "pin_final_side_1": "Si su caso es viable",
       "pin_final_side_2": "Plazo estimado (meses)",
       "pin_final_side_3": "Coste total, todo incluido",
       "pin_final_side_4": "Riesgos y mitigaciones",
-      "pin_final_side_5": "Vía recomendada (homologación o equivalencia)"
+      "pin_final_side_5": "Vía recomendada (homologación o equivalencia)",
+      "hero_cta_consult": "Consultar con un experto"
     },
     "homologacion": {
       "hero_title_1": "Homologación de títulos",
@@ -471,7 +472,7 @@
       "pin_faq_sub": "Lo que preguntan los clientes antes de reservar — resuelto de antemano.",
       "pin_final_title": "Recupere su profesión en España.",
       "pin_final_sub": "Consulta con un experto de 30 minutos. Revisaremos su título, su país de origen y la profesión objetivo, y le diremos con honestidad qué es posible.",
-      "pin_final_cta_primary": "Reservar llamada de elegibilidad",
+      "pin_final_cta_primary": "Consultar con un experto",
       "pin_final_cta_secondary": "Hablar por WhatsApp",
       "pin_final_side_title": "Lo que se llevará de la llamada",
       "pin_final_side_1": "Veredicto de elegibilidad — homologación, equivalencia o alternativa",
@@ -559,7 +560,7 @@
       "pin_hero_subtitle": "Selección de programa, gestión de la candidatura, coordinación de EVAU/PCE, matrícula. Nos ocupamos de todo el proceso — universidades públicas y privadas, grado, máster y FP.",
       "pin_hero_cta_primary": "Encontrar mi programa",
       "pin_hero_cta_secondary": "Ver precios",
-      "pin_hero_reassure": "Consulta con un experto de 30 min. Sin compromiso.",
+      "pin_hero_reassure": "Consulta con un experto de 30 min.",
       "pin_hero_pill_1": "1700+ admisiones",
       "pin_hero_pill_2": "Desde 4 meses hasta la admisión",
       "pin_hero_badge_years": "80+",
@@ -648,7 +649,7 @@
       "pin_test_3_where": "Caracas → Madrid · FP Superior",
       "pin_final_title": "Elija su universidad. Del resto nos encargamos nosotros.",
       "pin_final_sub": "Consulta con un experto de 30 minutos, enfocada en estrategia. Cruzaremos su perfil con los ciclos de admisión actuales y le diremos, con honestidad, dónde puede entrar.",
-      "pin_final_cta_primary": "Reservar llamada de estrategia",
+      "pin_final_cta_primary": "Consultar con un experto",
       "pin_final_cta_secondary": "Hablar por WhatsApp",
       "pin_final_side_title": "Lo que se llevará de la llamada",
       "pin_final_side_1": "Lista corta de 5 programas según su perfil",
@@ -756,7 +757,17 @@
       "faq_5_q": "¿En qué os diferenciáis de una academia de idiomas normal?",
       "faq_5_a": "Trabajamos exclusivamente con estudiantes rusohablantes en España. Conocemos el contexto: homologación, NIE, admisión. Los profesores entienden las dificultades típicas de la transición del ruso al español. Además, panel personal con seguimiento del progreso.",
       "cta_title": "Empieza a hablar español",
-      "cta_subtitle": "Clase de prueba con consulta con un experto. El profesor evaluará tu nivel y elaborará un plan de estudio."
+      "cta_subtitle": "Clase de prueba con consulta con un experto. El profesor evaluará tu nivel y elaborará un plan de estudio.",
+      "pin_final_title": "Empieza a hablar español",
+      "pin_final_sub": "Clase de prueba con un experto: evaluamos tu nivel y diseñamos un plan de estudio a tu medida.",
+      "pin_final_cta_primary": "Reservar clase de prueba",
+      "pin_final_cta_secondary": "Hablar por WhatsApp",
+      "pin_final_side_title": "Lo que se llevará de la clase de prueba",
+      "pin_final_side_1": "Evaluación de tu nivel actual (A1–C2)",
+      "pin_final_side_2": "Plan de estudio personalizado",
+      "pin_final_side_3": "Formato e intensidad recomendados",
+      "pin_final_side_4": "Objetivo realista — DELE / SIELE si aplica",
+      "pin_final_side_5": "Horarios y primeros pasos"
     },
     "precios": {
       "hero_title_1": "Sin riesgos,",
@@ -893,7 +904,7 @@
       "pin_faq_sub": "Lo que preguntan los clientes antes de reservar — resuelto de antemano.",
       "pin_final_title": "Elija su plan. Del resto nos encargamos nosotros.",
       "pin_final_sub": "Consulta con un experto de 30 minutos antes de pagar nada. En el peor caso, sale con un plan claro y un presupuesto realista.",
-      "pin_final_cta_primary": "Reservar llamada de descubrimiento",
+      "pin_final_cta_primary": "Consultar con un experto",
       "pin_final_cta_secondary": "Hablar por WhatsApp",
       "pin_final_side_title": "Lo que se llevará de la llamada",
       "pin_final_side_1": "Veredicto de elegibilidad para su caso",
@@ -978,6 +989,38 @@
       "analytics_desc": "Nos ayudan a entender cómo se usa el sitio para mejorarlo. Anónimas.",
       "manage": "Configurar",
       "close_aria": "Cerrar"
+    },
+    "blog_cta": {
+      "badge": "Respuesta de un experto en 48 horas",
+      "title": "Descubre si homologan tu título",
+      "body": "Reserva una consulta: envía una foto del título y del expediente — un experto analizará tu caso y te dará el veredicto sobre la homologación, los plazos reales y el coste.",
+      "wa_button": "Enviar mi título por WhatsApp",
+      "secondary": "Ver tarifas",
+      "reassure": "1700+ expedientes · 98% favorables desde 2009",
+      "wa_message": "¡Hola! Quiero reservar una consulta para la homologación de mi título. Adjunto foto del título y del expediente académico."
+    }
+  },
+  "lp": {
+    "hom": {
+      "eyebrow": "Homologación oficial ante el Ministerio",
+      "subtitle": "Un tutor personal lleva tu expediente de principio a fin. Tú sigues cada paso en tiempo real.",
+      "wa_cta": "Escríbenos por WhatsApp",
+      "wa_reassure": "Respuesta en minutos",
+      "chip_years": "+15 años de experiencia",
+      "chip_ministry": "Trámite ante el Ministerio de Educación",
+      "chip_world": "Clientes en todo el mundo",
+      "logos_title": "Nuestros clientes estudian en las mejores universidades de España",
+      "why_title": "Por qué confían",
+      "why_accent": "en nosotros",
+      "risk_title": "No cobramos hasta revisar tu caso",
+      "risk_desc": "Primero un experto estudia tu expediente y te da un pronóstico realista. Si no podemos ayudarte, te lo decimos.",
+      "proof_eyebrow": "Caso real",
+      "steps_title": "Cómo",
+      "steps_accent": "funciona",
+      "final_title": "Empieza tu homologación",
+      "final_accent": "hoy",
+      "final_sub": "Habla con un experto por WhatsApp y recibe un pronóstico realista de tu caso.",
+      "wa_message": "Hola, quiero homologar mi título en España. ¿Pueden ayudarme?"
     }
   }
 }
