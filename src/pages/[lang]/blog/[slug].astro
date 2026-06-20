@@ -13,7 +13,6 @@ import {
 } from "@/lib/constants";
 import {
   getAllBlogPosts,
-  formatDate,
   estimateReadingTime,
   extractFaq,
   getLastModified,
@@ -192,10 +191,6 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
                 </div>
               </div>
               <span class="hidden sm:inline" aria-hidden="true">·</span>
-              <time datetime={post.data.publishedAt.toISOString()}>
-                {formatDate(post.data.publishedAt, locale)}
-              </time>
-              <span aria-hidden="true">·</span>
               <span>{readTime} {t("public.blog.min_read")}</span>
             </div>
 
@@ -234,14 +229,6 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
           <div class="prose-article">
             <Content />
           </div>
-
-          {
-            updatedAt.getTime() !== post.data.publishedAt.getTime() && (
-              <div class="mt-8 text-sm text-[var(--ash)] italic">
-                {t("public.blog.updated")}: {formatDate(updatedAt, locale)}
-              </div>
-            )
-          }
         </div>
 
         <!-- Sidebar -->
@@ -303,11 +290,8 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
                         href={`/${locale}/blog/${r.data.slug}/`}
                         class="group block"
                       >
-                        <div class="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug mb-1">
+                        <div class="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug">
                           {r.data.title}
-                        </div>
-                        <div class="text-[12px] text-[var(--ash)]">
-                          {formatDate(r.data.publishedAt, locale)}
                         </div>
                       </a>
                     </li>
@@ -332,11 +316,8 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
                   href={`/${locale}/blog/${r.data.slug}/`}
                   class="group pin-card p-5"
                 >
-                  <div class="font-semibold text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug mb-2">
+                  <div class="font-semibold text-[var(--ink)] group-hover:text-[var(--primary)] transition-colors leading-snug">
                     {r.data.title}
-                  </div>
-                  <div class="text-[13px] text-[var(--ash)]">
-                    {formatDate(r.data.publishedAt, locale)}
                   </div>
                 </a>
               ))}

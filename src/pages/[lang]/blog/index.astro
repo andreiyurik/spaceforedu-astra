@@ -3,7 +3,7 @@ import PublicLayout from "@/layouts/PublicLayout.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { LOCALES, type Locale } from "@/lib/constants";
-import { getBlogPosts, formatDate, estimateReadingTime } from "@/lib/blog";
+import { getBlogPosts, estimateReadingTime } from "@/lib/blog";
 import { getSeo } from "@/lib/seo";
 import { website, breadcrumbList } from "@/lib/structured-data";
 
@@ -147,10 +147,6 @@ const CARD_ACCENTS = [
                     </p>
                     <div class="mt-auto flex items-center justify-between text-[13px] text-[var(--ash)]">
                       <div class="flex items-center gap-3">
-                        <time datetime={post.data.publishedAt.toISOString()}>
-                          {formatDate(post.data.publishedAt, locale)}
-                        </time>
-                        <span aria-hidden="true">·</span>
                         <span>
                           {readTime} {t("public.blog.min_read")}
                         </span>
