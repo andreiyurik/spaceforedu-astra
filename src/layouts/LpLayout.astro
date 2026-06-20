@@ -11,6 +11,8 @@ import { getMessages, makeT } from "@/lib/i18n";
 import { organization } from "@/lib/structured-data";
 import interTightLatin from "@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url";
 import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import interTightCyrillic from "@fontsource-variable/inter-tight/files/inter-tight-cyrillic-wght-normal.woff2?url";
+import interCyrillic from "@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -26,6 +28,11 @@ const t = makeT(getMessages(locale));
 const skipLabel = t("a11y.skip_to_content");
 const homeHref = publicRoute(publicPages.home, locale);
 const year = new Date().getFullYear();
+// Preload the font subset that matches the page language (Cyrillic on /ru/) to
+// avoid a flash of fallback text on non-Latin locales.
+const useCyrillic = locale === "ru";
+const interTightFont = useCyrillic ? interTightCyrillic : interTightLatin;
+const interFont = useCyrillic ? interCyrillic : interLatin;
 ---
 
 <!doctype html>
@@ -46,8 +53,8 @@ const year = new Date().getFullYear();
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Space for Edu" />
 
-    <link rel="preload" as="font" href={interTightLatin} type="font/woff2" crossorigin="anonymous" />
-    <link rel="preload" as="font" href={interLatin} type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" href={interTightFont} type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" href={interFont} type="font/woff2" crossorigin="anonymous" />
     {heroImage && (
       <link rel="preload" as="image" href={heroImage} type="image/webp" fetchpriority="high" media="(min-width: 768px)" />
     )}

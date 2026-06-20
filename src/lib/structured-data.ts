@@ -1,5 +1,5 @@
 import type { Messages } from "@/lib/i18n";
-import { lookup } from "@/lib/i18n";
+import { lookup, countFaq } from "@/lib/i18n";
 import {
   SITE_URL,
   CONTACT_WHATSAPP,
@@ -272,11 +272,15 @@ export function blogFaqPage(
   };
 }
 
-/** Build a FAQPage JSON-LD from i18n keys matching `<prefix>.faq_<i>_q/_a`. */
+/**
+ * Build a FAQPage JSON-LD from i18n keys matching `<prefix>.faq_<i>_q/_a`.
+ * The count is derived from the bundle so the structured data always matches
+ * what `<FaqSection>` renders — no magic number to keep in sync.
+ */
 export function faqPage(
   messages: Messages,
   prefix: string,
-  count: number,
+  count: number = countFaq(messages, prefix),
 ): object | null {
   const mainEntity = [];
   for (let i = 1; i <= count; i++) {

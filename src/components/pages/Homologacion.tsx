@@ -63,7 +63,7 @@ export function HomologacionPage({
   messages,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   heroMain?: HeroImageProps;
 }) {
@@ -78,7 +78,7 @@ function PageBody({
   locale,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   heroMain?: HeroImageProps;
 }) {
   const { t } = useTranslation();
@@ -165,7 +165,7 @@ function PageBody({
             sub={t(`${PREFIX}.pin_faq_sub`)}
             align="center"
           />
-          <FaqSection translationPrefix={PREFIX} count={5} />
+          <FaqSection translationPrefix={PREFIX} />
         </Container>
       </section>
 

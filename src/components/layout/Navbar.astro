@@ -1,13 +1,13 @@
 ---
 import { publicRoute, publicPages, whatsappLink } from "@/lib/routes";
-import { CONTACT_WHATSAPP } from "@/lib/constants";
+import { CONTACT_WHATSAPP, type Locale } from "@/lib/constants";
 import { getMessages, makeT } from "@/lib/i18n";
 import { formatPhone } from "@/lib/utils";
 import MobileNav from "@/components/layout/MobileNav.tsx";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher.astro";
 
 interface Props {
-  locale: string;
+  locale: Locale;
   currentPath: string;
 }
 

@@ -3,7 +3,7 @@ import LpLayout from "@/layouts/LpLayout.astro";
 import { LpHomologacionPage } from "@/components/pages/LpHomologacion";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, CONTACT_WHATSAPP, type Locale } from "@/lib/constants";
+import { LOCALES, CONTACT_WHATSAPP, assertLocale } from "@/lib/constants";
 import { whatsappLink } from "@/lib/routes";
 
 export function getStaticPaths() {
@@ -11,7 +11,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("homologacion", locale);

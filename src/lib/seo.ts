@@ -162,7 +162,7 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
   },
 };
 
-export function getSeo(page: PageKey, locale: Locale | string) {
+export function getSeo(page: PageKey, locale: Locale) {
   const bundle = SEO[page];
-  return bundle[(locale as Locale) in bundle ? (locale as Locale) : "es"];
+  return bundle[locale] ?? bundle.es;
 }

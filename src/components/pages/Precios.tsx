@@ -87,7 +87,7 @@ export function PreciosPage({
   locale,
   messages,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
 }) {
   return (
@@ -495,7 +495,7 @@ function FaqBlock() {
           sub={t(`${PREFIX}.pin_faq_sub`)}
           align="center"
         />
-        <FaqSection translationPrefix={PREFIX} count={6} />
+        <FaqSection translationPrefix={PREFIX} />
       </Container>
     </section>
   );

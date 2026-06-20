@@ -9,6 +9,7 @@ import {
   SOCIAL_LINKEDIN,
   SOCIAL_TWITTER,
   SOCIAL_TELEGRAM,
+  assertLocale,
   type Locale,
 } from "@/lib/constants";
 import {
@@ -31,7 +32,7 @@ export async function getStaticPaths() {
 
 const { post, allPosts } = Astro.props;
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 

@@ -1,6 +1,6 @@
 import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
-import { LOCALES, SITE_URL, type Locale } from "@/lib/constants";
+import { LOCALES, SITE_URL, assertLocale, type Locale } from "@/lib/constants";
 import { getBlogPosts } from "@/lib/blog";
 
 const FEED_TITLES: Record<Locale, { title: string; description: string }> = {
@@ -23,7 +23,7 @@ export function getStaticPaths() {
 }
 
 export async function GET(context: APIContext) {
-  const locale = context.params.lang as Locale;
+  const locale = assertLocale(context.params.lang);
   const posts = await getBlogPosts(locale);
   const meta = FEED_TITLES[locale] ?? FEED_TITLES.es;
 

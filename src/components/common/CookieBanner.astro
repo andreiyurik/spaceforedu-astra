@@ -1,9 +1,10 @@
 ---
 import { getMessages, makeT } from "@/lib/i18n";
 import { publicRoute, publicPages } from "@/lib/routes";
+import type { Locale } from "@/lib/constants";
 
 interface Props {
-  locale: string;
+  locale: Locale;
 }
 
 const { locale } = Astro.props;

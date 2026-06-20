@@ -31,7 +31,7 @@ export function LpHomologacionPage({
   messages,
   waHref,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   waHref: string;
 }) {

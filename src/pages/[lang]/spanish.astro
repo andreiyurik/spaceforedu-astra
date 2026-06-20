@@ -5,7 +5,7 @@ import { EspanolPage } from "@/components/pages/Espanol";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
+import { LOCALES, assertLocale } from "@/lib/constants";
 import { publicPages } from "@/lib/routes";
 import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
 import heroSrc from "@/assets/images/services/espanol/students-spanish-class-focused.webp";
@@ -15,7 +15,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("espanol", locale);
@@ -28,7 +28,7 @@ const serviceLd = service({
   serviceType: "Spanish language course",
   audience: "International students and professionals learning Spanish in Spain or online",
 });
-const faqLd = faqPage(messages, "public.espanol", 5);
+const faqLd = faqPage(messages, "public.espanol");
 const breadcrumbLd = breadcrumbList(locale, t("nav.espanol"), publicPages.espanol);
 
 const widths = [480, 768, 1024, 1280];

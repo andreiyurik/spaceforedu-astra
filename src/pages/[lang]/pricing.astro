@@ -4,7 +4,7 @@ import { PreciosPage } from "@/components/pages/Precios";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
+import { LOCALES, assertLocale } from "@/lib/constants";
 import { publicPages } from "@/lib/routes";
 import { faqPage, breadcrumbList } from "@/lib/structured-data";
 
@@ -13,12 +13,12 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("precios", locale);
 
-const faqLd = faqPage(messages, "public.precios", 7);
+const faqLd = faqPage(messages, "public.precios");
 const breadcrumbLd = breadcrumbList(locale, t("nav.precios"), publicPages.precios);
 ---
 

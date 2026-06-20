@@ -5,7 +5,7 @@ import { UniversidadPage } from "@/components/pages/Universidad";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
+import { LOCALES, assertLocale } from "@/lib/constants";
 import { publicPages } from "@/lib/routes";
 import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
 import heroSrc from "@/assets/images/lifestyle/graduates-celebration-success.webp";
@@ -15,7 +15,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const seo = getSeo("universidad", locale);
@@ -28,7 +28,7 @@ const serviceLd = service({
   serviceType: "University admission",
   audience: "International students seeking to enrol in Spanish universities",
 });
-const faqLd = faqPage(messages, "public.universidad", 5);
+const faqLd = faqPage(messages, "public.universidad");
 const breadcrumbLd = breadcrumbList(locale, t("nav.universidad"), publicPages.universidad);
 
 const widths = [480, 768, 1024, 1280];

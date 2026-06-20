@@ -16,8 +16,8 @@ export const LOCALES = ["es", "en", "ru"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "es";
 
-export function assertLocale(lang: string): Locale {
-  if (LOCALES.includes(lang as Locale)) return lang as Locale;
+export function assertLocale(lang: string | undefined): Locale {
+  if (lang != null && LOCALES.includes(lang as Locale)) return lang as Locale;
   throw new Error(`Invalid locale: ${lang}`);
 }
 

@@ -12,7 +12,7 @@ export const publicPages = {
   blog: "blog",
 } as const;
 
-export function publicRoute(page: string, locale: Locale | string): string {
+export function publicRoute(page: string, locale: Locale): string {
   return page === "" ? `/${locale}/` : `/${locale}/${page}/`;
 }
 

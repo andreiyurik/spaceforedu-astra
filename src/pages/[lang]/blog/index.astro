@@ -2,7 +2,7 @@
 import PublicLayout from "@/layouts/PublicLayout.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages, makeT } from "@/lib/i18n";
-import { LOCALES, type Locale } from "@/lib/constants";
+import { LOCALES, assertLocale } from "@/lib/constants";
 import { getBlogPosts, estimateReadingTime } from "@/lib/blog";
 import { getSeo } from "@/lib/seo";
 import { website, breadcrumbList } from "@/lib/structured-data";
@@ -12,7 +12,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const t = makeT(messages);
 const posts = await getBlogPosts(locale);

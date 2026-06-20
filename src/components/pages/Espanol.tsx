@@ -58,7 +58,7 @@ export function EspanolPage({
   messages,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
   heroMain?: HeroImageProps;
 }) {
@@ -81,7 +81,7 @@ function PageBody({
   locale,
   heroMain,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   heroMain?: HeroImageProps;
 }) {
   const { t } = useTranslation();
@@ -295,7 +295,7 @@ function PageBody({
 
       <PublicSection className="bg-white">
         <SectionHeading title={t("public.espanol.faq_title")} />
-        <FaqSection translationPrefix="public.espanol" count={5} />
+        <FaqSection translationPrefix="public.espanol" />
       </PublicSection>
 
       <PinFinalCta

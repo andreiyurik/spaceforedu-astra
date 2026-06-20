@@ -119,7 +119,7 @@ export function StickyCtaBar({
   locale,
   messages,
 }: {
-  locale: Locale | string;
+  locale: Locale;
   messages: Messages;
 }) {
   return (

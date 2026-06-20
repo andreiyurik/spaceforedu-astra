@@ -1,11 +1,11 @@
 ---
 import { getMessages, makeT } from "@/lib/i18n";
 import { publicRoute, publicPages, whatsappLink } from "@/lib/routes";
-import { CONTACT_WHATSAPP } from "@/lib/constants";
+import { CONTACT_WHATSAPP, type Locale } from "@/lib/constants";
 import { ICON_PATHS } from "@/lib/icon-paths";
 
 interface Props {
-  locale: string;
+  locale: Locale;
 }
 
 const { locale } = Astro.props;

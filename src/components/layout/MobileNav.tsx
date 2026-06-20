@@ -18,6 +18,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
+import type { Locale } from "@/lib/constants";
 
 const NAV_ICONS: Record<string, React.ElementType> = {
   homologacion: GraduationCap,
@@ -41,7 +42,7 @@ export default function MobileNav({
   whatsappFormatted,
   phoneAriaLabel,
 }: {
-  locale: string;
+  locale: Locale;
   currentPath: string;
   navLabels: Record<"homologacion" | "universidad" | "espanol" | "precios" | "blog", string>;
   navHrefs: Record<

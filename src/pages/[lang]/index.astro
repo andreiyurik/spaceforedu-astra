@@ -5,7 +5,7 @@ import { HomePage } from "@/components/pages/Home";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { getMessages } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
-import { LOCALES, type Locale } from "@/lib/constants";
+import { LOCALES, assertLocale } from "@/lib/constants";
 import { website, serviceList } from "@/lib/structured-data";
 import heroSrc from "@/assets/images/hero/hero-student-salamanca-docs.webp";
 
@@ -14,7 +14,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const locale = lang as Locale;
+const locale = assertLocale(lang);
 const messages = getMessages(locale);
 const seo = getSeo("home", locale);
 

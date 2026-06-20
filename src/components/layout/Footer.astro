@@ -8,6 +8,7 @@ import {
   SOCIAL_LINKEDIN,
   SOCIAL_TELEGRAM,
   SOCIAL_TWITTER,
+  type Locale,
 } from "@/lib/constants";
 import { formatPhone } from "@/lib/utils";
 import { getMessages, makeT } from "@/lib/i18n";
@@ -24,7 +25,7 @@ const socialLinks = [
 ].filter((s) => s.href);
 
 interface Props {
-  locale: string;
+  locale: Locale;
 }
 
 const { locale } = Astro.props;
