@@ -1,0 +1,49 @@
+---
+// Static twin of CrossSellCard.tsx.
+import Reveal from "@/components/public/Reveal.astro";
+import Container from "@/components/public/Container.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+
+interface CrossSellLink {
+  label: string;
+  href: string;
+}
+interface Props {
+  title: string;
+  description: string;
+  links: CrossSellLink[];
+  badgeLabel: string;
+  badgeIconName: string;
+}
+const { title, description, links, badgeLabel, badgeIconName } = Astro.props;
+---
+
+<section class="py-12 sm:py-16 bg-[var(--surface-soft)]">
+  <Container>
+    <Reveal direction="up">
+      <div class="bg-white rounded-[32px] p-8 sm:p-12 border border-[var(--hairline-soft)]">
+        <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent-blue-deep)] mb-4">
+          <LucideIcon name={badgeIconName} class="h-3.5 w-3.5" />
+          {badgeLabel}
+        </span>
+        <h3 class="font-display text-[24px] sm:text-[32px] font-bold tracking-[-0.025em] leading-[1.15] text-[var(--ink)] m-0 mb-3 max-w-2xl">
+          {title}
+        </h3>
+        <p class="text-[15px] leading-[1.55] text-[var(--mute)] m-0 mb-5 max-w-2xl">
+          {description}
+        </p>
+        <div class="flex flex-wrap gap-2">
+          {links.map(({ label, href }) => (
+            <a
+              href={href}
+              class="inline-flex items-center gap-1.5 bg-[var(--surface-card)] hover:bg-[var(--secondary-bg)] rounded-full px-4 min-h-[44px] text-[14px] font-bold text-[var(--ink)] transition-colors duration-150"
+            >
+              {label}
+              <span aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  </Container>
+</section>

@@ -1,0 +1,88 @@
+---
+// Static twin of PinPricingPlan.tsx. The CTA is either a wa.me link or a
+// ConsultationDialog leaf island (only that button hydrates).
+import Reveal from "@/components/public/Reveal.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import { ConsultationDialogButton } from "@/components/public/ConsultationDialog";
+import type { ConsultationStrings } from "@/lib/consultation";
+
+interface Props {
+  title: string;
+  desc: string;
+  price: string;
+  unit: string;
+  features: string[];
+  cta: string;
+  ctaVariant: "primary" | "secondary";
+  ctaHref?: string;
+  featured?: boolean;
+  popLabel?: string;
+  footnote?: string;
+  consultationStrings: ConsultationStrings;
+}
+const {
+  title, desc, price, unit, features, cta, ctaVariant, ctaHref,
+  featured = false, popLabel, footnote, consultationStrings,
+} = Astro.props;
+
+const cardBg = featured ? "bg-[var(--ink)]" : "bg-white";
+const titleColor = featured ? "text-white" : "text-[var(--ink)]";
+const descColor = featured ? "text-[var(--on-dark-mute)]" : "text-[var(--mute)]";
+const featBorder = featured ? "border-white/12" : "border-[var(--hairline-soft)]";
+const featTextColor = featured ? "text-white" : "text-[var(--body-color)]";
+const priceUnitColor = featured ? "text-[var(--on-dark-mute)]" : "text-[var(--mute)]";
+const btnClass =
+  ctaVariant === "primary"
+    ? "pin-btn pin-btn-primary h-11 w-full"
+    : "pin-btn pin-btn-secondary h-11 w-full";
+---
+
+<Reveal direction="up">
+  <div
+    class:list={[
+      "relative rounded-[32px] p-8 flex flex-col gap-3.5 border h-full",
+      featured ? "border-[var(--ink)]" : "border-[var(--hairline-soft)]",
+      cardBg,
+    ]}
+  >
+    {popLabel && (
+      <span class="absolute top-[-12px] left-8 bg-[var(--primary)] text-white px-3 py-1.5 rounded-full text-[11px] font-bold tracking-[0.06em] uppercase">
+        {popLabel}
+      </span>
+    )}
+    <h3 class={`text-[18px] font-semibold m-0 ${titleColor}`}>{title}</h3>
+    <p class={`text-[13px] m-0 ${descColor}`}>{desc}</p>
+    <div class="flex items-baseline gap-1.5 mt-2 mb-1">
+      <span class={`text-[18px] font-semibold ${priceUnitColor}`}>€</span>
+      <span class={`font-display text-[42px] font-bold tracking-[-0.025em] leading-none ${titleColor}`}>
+        {price}
+      </span>
+      <span class={`text-[13px] ml-1 ${priceUnitColor}`}>{unit}</span>
+    </div>
+    <div class={`flex flex-col gap-2.5 mt-3 mb-4 pt-4 border-t flex-1 ${featBorder}`}>
+      {features.map((f) => (
+        <span class={`flex items-start gap-2 text-[14px] leading-[1.4] ${featTextColor}`}>
+          <LucideIcon name="check" class="h-4 w-4 mt-0.5 shrink-0 text-[var(--primary)]" strokeWidth={2.5} />
+          {f}
+        </span>
+      ))}
+    </div>
+    {footnote && (
+      <p class={`text-[11px] leading-[1.4] -mt-2 mb-1 ${featured ? "text-[var(--on-dark-mute)]" : "text-[var(--ash)]"}`}>
+        {footnote}
+      </p>
+    )}
+    {ctaHref ? (
+      <a href={ctaHref} target="_blank" rel="noopener noreferrer" class="block">
+        <button class={btnClass}>{cta}</button>
+      </a>
+    ) : (
+      <ConsultationDialogButton
+        client:visible
+        strings={consultationStrings}
+        triggerLabel={cta}
+        triggerClass={btnClass}
+      />
+    )}
+  </div>
+</Reveal>

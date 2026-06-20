@@ -1,0 +1,24 @@
+---
+// Static replacement for the React <Reveal>. Renders a plain wrapper div that
+// animates in on scroll via CSS + one shared IntersectionObserver (see the
+// reveal script in PublicLayout) — zero per-component hydration.
+//
+// No-JS / reduced-motion users always see content (the hidden state is gated on
+// the `.js` class, which the inline head script only adds when JS runs, and the
+// whole animation sits inside a `prefers-reduced-motion: no-preference` query).
+interface Props {
+  direction?: "up" | "down" | "left" | "right" | "none";
+  delay?: number;
+  class?: string;
+}
+
+const { direction = "up", delay = 0, class: className } = Astro.props;
+---
+
+<div
+  data-reveal
+  class:list={["reveal", `reveal-${direction}`, className]}
+  style={delay ? `--reveal-delay: ${delay}ms` : undefined}
+>
+  <slot />
+</div>

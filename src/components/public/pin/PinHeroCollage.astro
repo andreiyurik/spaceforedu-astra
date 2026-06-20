@@ -1,0 +1,170 @@
+---
+// Static twin of PinHeroCollage.tsx. Only the primary CTA hydrates
+// (ConsultationDialog leaf island); the collage + copy are static HTML.
+import Reveal from "@/components/public/Reveal.astro";
+import Container from "@/components/public/Container.astro";
+import CollagePicture from "@/components/public/pin/CollagePicture.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import { ConsultationDialogButton } from "@/components/public/ConsultationDialog";
+import type { ConsultationStrings } from "@/lib/consultation";
+
+interface CollageImage {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  srcSet?: string;
+  avifSrcSet?: string;
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+}
+interface HeroPill {
+  kind: "dot" | "icon";
+  iconName?: string;
+  labelKey: string;
+  pos?: "tr" | "bl";
+}
+interface Props {
+  prefix: string;
+  t: (key: string) => string;
+  consultationStrings: ConsultationStrings;
+  secondaryHref: string;
+  main: CollageImage;
+  sideRight: CollageImage;
+  sideLeft: CollageImage;
+  pills?: HeroPill[];
+  badgeValueKey?: string;
+  badgeLabelKey?: string;
+}
+const {
+  prefix, t, consultationStrings, secondaryHref, main, sideRight, sideLeft,
+  pills, badgeValueKey = "pin_hero_badge_years",
+  badgeLabelKey = "pin_hero_badge_years_label",
+} = Astro.props;
+const k = (suffix: string) => t(`${prefix}.${suffix}`);
+const stats = [1, 2, 3];
+---
+
+<section class="bg-[var(--surface-soft)] pt-16 pb-8 sm:pt-20">
+  <Container>
+    <div class="grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
+      <div>
+        <Reveal direction="up">
+          <span class="inline-block text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent-blue-deep)] mb-5">
+            {k("pin_hero_eyebrow")}
+          </span>
+        </Reveal>
+        <Reveal direction="up" delay={50}>
+          <h1 class="font-display text-[40px] sm:text-[56px] lg:text-[64px] font-semibold tracking-[-0.022em] text-[var(--ink)] leading-[1.05] m-0">
+            {k("pin_hero_title_1")}{" "}
+            <span class="text-[var(--primary)]">{k("pin_hero_title_accent")}</span>
+          </h1>
+        </Reveal>
+        <Reveal direction="up" delay={100}>
+          <p class="mt-5 text-[18px] leading-[1.5] text-[var(--mute)] max-w-[520px]">
+            {k("pin_hero_subtitle")}
+          </p>
+        </Reveal>
+        <Reveal direction="up" delay={150}>
+          <div class="mt-7 flex flex-col sm:flex-row gap-3">
+            <ConsultationDialogButton
+              client:visible
+              strings={consultationStrings}
+              triggerLabel={k("pin_hero_cta_primary")}
+              triggerClass="pin-btn pin-btn-primary h-12 px-6 text-[15px]"
+            />
+            <a href={secondaryHref}>
+              <button class="pin-btn pin-btn-secondary h-12 px-6 text-[15px]">
+                {k("pin_hero_cta_secondary")}
+              </button>
+            </a>
+          </div>
+        </Reveal>
+        <Reveal direction="up" delay={200}>
+          <p class="mt-7 text-[13px] text-[var(--mute)] flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#22a655] inline-block"></span>
+            {k("pin_hero_reassure")}
+          </p>
+        </Reveal>
+        <Reveal direction="up" delay={250}>
+          <div class="mt-10 grid grid-cols-3 gap-6 pt-8 border-t border-[var(--hairline-soft)]">
+            {stats.map((n) => (
+              <div>
+                <div class="font-display text-[28px] sm:text-[36px] font-bold text-[var(--ink)] tracking-[-0.03em] leading-none">
+                  {k(`pin_hero_stat_${n}_value`)}
+                </div>
+                <div class="text-[13px] text-[var(--mute)] mt-1.5 leading-tight">
+                  {k(`pin_hero_stat_${n}_label`)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+
+      <Reveal direction="up" delay={100}>
+        <div class="relative h-[460px] sm:h-[560px] hidden md:block">
+          <div class="absolute top-0 right-0 w-[62%] h-[64%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
+            <CollagePicture
+              src={main.src}
+              alt={main.alt}
+              width={main.width}
+              height={main.height}
+              srcSet={main.srcSet}
+              avifSrcSet={main.avifSrcSet}
+              sizes={main.sizes ?? "(min-width: 1024px) 40vw, 50vw"}
+              loading={main.loading ?? "eager"}
+              fetchpriority={main.fetchpriority ?? "high"}
+            />
+          </div>
+          <div class="absolute bottom-0 right-[14%] w-[46%] h-[38%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
+            <CollagePicture
+              src={sideRight.src}
+              alt={sideRight.alt}
+              avifSrcSet={sideRight.avifSrcSet}
+              srcSet={sideRight.srcSet}
+              sizes={sideRight.sizes ?? "(min-width: 1024px) 24vw, 30vw"}
+            />
+          </div>
+          <div class="absolute bottom-[8%] left-0 w-[38%] h-[42%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
+            <CollagePicture
+              src={sideLeft.src}
+              alt={sideLeft.alt}
+              avifSrcSet={sideLeft.avifSrcSet}
+              srcSet={sideLeft.srcSet}
+              sizes={sideLeft.sizes ?? "(min-width: 1024px) 20vw, 25vw"}
+            />
+          </div>
+          <div
+            class="absolute top-[18%] left-0 w-[30%] h-[30%] rounded-[32px] flex flex-col items-center justify-center text-center p-4 box-border"
+            style="background: #f4e9d7; color: var(--primary)"
+          >
+            <span class="font-display text-[36px] font-bold tracking-[-0.03em] leading-none">
+              {k(badgeValueKey)}
+            </span>
+            <small class="text-[11px] text-[var(--mute)] font-medium leading-tight mt-1 font-sans">
+              {k(badgeLabelKey)}
+            </small>
+          </div>
+          {pills?.map((pill, i) => {
+            const placement = pill.pos ?? (i === 0 ? "tr" : "bl");
+            const pos = placement === "tr" ? "top-[36%] right-[-8px]" : "bottom-[2%] left-[40%]";
+            return (
+              <div
+                class={`absolute ${pos} bg-white border border-[var(--hairline-soft)] rounded-full px-4 py-2.5 flex items-center gap-2 text-[13px] font-bold text-[var(--ink)] shadow-sm`}
+              >
+                {pill.kind === "dot" ? (
+                  <span class="w-2 h-2 rounded-full bg-[#22a655] inline-block"></span>
+                ) : pill.iconName ? (
+                  <LucideIcon name={pill.iconName} class="h-4 w-4 text-[var(--primary)]" />
+                ) : null}
+                {k(pill.labelKey)}
+              </div>
+            );
+          })}
+        </div>
+      </Reveal>
+    </div>
+  </Container>
+</section>

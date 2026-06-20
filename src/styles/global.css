@@ -514,3 +514,23 @@
   0%, 100% { box-shadow: 0 0 0 0 rgba(232, 69, 60, 0.35); }
   50% { box-shadow: 0 0 0 6px rgba(232, 69, 60, 0); }
 }
+
+/* Scroll-reveal for static .astro sections (see <Reveal> + the reveal observer
+   in PublicLayout). Hidden state is gated on `.js` so no-JS users always see
+   content, and on no-preference so reduced-motion users skip the animation. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .js .reveal-up { transform: translateY(2rem); }
+  .js .reveal-down { transform: translateY(-2rem); }
+  .js .reveal-left { transform: translateX(2rem); }
+  .js .reveal-right { transform: translateX(-2rem); }
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
