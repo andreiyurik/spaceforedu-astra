@@ -1,18 +1,13 @@
 ---
 import PublicLayout from "@/layouts/PublicLayout.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
 import Reveal from "@/components/public/Reveal.astro";
 import Counter from "@/components/public/Counter.astro";
 import LucideIcon from "@/components/common/LucideIcon.astro";
 import PublicHero from "@/components/public/PublicHero.astro";
-import PublicSection from "@/components/public/PublicSection.astro";
-import SectionHeading from "@/components/public/SectionHeading.astro";
-import FeatureIcon from "@/components/public/FeatureIcon.astro";
-import FeatureCardGrid from "@/components/public/FeatureCardGrid.astro";
-import TiltCard from "@/components/public/TiltCard.astro";
-import Card from "@/components/ui/Card.astro";
-import CardContent from "@/components/ui/CardContent.astro";
-import Button from "@/components/ui/Button.astro";
+import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
+import PinServicesCard from "@/components/public/pin/PinServicesCard.astro";
 import TimelineSection from "@/components/public/TimelineSection.astro";
 import FaqSection from "@/components/public/FaqSection.astro";
 import CrossSellCard from "@/components/public/CrossSellCard.astro";
@@ -62,9 +57,9 @@ const FORMATS = [
 ];
 
 const LEVELS = [
-  { level: "A1–A2", iconName: "book-open", key: "beginner", color: "from-emerald-500 to-emerald-600" },
-  { level: "B1–B2", iconName: "briefcase", key: "intermediate", color: "from-brand-secondary to-blue-600" },
-  { level: "C1–C2", iconName: "award", key: "advanced", color: "from-brand-primary to-red-600" },
+  { level: "A1–A2", iconName: "book-open", key: "beginner" },
+  { level: "B1–B2", iconName: "briefcase", key: "intermediate" },
+  { level: "C1–C2", iconName: "award", key: "advanced" },
 ];
 
 const ADVANTAGES = [
@@ -86,9 +81,6 @@ const PROOF = [
   { value: 4, suffix: "", key: "months" },
   { value: 15, suffix: "+", key: "years" },
 ];
-
-const gradientBtn =
-  "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold px-6 py-3 text-base min-h-[44px] transition-opacity hover:opacity-90 cursor-pointer w-full sm:w-auto";
 ---
 
 <PublicLayout
@@ -115,29 +107,25 @@ const gradientBtn =
         client:visible
         strings={consultationStrings}
         triggerLabel={t(`${E}.cta_trial`)}
-        triggerClass={gradientBtn}
+        triggerClass="pin-btn pin-btn-primary h-12 px-6 text-[15px] w-full sm:w-auto"
       />
-      <a href={preciosHref}>
-        <Button variant="outline" size="lg" class="w-full sm:w-auto min-h-[44px] text-base transition-all duration-300">
-          {t(`${E}.cta_pricing`)}
-        </Button>
+      <a href={preciosHref} class="pin-btn pin-btn-secondary h-12 px-6 text-[15px] w-full sm:w-auto">
+        {t(`${E}.cta_pricing`)}
       </a>
     </div>
 
-    <div slot="footer" class="flex flex-wrap items-center gap-x-2 sm:gap-x-6 gap-y-1 text-sm text-muted-foreground">
-      {HERO_STATS.map(({ value, key }, i) => (
-        <div class="flex items-center gap-x-2 sm:gap-x-6">
-          {i > 0 && <span class="text-border">·</span>}
-          <span>
-            <span class="font-semibold text-foreground">{value}</span>{" "}
-            {t(`${E}.hero_stat_${key}`)}
-          </span>
+    <div slot="footer" class="grid grid-cols-3 gap-6 pt-8 mt-4 border-t border-[var(--hairline-soft)] max-w-[460px]">
+      {HERO_STATS.map(({ value, key }) => (
+        <div>
+          <div class="font-display text-[26px] sm:text-[32px] font-bold text-[var(--ink)] tracking-[-0.03em] leading-none">
+            {value}
+          </div>
+          <div class="text-[13px] text-[var(--mute)] mt-1.5 leading-tight">{t(`${E}.hero_stat_${key}`)}</div>
         </div>
       ))}
     </div>
 
-    <div slot="illustration" class="relative">
-      <div class="absolute -inset-4 bg-gradient-to-br from-brand-primary/10 to-brand-secondary/15 rounded-3xl blur-2xl"></div>
+    <div slot="illustration" class="photo-frame">
       <picture>
         {heroAvif.srcSet?.attribute && (
           <source type="image/avif" srcset={heroAvif.srcSet.attribute} sizes={heroSizes} />
@@ -152,94 +140,133 @@ const gradientBtn =
           loading="eager"
           fetchpriority="high"
           decoding="async"
-          class="relative rounded-2xl shadow-2xl w-full object-cover aspect-[4/3]"
+          class="w-full object-cover aspect-[4/3]"
         />
       </picture>
     </div>
   </PublicHero>
 
   {/* ── Formats ── */}
-  <PublicSection class="bg-white">
-    <SectionHeading title={t(`${E}.formats_title`)} subtitle={t(`${E}.formats_subtitle`)} />
-    <div class="grid gap-6 sm:grid-cols-3">
-      {FORMATS.map(({ iconName, key }, i) => (
-        <Reveal direction="up" delay={i * 120}>
-          <TiltCard class="h-full">
-            <Card class="h-full border bg-white transition-all duration-300 hover:shadow-xl hover:shadow-brand-secondary/5 group">
-              <CardContent class="p-8 text-center">
-                <FeatureIcon iconName={iconName} class="mx-auto mb-4" />
-                <h3 class="text-lg font-semibold mb-2">{t(`${E}.format_${key}_title`)}</h3>
-                <p class="text-sm text-muted-foreground">{t(`${E}.format_${key}_desc`)}</p>
-                <p class="text-xs text-[var(--accent-blue-deep)] font-medium mt-3">{t(`${E}.format_${key}_note`)}</p>
-              </CardContent>
-            </Card>
-          </TiltCard>
-        </Reveal>
-      ))}
-    </div>
-  </PublicSection>
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${E}.pin_formats_title_1`)}
+        accent={t(`${E}.pin_formats_title_accent`)}
+        sub={t(`${E}.formats_subtitle`)}
+      />
+      <div class="grid gap-4 sm:grid-cols-3">
+        {FORMATS.map(({ iconName, key }, i) => (
+          <PinServicesCard
+            iconName={iconName}
+            title={t(`${E}.format_${key}_title`)}
+            desc={t(`${E}.format_${key}_desc`)}
+            meta={t(`${E}.format_${key}_note`)}
+            delay={i * 80}
+          />
+        ))}
+      </div>
+    </Container>
+  </section>
 
   {/* ── Journey / levels ── */}
-  <PublicSection class="bg-slate-50" dots>
-    <SectionHeading title={t(`${E}.journey_title`)} subtitle={t(`${E}.journey_subtitle`)} />
-    <div class="grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
-      {LEVELS.map(({ level, iconName, key, color }, i) => (
-        <Reveal direction="up" delay={i * 150}>
-          <TiltCard class="h-full">
-            <Card class="h-full border bg-white transition-all duration-300 hover:shadow-xl hover:shadow-brand-secondary/5 group overflow-hidden">
-              <CardContent class="p-0">
-                <div class={`bg-gradient-to-r ${color} px-6 py-4 text-white`}>
-                  <div class="flex items-center justify-between">
-                    <span class="text-2xl font-bold">{level}</span>
-                    <LucideIcon name={iconName} class="h-6 w-6 opacity-80" />
-                  </div>
-                  <p class="text-sm opacity-90 font-medium mt-1">{t(`${E}.journey_${key}_label`)}</p>
+  <section class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead
+        title1={t(`${E}.pin_journey_title_1`)}
+        accent={t(`${E}.pin_journey_title_accent`)}
+        sub={t(`${E}.journey_subtitle`)}
+      />
+      <div class="grid gap-4 sm:grid-cols-3">
+        {LEVELS.map(({ level, iconName, key }, i) => (
+          <Reveal direction="up" delay={i * 80}>
+            <div class="flex h-full flex-col gap-3.5 rounded-2xl border border-[var(--hairline-soft)] bg-white p-7">
+              <div class="flex items-center justify-between">
+                <span class="font-display text-[28px] font-bold leading-none tracking-[-0.02em] text-[var(--primary)]">
+                  {level}
+                </span>
+                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--surface-card)] text-[var(--primary)]">
+                  <LucideIcon name={iconName} class="h-5 w-5" />
                 </div>
-                <div class="p-6 space-y-3">
-                  {[1, 2, 3].map((j) => (
-                    <div class="flex items-start gap-2.5">
-                      <LucideIcon name="target" class="h-4 w-4 text-brand-secondary mt-0.5 shrink-0" />
-                      <span class="text-sm text-muted-foreground">{t(`${E}.journey_${key}_${j}`)}</span>
-                    </div>
-                  ))}
-                  <p class="text-xs font-medium text-foreground pt-2 border-t">{t(`${E}.journey_${key}_time`)}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TiltCard>
-        </Reveal>
-      ))}
-    </div>
-  </PublicSection>
+              </div>
+              <h3 class="m-0 text-[20px] font-semibold tracking-[-0.01em] text-[var(--ink)]">
+                {t(`${E}.journey_${key}_label`)}
+              </h3>
+              <ul class="m-0 flex flex-1 list-none flex-col gap-2.5 p-0">
+                {[1, 2, 3].map((j) => (
+                  <li class="flex items-start gap-2.5">
+                    <LucideIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-[#22a655]" />
+                    <span class="text-[14px] leading-[1.5] text-[var(--mute)]">{t(`${E}.journey_${key}_${j}`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <p class="m-0 border-t border-[var(--hairline-soft)] pt-3.5 text-[13px] font-medium text-[var(--ash)]">
+                {t(`${E}.journey_${key}_time`)}
+              </p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </Container>
+  </section>
 
   {/* ── Steps ── */}
-  <PublicSection class="bg-white">
-    <SectionHeading title={t(`${E}.steps_title`)} subtitle={t(`${E}.steps_subtitle`)} />
-    <TimelineSection translationPrefix={E} t={t} count={4} keyPattern="step" />
-  </PublicSection>
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${E}.pin_steps_title_1`)}
+        accent={t(`${E}.pin_steps_title_accent`)}
+        sub={t(`${E}.steps_subtitle`)}
+      />
+      <TimelineSection translationPrefix={E} t={t} count={4} keyPattern="step" />
+    </Container>
+  </section>
 
   {/* ── Advantages ── */}
-  <PublicSection class="bg-slate-50" dots>
-    <SectionHeading title={t(`${E}.adv_title`)} subtitle={t(`${E}.adv_subtitle`)} />
-    <FeatureCardGrid items={ADVANTAGES} columns={4} />
-  </PublicSection>
+  <section class="py-16 sm:py-20 bg-[var(--surface-soft)]">
+    <Container>
+      <PinSectionHead
+        title1={t(`${E}.pin_adv_title_1`)}
+        accent={t(`${E}.pin_adv_title_accent`)}
+        sub={t(`${E}.adv_subtitle`)}
+      />
+      <div class="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+        {ADVANTAGES.map(({ iconName, title, desc }, i) => (
+          <Reveal direction="up" delay={i * 90}>
+            <div>
+              <LucideIcon name={iconName} class="h-8 w-8 text-[var(--primary)]" strokeWidth={1.6} />
+              <h3 class="mt-5 font-display text-[19px] font-bold leading-[1.25] tracking-[-0.01em] text-[var(--ink)]">
+                {title}
+              </h3>
+              <p class="mt-2.5 text-[15px] leading-[1.6] text-[var(--mute)]">{desc}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </Container>
+  </section>
 
   {/* ── Proof ── */}
-  <PublicSection class="bg-white">
-    <SectionHeading title={t(`${E}.proof_title`)} subtitle={t(`${E}.proof_subtitle`)} />
-    <div class="grid gap-4 sm:gap-8 sm:grid-cols-4 max-w-4xl mx-auto text-center">
-      {PROOF.map(({ value, suffix, key }, i) => (
-        <Reveal direction="up" delay={i * 150}>
-          <div class="p-4 sm:p-6">
-            <div class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent">
-              <Counter value={value} suffix={suffix} />
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${E}.pin_proof_title_1`)}
+        accent={t(`${E}.pin_proof_title_accent`)}
+        sub={t(`${E}.proof_subtitle`)}
+      />
+      <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
+        {PROOF.map(({ value, suffix, key }, i) => (
+          <Reveal direction="up" delay={i * 80}>
+            <div>
+              <div class="font-display text-[40px] sm:text-[48px] font-bold leading-none tracking-[-0.03em] text-[var(--ink)]">
+                <Counter value={value} suffix={suffix} />
+              </div>
+              <p class="mt-2.5 text-[14px] leading-[1.4] text-[var(--mute)]">{t(`${E}.proof_${key}`)}</p>
             </div>
-            <p class="mt-2 text-sm text-muted-foreground font-medium">{t(`${E}.proof_${key}`)}</p>
-          </div>
-        </Reveal>
-      ))}
-    </div>
-  </PublicSection>
+          </Reveal>
+        ))}
+      </div>
+    </Container>
+  </section>
 
   <CrossSellCard
     title={t(`${E}.crosssell_title`)}
@@ -253,10 +280,17 @@ const gradientBtn =
   />
 
   {/* ── FAQ ── */}
-  <PublicSection class="bg-white">
-    <SectionHeading title={t(`${E}.faq_title`)} />
-    <FaqSection translationPrefix={E} t={t} messages={messages} />
-  </PublicSection>
+  <section class="py-16 sm:py-20 bg-white">
+    <Container>
+      <PinSectionHead
+        title1={t(`${E}.pin_faq_title_1`)}
+        accent={t(`${E}.pin_faq_title_accent`)}
+        sub={t(`${E}.pin_faq_sub`)}
+        align="center"
+      />
+      <FaqSection translationPrefix={E} t={t} messages={messages} />
+    </Container>
+  </section>
 
   <PinFinalCta
     prefix={E}
