@@ -8,6 +8,7 @@ import LucideIcon from "@/components/common/LucideIcon.astro";
 import { ConsultationDialogButton } from "@/components/public/ConsultationDialog";
 import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
 import PinComparison from "@/components/public/pin/PinComparison.astro";
+import PinReachMap from "@/components/public/pin/PinReachMap.astro";
 import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
@@ -134,8 +135,8 @@ const tileImg = (op = "center") => `width:100%;height:100%;object-fit:cover;obje
 
         {/* Art-directed collage — inline styles survive View-Transition swaps. */}
         <Reveal direction="left" delay={120}>
-          <div style="position:relative;width:100%;max-width:500px;margin-inline:auto;aspect-ratio:10 / 11;">
-            <div class="hero-tile" style={`${TILE}top:0;right:0;height:64%;width:64%;`}>
+          <div data-parallax-group style="position:relative;width:100%;max-width:500px;margin-inline:auto;aspect-ratio:10 / 11;">
+            <div class="hero-tile" data-parallax="10" style={`${TILE}top:0;right:0;height:64%;width:64%;`}>
               <img
                 src={heroWebp.src}
                 srcset={heroWebp.srcSet?.attribute}
@@ -148,14 +149,15 @@ const tileImg = (op = "center") => `width:100%;height:100%;object-fit:cover;obje
                 style={tileImg("60% 30%")}
               />
             </div>
-            <div class="hero-tile" style={`${TILE}bottom:0;right:14%;height:38%;width:46%;`}>
+            <div class="hero-tile" data-parallax="24" style={`${TILE}bottom:0;right:14%;height:38%;width:46%;`}>
               <img src="/images/lifestyle/spain-flag-waving-blue-sky.webp" alt="Spanish flag waving against a clear blue sky" loading="lazy" style={tileImg()} />
             </div>
-            <div class="hero-tile" style={`${TILE}bottom:8%;left:0;height:42%;width:38%;`}>
+            <div class="hero-tile" data-parallax="16" style={`${TILE}bottom:8%;left:0;height:42%;width:38%;`}>
               <img src="/images/lifestyle/madrid-almudena-sunset.webp" alt="Almudena Cathedral and the Royal Palace of Madrid at sunset" loading="lazy" style={tileImg()} />
             </div>
             <div
               class="flex flex-col items-center justify-center p-3 text-center"
+              data-parallax="30"
               style="position:absolute;top:16%;left:0;height:30%;width:31%;border-radius:24px;background:#f4e9d7;box-shadow:0 2px 4px rgba(38,34,30,0.05);"
             >
               <span class="font-display text-[30px] sm:text-[38px] font-bold leading-none tracking-[-0.03em] text-[var(--primary)]">
@@ -235,19 +237,19 @@ const tileImg = (op = "center") => `width:100%;height:100%;object-fit:cover;obje
   {/* ── Reach ── */}
   <section class="bg-white">
     <Container class="py-16 sm:py-20">
-      <div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-12">
-        <LucideIcon name="globe-2" class="h-12 w-12 shrink-0 text-[var(--primary)]" strokeWidth={1.4} />
-        <div>
-          <span class="t-eyebrow">{t(`${H}.pin_reach_eyebrow`)}</span>
-          <h2 class="mt-3 font-display text-[26px] sm:text-[32px] font-bold leading-[1.15] tracking-[-0.015em] text-[var(--ink)]">
-            {t(`${H}.pin_reach_title_1`)}{" "}
-            <span class="text-[var(--primary)]">{t(`${H}.pin_reach_title_accent`)}</span>{" "}
-            {t(`${H}.pin_reach_title_2`)}
-          </h2>
-          <p class="mt-3 max-w-[680px] text-[15px] leading-[1.6] text-[var(--mute)]">
-            {t(`${H}.pin_reach_sub`)}
-          </p>
-        </div>
+      <Reveal direction="up">
+        <span class="t-eyebrow">{t(`${H}.pin_reach_eyebrow`)}</span>
+        <h2 class="mt-3 max-w-[720px] font-display text-[26px] sm:text-[32px] font-bold leading-[1.15] tracking-[-0.015em] text-[var(--ink)]">
+          {t(`${H}.pin_reach_title_1`)}{" "}
+          <span class="text-[var(--primary)]">{t(`${H}.pin_reach_title_accent`)}</span>{" "}
+          {t(`${H}.pin_reach_title_2`)}
+        </h2>
+        <p class="mt-3 max-w-[680px] text-[15px] leading-[1.6] text-[var(--mute)]">
+          {t(`${H}.pin_reach_sub`)}
+        </p>
+      </Reveal>
+      <div class="mt-10 sm:mt-12">
+        <PinReachMap />
       </div>
     </Container>
   </section>

@@ -104,8 +104,8 @@ const stats = [1, 2, 3];
       </div>
 
       <Reveal direction="up" delay={100}>
-        <div class="relative h-[460px] sm:h-[560px] hidden md:block">
-          <div class="absolute top-0 right-0 w-[62%] h-[64%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
+        <div data-parallax-group class="relative h-[460px] sm:h-[560px] hidden md:block">
+          <div data-parallax="10" class="absolute top-0 right-0 w-[62%] h-[64%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
             <CollagePicture
               src={main.src}
               alt={main.alt}
@@ -118,7 +118,7 @@ const stats = [1, 2, 3];
               fetchpriority={main.fetchpriority ?? "high"}
             />
           </div>
-          <div class="absolute bottom-0 right-[14%] w-[46%] h-[38%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
+          <div data-parallax="24" class="absolute bottom-0 right-[14%] w-[46%] h-[38%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
             <CollagePicture
               src={sideRight.src}
               alt={sideRight.alt}
@@ -127,7 +127,7 @@ const stats = [1, 2, 3];
               sizes={sideRight.sizes ?? "(min-width: 1024px) 24vw, 30vw"}
             />
           </div>
-          <div class="absolute bottom-[8%] left-0 w-[38%] h-[42%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
+          <div data-parallax="16" class="absolute bottom-[8%] left-0 w-[38%] h-[42%] rounded-[32px] overflow-hidden bg-[var(--surface-card)]">
             <CollagePicture
               src={sideLeft.src}
               alt={sideLeft.alt}
@@ -137,6 +137,7 @@ const stats = [1, 2, 3];
             />
           </div>
           <div
+            data-parallax="30"
             class="absolute top-[18%] left-0 w-[30%] h-[30%] rounded-[32px] flex flex-col items-center justify-center text-center p-4 box-border"
             style="background: #f4e9d7; color: var(--primary)"
           >

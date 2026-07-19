@@ -355,5 +355,59 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
         initTilt();
       });
     </script>
+
+    <script>
+      // Subtle depth parallax for hero-collage tiles: children of a
+      // [data-parallax-group] shift by (scroll progress × data-parallax) px.
+      // Desktop-pointer only (like Lenis), skipped under reduced-motion, and
+      // measured against the untransformed group so there is no feedback loop.
+      let parallaxCleanup: (() => void) | null = null;
+
+      function initParallax() {
+        parallaxCleanup?.();
+        parallaxCleanup = null;
+
+        const groups = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax-group]"));
+        if (groups.length === 0) return;
+        if (window.matchMedia("(hover: none)").matches) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const items = groups.map((group) => ({
+          group,
+          els: Array.from(group.querySelectorAll<HTMLElement>("[data-parallax]")).map((el) => ({
+            el,
+            depth: parseFloat(el.dataset.parallax ?? "0"),
+          })),
+        }));
+
+        let rafId = 0;
+        const update = () => {
+          rafId = 0;
+          for (const { group, els } of items) {
+            const r = group.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > window.innerHeight) continue;
+            const p = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
+            for (const { el, depth } of els) {
+              el.style.transform = `translate3d(0, ${(-p * depth).toFixed(2)}px, 0)`;
+            }
+          }
+        };
+        const schedule = () => {
+          if (!rafId) rafId = requestAnimationFrame(update);
+        };
+
+        window.addEventListener("scroll", schedule, { passive: true });
+        window.addEventListener("resize", schedule);
+        update();
+
+        parallaxCleanup = () => {
+          window.removeEventListener("scroll", schedule);
+          window.removeEventListener("resize", schedule);
+          if (rafId) cancelAnimationFrame(rafId);
+        };
+      }
+
+      document.addEventListener("astro:page-load", initParallax);
+    </script>
   </body>
 </html>

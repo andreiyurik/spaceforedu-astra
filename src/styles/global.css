@@ -244,13 +244,14 @@
   background: var(--primary);
   color: var(--on-primary);
 }
-.pin-btn-primary:hover { background: var(--primary-pressed); }
+.pin-btn-primary:hover { background: var(--primary-pressed); transform: translateY(-1px); }
 .pin-btn-primary:active { background: var(--primary-pressed); transform: translateY(1px); }
 .pin-btn-secondary {
   background: var(--secondary-bg);
   color: var(--ink);
 }
-.pin-btn-secondary:hover { background: var(--secondary-pressed); }
+.pin-btn-secondary:hover { background: var(--secondary-pressed); transform: translateY(-1px); }
+.pin-btn-secondary:active { transform: translateY(1px); }
 .pin-btn-tertiary {
   background: transparent;
   color: var(--ink);
@@ -513,6 +514,25 @@
 @keyframes pin-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(232, 69, 60, 0.35); }
   50% { box-shadow: 0 0 0 6px rgba(232, 69, 60, 0); }
+}
+
+/* Smooth height animation for <details> (FAQ accordions). Progressive
+   enhancement: browsers without interpolate-size keep the instant toggle.
+   The global reduced-motion rule above zeroes the durations. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  /* .lang-switcher excluded: its menu is absolutely positioned, so there is
+     no height to animate — keep the dropdown instant. */
+  details:not(.lang-switcher)::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition: block-size 0.35s cubic-bezier(0.4, 0, 0.2, 1), content-visibility 0.35s allow-discrete;
+  }
+  details:not(.lang-switcher)[open]::details-content {
+    block-size: auto;
+  }
 }
 
 /* Scroll-reveal for static .astro sections (see <Reveal> + the reveal observer

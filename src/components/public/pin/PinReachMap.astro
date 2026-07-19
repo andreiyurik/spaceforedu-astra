@@ -1,0 +1,132 @@
+---
+// Static world map with client-origin arcs converging on Spain. Replaces the
+// unused React WorldMapArcs island: arc geometry is computed at build time and
+// the draw-in animation is pure CSS, triggered by the shared reveal observer
+// (the wrapper carries `data-reveal`, so `.is-visible` starts the transition).
+// No-JS users see the finished arcs; reduced-motion users see them instantly.
+
+const SPAIN = { x: 979, y: 236 };
+
+const SOURCES = [
+  // Latin America
+  { x: 449, y: 336, delay: 0 },    // Mexico City
+  { x: 542, y: 318, delay: 150 },  // Havana
+  { x: 629, y: 378, delay: 300 },  // Caracas
+  { x: 589, y: 406, delay: 450 },  // Bogotá
+  { x: 572, y: 486, delay: 600 },  // Lima
+  { x: 734, y: 503, delay: 750 },  // Brasília
+  { x: 607, y: 588, delay: 900 },  // Santiago
+  { x: 676, y: 593, delay: 1050 }, // Buenos Aires
+  // Eastern Europe / CIS
+  { x: 1153, y: 172, delay: 80 },  // Minsk
+  { x: 1169, y: 188, delay: 220 }, // Kyiv
+  { x: 1209, y: 163, delay: 370 }, // Moscow
+  { x: 1249, y: 230, delay: 510 }, // Tbilisi
+  { x: 1247, y: 237, delay: 650 }, // Yerevan
+  { x: 1397, y: 185, delay: 800 }, // Nur-Sultan
+];
+
+// Quadratic arc lifted above the straight line; 0.42 gives a sweeping curve.
+function arcD(from: { x: number; y: number }, to: { x: number; y: number }) {
+  const mx = (from.x + to.x) / 2;
+  const my = (from.y + to.y) / 2;
+  const dist = Math.hypot(to.x - from.x, to.y - from.y);
+  return `M${from.x},${from.y} Q${mx},${my - dist * 0.42} ${to.x},${to.y}`;
+}
+
+// Longer than any arc, so a single dasharray value hides every path fully.
+const DASH = 3000;
+---
+
+<div data-reveal class="reveal reveal-none reach-map relative" aria-hidden="true">
+  <img
+    src="/images/world-map-reach.svg"
+    alt=""
+    width="2000"
+    height="857"
+    loading="lazy"
+    decoding="async"
+    class="block w-full h-auto"
+  />
+
+  <svg viewBox="0 0 2000 857" class="absolute inset-0 h-full w-full" style="pointer-events:none">
+    <defs>
+      {SOURCES.map((s, i) => (
+        // Per-arc gradient: fades in from the source, tapers near Spain so the
+        // fourteen arcs don't stack into a harsh starburst at the destination.
+        <linearGradient
+          id={`reach-ag${i}`}
+          gradientUnits="userSpaceOnUse"
+          x1={s.x}
+          y1={s.y}
+          x2={SPAIN.x}
+          y2={SPAIN.y}
+        >
+          <stop offset="0%" stop-color="#D0342A" stop-opacity="0" />
+          <stop offset="20%" stop-color="#D0342A" stop-opacity="0.6" />
+          <stop offset="65%" stop-color="#D0342A" stop-opacity="0.5" />
+          <stop offset="100%" stop-color="#D0342A" stop-opacity="0.12" />
+        </linearGradient>
+      ))}
+    </defs>
+
+    {SOURCES.map((s, i) => (
+      <g>
+        <path
+          class="reach-arc"
+          style={`--d: ${s.delay}ms`}
+          d={arcD(s, SPAIN)}
+          fill="none"
+          stroke={`url(#reach-ag${i})`}
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-dasharray={DASH}
+        />
+        <circle class="reach-src" style={`--d: ${s.delay}ms`} cx={s.x} cy={s.y} r="2.5" fill="#2D7FF9" />
+      </g>
+    ))}
+
+    {/* Spain — solid marker + two soft pulsing rings */}
+    <circle cx={SPAIN.x} cy={SPAIN.y} r="4" fill="#D0342A" />
+    <circle class="reach-ring" cx={SPAIN.x} cy={SPAIN.y} r="4" fill="none" stroke="#D0342A" stroke-width="1" />
+    <circle class="reach-ring" style="animation-delay: 1.2s" cx={SPAIN.x} cy={SPAIN.y} r="4" fill="none" stroke="#D0342A" stroke-width="1" />
+  </svg>
+</div>
+
+<style is:global>
+  /* Finished state is the default so no-JS users see the drawn arcs; the
+     hidden state only applies while JS has tagged the block un-revealed. */
+  .reach-arc {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js .reach-map:not(.is-visible) .reach-arc {
+    stroke-dashoffset: 3000;
+    transition: none;
+  }
+  .reach-src {
+    opacity: 0.65;
+    transition: opacity 0.5s ease;
+    transition-delay: calc(var(--d, 0ms) + 1600ms);
+  }
+  .js .reach-map:not(.is-visible) .reach-src {
+    opacity: 0;
+    transition: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .reach-map.is-visible .reach-ring {
+      animation: reach-pulse 2.4s ease-out infinite;
+    }
+  }
+  @keyframes reach-pulse {
+    from {
+      r: 4;
+      opacity: 0.5;
+    }
+    to {
+      r: 18;
+      opacity: 0;
+    }
+  }
+</style>
