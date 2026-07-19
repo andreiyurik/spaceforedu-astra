@@ -23,7 +23,7 @@ const hasFooter = Astro.slots.has("footer");
       <div>
         <Reveal direction="up">
           <h1 class="font-display text-[40px] sm:text-[56px] lg:text-[64px] font-semibold tracking-[-0.022em] text-[var(--ink)] leading-[1.05]">
-            {title1} <span class="text-[var(--primary)]">{titleAccent}</span>
+            {title1}{" "}<span class="text-[var(--primary)]">{titleAccent}</span>
           </h1>
         </Reveal>
         <Reveal direction="up" delay={80}>
