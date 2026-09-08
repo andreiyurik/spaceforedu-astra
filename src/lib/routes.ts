@@ -10,6 +10,11 @@ export const publicPages = {
   legalNotice: "aviso-legal",
   cookies: "cookies",
   blog: "blog",
+  // Post-payment landing pages. Stripe's success_url points here, so they are
+  // the only clean, measurable conversion point a static site can have.
+  // Marked noindex and excluded from the sitemap in astro.config.mjs.
+  graciasHomologacion: "gracias-homologacion",
+  graciasConsulta: "gracias-consulta",
 } as const;
 
 export function publicRoute(page: string, locale: Locale): string {

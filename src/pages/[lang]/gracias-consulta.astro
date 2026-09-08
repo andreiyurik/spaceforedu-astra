@@ -1,0 +1,29 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import ThankYou from "@/components/public/ThankYou.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { getSeo } from "@/lib/seo";
+import { LOCALES, assertLocale } from "@/lib/constants";
+import { publicPages } from "@/lib/routes";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("graciasConsulta", locale);
+---
+
+<PublicLayout
+  title={seo.title}
+  description={seo.description}
+  locale={locale}
+  page={publicPages.graciasConsulta}
+  hideStickyCta
+  noindex
+>
+  <ThankYou prefix="public.gracias_consulta" t={t} locale={locale} producto="consulta_experto_100" />
+</PublicLayout>

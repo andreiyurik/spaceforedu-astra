@@ -998,6 +998,42 @@
       "secondary": "Ver tarifas",
       "reassure": "1700+ expedientes · 98% favorables desde 2009",
       "wa_message": "¡Hola! Quiero reservar una consulta para la homologación de mi título. Adjunto foto del título y del expediente académico."
+    },
+    "gracias_homologacion": {
+      "eyebrow": "Pago confirmado",
+      "title": "Hemos recibido tu pago",
+      "subtitle": "Tu expediente de homologación queda abierto hoy mismo. Esto es exactamente lo que pasa a partir de ahora.",
+      "step_1_title": "Recibirás un correo en menos de 24 horas",
+      "step_1_desc": "Con el resumen de tu caso, tu número de expediente y la lista exacta de documentos que necesitamos de ti. Nada genérico: la lista depende de tu país y de tu titulación.",
+      "step_2_title": "Revisamos tu documentación antes de presentar nada",
+      "step_2_desc": "Un experto comprueba que el expediente está completo y correcto. Si detectamos que tu caso no es viable, te devolvemos el importe íntegro.",
+      "step_3_title": "Presentamos y hacemos el seguimiento",
+      "step_3_desc": "Nos encargamos de la presentación ante el Ministerio y del seguimiento hasta la resolución. Te avisamos en cada cambio de estado.",
+      "reference_title": "Tu referencia de pago",
+      "reference_desc": "Guarda este identificador. Si escribes por WhatsApp o por correo, mencionarlo nos permite localizar tu caso al instante.",
+      "reference_missing": "Si no ves ninguna referencia, no te preocupes: el justificante de Stripe te llega igualmente por correo.",
+      "help_title": "¿Alguna duda ahora mismo?",
+      "help_desc": "Escríbenos y te respondemos. No hace falta esperar al correo.",
+      "cta_whatsapp": "Escribir por WhatsApp",
+      "cta_home": "Volver al inicio"
+    },
+    "gracias_consulta": {
+      "eyebrow": "Consulta reservada",
+      "title": "Tu consulta está reservada",
+      "subtitle": "Un experto revisará tu caso antes de hablar contigo, para que la llamada sirva de algo desde el primer minuto.",
+      "step_1_title": "Te escribimos para acordar la hora",
+      "step_1_desc": "En menos de 24 horas te proponemos varias franjas. La consulta dura unos 30 minutos y es por videollamada o por teléfono, como prefieras.",
+      "step_2_title": "Prepara tus documentos",
+      "step_2_desc": "Ten a mano tu título y tu certificado de notas, aunque sea en foto. Con eso podemos darte un diagnóstico real en vez de generalidades.",
+      "step_3_title": "Si decides seguir, los 100 € se descuentan",
+      "step_3_desc": "El importe de la consulta se resta del precio del servicio que contrates. No pagas dos veces por lo mismo.",
+      "reference_title": "Tu referencia de pago",
+      "reference_desc": "Guarda este identificador por si necesitas mencionarlo al escribirnos.",
+      "reference_missing": "Si no ves ninguna referencia, no te preocupes: el justificante de Stripe te llega igualmente por correo.",
+      "help_title": "¿Prefieres escribirnos ya?",
+      "help_desc": "Puedes adelantarnos tu caso por WhatsApp y llegamos a la llamada con los deberes hechos.",
+      "cta_whatsapp": "Escribir por WhatsApp",
+      "cta_home": "Volver al inicio"
     }
   },
   "lp": {

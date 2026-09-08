@@ -26,7 +26,13 @@ export default defineConfig({
       },
       // Drop the bare-root URL — it's a meta-refresh redirect to /es/, and including
       // it produces duplicate hreflang="es" entries (once for "/" and once for "/es/").
-      filter: (page) => page !== `${SITE}/`,
+      // Keep out of the index: the bare root (a redirect), the ad landing pages and
+      // the post-payment pages. All three are marked noindex, and sending Google a
+      // noindex URL in the sitemap is a contradictory signal that wastes crawl budget.
+      filter: (page) =>
+        page !== `${SITE}/` &&
+        !page.includes("/lp/") &&
+        !page.includes("/gracias-"),
       // Add x-default pointing to the Spanish (default-locale) URL.
       serialize(item) {
         if (!item.links) return item;

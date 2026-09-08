@@ -998,6 +998,42 @@
       "secondary": "See pricing",
       "reassure": "1,700+ cases · 98% favourable since 2009",
       "wa_message": "Hi! I'd like to book a consultation for the homologation of my degree. I'm attaching a photo of my degree and transcript."
+    },
+    "gracias_homologacion": {
+      "eyebrow": "Payment confirmed",
+      "title": "We have received your payment",
+      "subtitle": "Your homologation case opens today. Here is exactly what happens from now on.",
+      "step_1_title": "You will get an email within 24 hours",
+      "step_1_desc": "With a summary of your case, your file number and the exact list of documents we need from you. Nothing generic: the list depends on your country and your qualification.",
+      "step_2_title": "We review your documents before filing anything",
+      "step_2_desc": "An expert checks that the file is complete and correct. If we find your case is not viable, you get a full refund.",
+      "step_3_title": "We file and follow up",
+      "step_3_desc": "We handle the submission to the Ministry and track it through to the resolution. You hear from us at every change of status.",
+      "reference_title": "Your payment reference",
+      "reference_desc": "Keep this identifier. Mentioning it when you write to us lets us find your case instantly.",
+      "reference_missing": "If you do not see a reference, do not worry: Stripe emails you the receipt anyway.",
+      "help_title": "Any questions right now?",
+      "help_desc": "Write to us and we will answer. No need to wait for the email.",
+      "cta_whatsapp": "Message us on WhatsApp",
+      "cta_home": "Back to home"
+    },
+    "gracias_consulta": {
+      "eyebrow": "Consultation booked",
+      "title": "Your consultation is booked",
+      "subtitle": "An expert will review your case before speaking to you, so the call is useful from the first minute.",
+      "step_1_title": "We will write to agree a time",
+      "step_1_desc": "Within 24 hours we will offer you several slots. The consultation lasts about 30 minutes, by video call or phone, whichever you prefer.",
+      "step_2_title": "Get your documents ready",
+      "step_2_desc": "Have your degree and your transcript to hand, a photo is fine. With those we can give you a real diagnosis instead of generalities.",
+      "step_3_title": "If you go ahead, the 100 EUR is deducted",
+      "step_3_desc": "The consultation fee is subtracted from the price of the service you hire. You do not pay twice for the same thing.",
+      "reference_title": "Your payment reference",
+      "reference_desc": "Keep this identifier in case you need to mention it when writing to us.",
+      "reference_missing": "If you do not see a reference, do not worry: Stripe emails you the receipt anyway.",
+      "help_title": "Would you rather write now?",
+      "help_desc": "You can send us your case on WhatsApp and we will come to the call prepared.",
+      "cta_whatsapp": "Message us on WhatsApp",
+      "cta_home": "Back to home"
     }
   },
   "lp": {
