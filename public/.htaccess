@@ -1,0 +1,84 @@
+# ---------------------------------------------------------------------------
+# Apache / LiteSpeed config for spaceforedu.com (Hostinger shared hosting).
+#
+# This file lives in public/ ON PURPOSE. The deploy workflow runs
+#   rsync -avz --delete ... dist/ -> public_html/
+# so anything placed on the server by hand is wiped on the next deploy.
+# Astro copies public/ verbatim into dist/, which is what makes this survive.
+#
+# It replaces public/_headers and public/_redirects, which were written in
+# Cloudflare Pages format and were therefore inert on Apache.
+# ---------------------------------------------------------------------------
+
+# --- Canonical host and root ------------------------------------------------
+RewriteEngine On
+
+# www -> apex. The canonical tags already point at the apex; this stops the
+# duplicate from being served at all.
+RewriteCond %{HTTP_HOST} ^www\.spaceforedu\.com$ [NC]
+RewriteRule ^(.*)$ https://spaceforedu.com/$1 [R=301,L]
+
+# "/" -> "/es/". 302, not 301: the root stays the x-default and may serve a
+# different locale later. This replaces the meta-refresh page, which carried
+# noindex,nofollow and therefore leaked all inbound link equity.
+RewriteRule ^$ /es/ [R=302,L]
+
+# --- Legacy WordPress URLs --------------------------------------------------
+# These are the only pages with accumulated history and inbound links. They
+# 404 today. Each one goes to its topical equivalent, never to the home page,
+# or Google treats it as a soft 404 and transfers nothing.
+Redirect 301 /chto-nuzhno-dlya-togo-chtoby-postupit-v-un/ /ru/university/
+Redirect 301 /obrazovanie-v-ispanii-doshkolnoe-baz/ /ru/blog/
+Redirect 301 /podbor-shkoly-i-podderzhka-pri-oformlen/ /ru/university/
+Redirect 301 /en/space-edu-english/ /en/
+Redirect 301 /en/about-space/ /en/
+Redirect 301 /en/luchshie-mezhdunarodnye-shkoly-v-ispanii-en/ /en/university/
+Redirect 301 /es/space-edu-espanol/ /es/
+Redirect 301 /space-about/ /es/
+Redirect 301 /space-university/ /es/university/
+Redirect 301 /space-school/ /es/university/
+Redirect 301 /space-omission/ /es/homologation/
+Redirect 301 /space-courses/ /es/spanish/
+Redirect 301 /space-tutoring/ /es/spanish/
+Redirect 301 /space-coaching/ /es/
+Redirect 301 /space-pro/ /es/
+Redirect 301 /oferta/ /es/aviso-legal/
+Redirect 301 /policy/ /es/privacy-policy/
+Redirect 301 /cookie/ /es/cookies/
+
+# --- Security headers -------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "DENY"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # HTML revalidates quickly so content fixes go live without waiting.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=600, must-revalidate"
+  </FilesMatch>
+
+  # /_astro/ filenames carry a content hash, so they can be cached forever.
+  <FilesMatch "\.(js|css|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(webp|avif|png|jpg|jpeg|svg|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>
+
+# --- Compression ------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Correct content types --------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType image/avif .avif
+</IfModule>
+
+# --- 404 --------------------------------------------------------------------
+ErrorDocument 404 /404.html

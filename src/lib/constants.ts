@@ -21,11 +21,14 @@ export function assertLocale(lang: string | undefined): Locale {
   throw new Error(`Invalid locale: ${lang}`);
 }
 
-// Build-time guard: warn loudly if the .env.example placeholder leaked into a
-// production build. CTAs (wa.me, JSON-LD telephone) become non-functional.
+// Build-time guard: fail the production build if the .env.example placeholder
+// leaked through. Every CTA on the site is a wa.me deep link built from this
+// number, so a placeholder ships a site whose entire funnel is dead — and a
+// console.warn does not stop a deploy, it just scrolls past in the CI log.
 if (import.meta.env.PROD && CONTACT_WHATSAPP === "34600000000") {
-  console.warn(
+  throw new Error(
     "[space-for-edu] PUBLIC_CONTACT_WHATSAPP is still the placeholder " +
-      "'34600000000' — replace it with the real WhatsApp number before deploy.",
+      "'34600000000'. Refusing to build for production: every WhatsApp CTA " +
+      "and the JSON-LD telephone would be non-functional.",
   );
 }
