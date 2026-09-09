@@ -978,8 +978,8 @@
       "what_body": "Cookies are small files that a website stores on your device to remember your preferences and improve your experience.",
       "usage_title": "Which cookies we use",
       "usage_body": "We use strictly necessary technical cookies for the site to function. With your consent, we may use analytics cookies via Google Tag Manager to understand how the site is used and to improve it. We do not use advertising cookies.",
-      "thirdparty_title": "Third parties — Google Tag Manager",
-      "thirdparty_body": "We use Google Tag Manager (Google LLC) to manage analytics tags. If you accept analytics cookies, GTM may install Google Analytics cookies. If you decline or choose only necessary cookies, GTM installs no tracking cookies. You can change your preference at any time using the \"Manage preferences\" button below.",
+      "thirdparty_title": "Third parties that may set cookies",
+      "thirdparty_body": "Google Tag Manager (Google LLC) manages analytics tags and only sets cookies if you accept the analytics category. Stripe Payments Europe sets its own cookies, necessary to process payment and prevent fraud, when you start a purchase. Google Calendar may set cookies if you click to load the booking calendar: it does not load on its own, precisely so that nothing is set without your action.",
       "manage_title": "Managing cookies",
       "manage_body": "You can block or delete cookies through your browser settings. Doing so will not affect your use of the site."
     },
