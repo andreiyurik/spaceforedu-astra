@@ -111,16 +111,24 @@ Medido el 9-IX-2026 en un portátil:
 
 | | |
 |---|---|
-| Sin caché de Astro — **lo que hace CI** tras `npm ci` | ~234 s |
+| **Sin caché de Astro — lo que hace CI** tras `npm ci` | **234 s y 218 s** |
 | Con `node_modules/.astro` caliente | ~50 s |
 
-**CI siempre parte sin caché**, así que el número que cuenta es el primero. El
-grueso es generar 36 imágenes OG con satori y resvg: trabajo de CPU que escala
+**El número de arriba es el que cuenta**, y está confirmado por dos mediciones
+independientes y consistentes: CI siempre parte sin caché porque `npm ci` borra
+`node_modules`, y ahí vive la caché.
+
+El grueso es generar 36 imágenes OG con satori y resvg: trabajo de CPU que escala
 con el número de páginas, y el sitio pasó de 59 a 95 en esta tanda.
 
-*(Una medición intermedia dio 283 s "en caliente", más que en frío. Era falsa:
-ese build venía de cambiar de rama, lo que invalida la caché de OG. Repetida
-correctamente, la caché sí funciona y baja el build a ~50 s.)*
+**Sobre el número "en caliente", una advertencia honesta.** Solo tengo una lectura
+limpia (~50 s). Otros dos intentos dieron 283 s y 1635 s, y ninguno vale: el
+primero venía de cambiar de rama —lo que invalida la caché de OG— y el segundo
+corría en segundo plano compitiendo por CPU con otro build. Los dejo anotados en
+vez de borrarlos porque explican por qué no conviene fiarse de una sola medición
+de tiempo hecha con la máquina ocupada.
+
+Para la decisión da igual: lo que importa es el build en frío, y ese es sólido.
 
 Por eso `timeout-minutes` sube de 10 a 25. No es para ocultar un build lento: si
 algún día tarda 20 minutos, hay que mirarlo. Es para que un despliegue correcto

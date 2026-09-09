@@ -8,8 +8,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     # Medido el 9-IX-2026 en un portatil:
-    #   sin cache de Astro (lo que hace CI tras `npm ci`)  ~234 s
-    #   con node_modules/.astro caliente                    ~50 s
+    #   sin cache de Astro (lo que hace CI tras `npm ci`)  234 s y 218 s
+    #   con node_modules/.astro caliente                    ~50 s (una lectura)
     #
     # CI siempre parte sin cache, asi que el numero que cuenta es el primero.
     # El grueso es generar 36 imagenes OG con satori y resvg: trabajo de CPU
