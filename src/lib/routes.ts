@@ -9,6 +9,7 @@ export const publicPages = {
   privacyPolicy: "privacy-policy",
   legalNotice: "aviso-legal",
   cookies: "cookies",
+  consulta: "consulta",
   blog: "blog",
   // Post-payment landing pages. Stripe's success_url points here, so they are
   // the only clean, measurable conversion point a static site can have.
