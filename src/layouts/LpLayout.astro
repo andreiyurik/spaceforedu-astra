@@ -120,16 +120,24 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
     </div>
 
     <script>
-      import Lenis from "lenis";
-      let lenis: Lenis | null = null;
+      // Lenis con import() dinamico DESPUES de las comprobaciones: en tactil y con
+      // reduced-motion nunca se ejecuta, asi que un import estatico obligaba al
+      // 100 % del trafico movil a descargar una libreria que no llega a usar.
+      type LenisInstance = import("lenis").default;
+      let lenis: LenisInstance | null = null;
       let rafId: number | null = null;
-      function initLenis() {
+      // ClientRouter puede navegar mientras se descarga el modulo.
+      let generation = 0;
+      async function initLenis() {
+        const mine = ++generation;
         if (rafId != null) cancelAnimationFrame(rafId);
         lenis?.destroy();
         lenis = null;
         rafId = null;
         if (window.matchMedia("(hover: none)").matches) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const { default: Lenis } = await import("lenis");
+        if (mine !== generation) return;
         lenis = new Lenis({ duration: 1.15, easing: (t) => 1 - Math.pow(1 - t, 4) });
         function raf(time: number) {
           lenis!.raf(time);

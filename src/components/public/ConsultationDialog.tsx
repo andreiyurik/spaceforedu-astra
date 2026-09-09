@@ -30,7 +30,7 @@ const SUCCESS_AUTO_CLOSE_MS = 2500;
  *    handful of strings instead of the whole message bundle — with its own
  *    trigger button).
  */
-function ConsultationDialogView({
+export function ConsultationDialogView({
   strings,
   trigger,
 }: {
