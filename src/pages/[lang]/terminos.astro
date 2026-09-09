@@ -1,0 +1,57 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { getSeo } from "@/lib/seo";
+import { LOCALES, assertLocale } from "@/lib/constants";
+import { publicPages } from "@/lib/routes";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("terminos", locale);
+
+const sections = [
+  "objeto",
+  "precio",
+  "pago",
+  "ejecucion",
+  "desistimiento",
+  "reembolso",
+  "obligaciones",
+  "responsabilidad",
+  "conflictos",
+  "modificacion",
+] as const;
+---
+
+<PublicLayout
+  title={seo.title}
+  description={seo.description}
+  locale={locale}
+  page={publicPages.terminos}
+  hideStickyCta
+>
+  <div class="mx-auto max-w-2xl space-y-8 px-4 py-16 sm:py-24">
+    <h1 class="text-3xl font-bold tracking-tight">{t("public.terms.title")}</h1>
+
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      {t("public.terms.intro")}
+    </p>
+
+    {
+      sections.map((key) => (
+        <section class="space-y-3">
+          <h2 class="text-lg font-semibold">{t(`public.terms.${key}_title`)}</h2>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            {t(`public.terms.${key}_body`)}
+          </p>
+        </section>
+      ))
+    }
+  </div>
+</PublicLayout>

@@ -23,7 +23,8 @@
     "trust_company": "Registered in Spain",
     "trust_payments": "Personal support",
     "trust_gdpr": "GDPR compliant",
-    "trust_languages": "ES · EN · RU"
+    "trust_languages": "ES · EN · RU",
+    "terms": "Terms of service"
   },
   "a11y": {
     "skip_to_content": "Skip to main content",
@@ -1085,6 +1086,30 @@
       "pin_final_side_3": "Total cost, itemised, with no surprises",
       "pin_final_side_4": "The right route: homologation or equivalence",
       "pin_final_side_5": "The €100 is deducted if you hire us"
+    },
+    "terms": {
+      "title": "General terms of service",
+      "intro": "These terms govern the purchase of services offered by ROSFORD, S.L. through spaceforedu.com. By purchasing any of our services, the client confirms having read and accepted them. Keeping a copy is recommended.",
+      "objeto_title": "1. Subject matter and provider",
+      "objeto_body": "ROSFORD, S.L. (tax ID B72654668), registered at calle de Velázquez 10, 1.º, 28001 Madrid, provides advisory and filing services relating to the homologation, equivalence and convalidation of foreign qualifications, as well as admission to Spanish universities and Spanish-language training. Resolving these files is the exclusive competence of the Spanish authorities: ROSFORD prepares, files and follows up the case, but neither resolves it nor can guarantee the outcome.",
+      "precio_title": "2. Price",
+      "precio_body": "Published prices are in euros and include applicable Value Added Tax. Each service states what it covers. Unless stated otherwise on the service page, sworn translations and apostilles or consular legalisations are not included; the client pays these directly to the relevant professionals or authorities.",
+      "pago_title": "3. Payment",
+      "pago_body": "Payment is by card through Stripe Payments Europe, Ltd., acting as payment service provider. ROSFORD never stores full card details. The client receives a payment receipt by email. The contract is concluded upon payment confirmation.",
+      "ejecucion_title": "4. Performance timeline",
+      "ejecucion_body": "ROSFORD undertakes to review the documentation provided and inform the client of the status of their file within a reasonable period from receipt of the complete documents. Resolution timelines depend on the competent authority and are not attributable to ROSFORD. Any timeline estimate provided is indicative and based on experience with comparable files.",
+      "desistimiento_title": "5. Right of withdrawal",
+      "desistimiento_body": "A client acting as a consumer has fourteen calendar days from conclusion of the contract to withdraw without giving reasons. To exercise it, an unequivocal statement to the contact email address is sufficient. However, under consumer law, the right of withdrawal does not apply to services fully performed where performance began with the client's prior express consent and their acknowledgement that they would lose the right of withdrawal once the contract had been performed. If the client expressly requests that performance begin during the withdrawal period and then withdraws, they shall pay the proportionate part of the service already provided.",
+      "reembolso_title": "6. Refunds and case viability",
+      "reembolso_body": "If, after expert review of the documentation, ROSFORD concludes that the case is not viable and should not proceed, the amount paid will be refunded, less any costs already incurred and previously notified to the client. Refunds are issued through the same payment method used for the purchase. An unfavourable decision by the authorities does not in itself give rise to a right to a refund where the file was properly prepared and filed, without prejudice to advice on available appeals.",
+      "obligaciones_title": "7. Client obligations",
+      "obligaciones_body": "The client undertakes to provide truthful, complete and legible documentation, and to report any material change in their circumstances. Providing false or incomplete documentation may lead to refusal of the file and entitles ROSFORD to terminate the contract without a right to a refund.",
+      "responsabilidad_title": "8. Liability",
+      "responsabilidad_body": "ROSFORD is liable for the proper provision of its advisory and filing services. It is not liable for the outcome or timing of administrative decisions, nor for loss arising from inaccurate information provided by the client, nor for decisions taken by educational institutions or third-party bodies.",
+      "conflictos_title": "9. Dispute resolution",
+      "conflictos_body": "These terms are governed by Spanish law. For any dispute, the parties submit to the courts of the consumer's domicile, without prejudice to the rights afforded by consumer legislation. Clients may address any complaint to the contact email address, which will be dealt with as promptly as possible.",
+      "modificacion_title": "10. Amendments",
+      "modificacion_body": "ROSFORD may amend these terms. The version applicable to each purchase is the one in force at the time it is made, and is provided to the client together with the payment receipt."
     }
   },
   "lp": {

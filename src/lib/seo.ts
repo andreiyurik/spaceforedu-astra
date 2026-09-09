@@ -10,6 +10,7 @@ type PageKey =
   | "legalNotice"
   | "cookies"
   | "blog"
+  | "terminos"
   | "consulta"
   | "graciasHomologacion"
   | "graciasConsulta";
@@ -212,6 +213,23 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
       title: "Консультация эксперта по омологации — Space for Edu",
       description:
         "30 минут с экспертом: проверяем документы и говорим, проходной ли ваш случай, сколько времени и денег потребуется. Вычитается из стоимости услуги.",
+    },
+  },
+  terminos: {
+    es: {
+      title: "Condiciones de contratación — Space for Edu",
+      description:
+        "Condiciones generales de contratación de los servicios de Space for Edu: precio, forma de pago, plazos, derecho de desistimiento y reembolsos.",
+    },
+    en: {
+      title: "Terms of service — Space for Edu",
+      description:
+        "General terms of service for Space for Edu: price, payment, timelines, right of withdrawal and refunds.",
+    },
+    ru: {
+      title: "Условия оказания услуг — Space for Edu",
+      description:
+        "Общие условия оказания услуг Space for Edu: цена, оплата, сроки, право на отказ и возвраты.",
     },
   },
 };
