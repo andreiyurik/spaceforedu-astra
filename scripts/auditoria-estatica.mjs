@@ -4,6 +4,9 @@
  *
  *   17. accesibilidad  -> lang, alt, jerarquia de encabezados, nombre accesible,
  *                        etiquetado de inputs, zoom y tabindex
+ *   14. canonical      -> hreflang que apuntan a URLs que existen
+ *   11. descripciones  -> duplicadas entre paginas INDEXABLES
+ *       datos estruct. -> todo bloque ld+json parsea
  *   19. enlaces rotos  -> cada href interno de dist/ resuelve a un fichero real
  *   20. rendimiento    -> ficheros de public/ que nadie referencia y se despliegan igual
  *
@@ -140,6 +143,53 @@ for (const f of (existsSync(DIST) ? [...recorrer(DIST)] : []).filter((x) => x.en
   }
 }
 
+// ---------- 4. SEO estructural ----------
+//
+// Tres cosas que fallan en silencio: un JSON-LD que no parsea lo ignora Google
+// sin avisar; un hreflang a una URL inexistente rompe el grupo entero de
+// alternancias; y dos paginas INDEXABLES con la misma description compiten
+// entre si.
+//
+// La duplicacion entre una landing y su pagina de servicio NO cuenta: las
+// landings van noindex y fuera del sitemap, asi que no compiten con nada. Por
+// eso solo se comparan paginas indexables.
+const seo = [];
+const paginas = existsSync(DIST) ? [...recorrer(DIST)].filter((f) => f.endsWith(".html")) : [];
+
+const canonicas = new Set();
+for (const f of paginas) {
+  const can = readFileSync(f, "utf-8").match(/<link rel="canonical" href="([^"]+)"/);
+  if (can) canonicas.add(can[1]);
+}
+
+const descripciones = new Map();
+for (const f of paginas) {
+  const html = readFileSync(f, "utf-8");
+  const rel = relative(DIST, f);
+
+  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    try {
+      JSON.parse(m[1]);
+    } catch (e) {
+      seo.push(`${rel}  JSON-LD invalido: ${String(e.message).slice(0, 60)}`);
+    }
+  }
+
+  for (const m of html.matchAll(/<link rel="alternate" hreflang="([a-zA-Z-]+)" href="([^"]+)"/g)) {
+    if (m[1] === "x-default") continue;
+    if (!canonicas.has(m[2])) seo.push(`${rel}  hreflang ${m[1]} apunta a ${m[2]}, que no existe`);
+  }
+
+  // Solo paginas indexables: una noindex no compite en resultados.
+  const noindex = /name="robots" content="[^"]*noindex/.test(html);
+  const desc = html.match(/<meta name="description" content="([^"]*)"/);
+  if (desc && !noindex) {
+    const previa = descripciones.get(desc[1]);
+    if (previa) seo.push(`${rel}  comparte description con ${previa}`);
+    else descripciones.set(desc[1], rel);
+  }
+}
+
 // ---------- informe ----------
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 console.log("\n== Ficheros de public/ que nadie referencia ==");
@@ -152,6 +202,11 @@ else {
   }
   console.log(`  -> ${huerfanos.length} ficheros, ${kb(total)} desplegados sin uso`);
 }
+
+console.log("\n== SEO estructural ==");
+if (!existsSync(DIST)) console.log("  (no hay dist/: ejecuta el build antes)");
+else if (seo.length === 0) console.log("  sin hallazgos");
+else for (const x of seo) console.log(`  ${x}`);
 
 console.log("\n== Accesibilidad ==");
 if (!existsSync(DIST)) console.log("  (no hay dist/: ejecuta el build antes)");
