@@ -5,10 +5,23 @@ import type { Locale } from "@/lib/constants";
 
 interface I18nValue {
   locale: Locale;
-  messages: Messages;
+  messages: MessagesSubset;
 }
 
 const I18nContext = createContext<I18nValue | null>(null);
+
+/**
+ * Subconjunto de mensajes: cada isla puede recibir solo los espacios de nombres
+ * que lee, en vez del bundle entero.
+ *
+ * Es seguro quedarse corto porque `makeT` devuelve la propia clave cuando no la
+ * encuentra, y `scripts/i18n-rendered.mjs` falla el build si alguna clave sin
+ * resolver llega al HTML. Si a una isla le falta un espacio de nombres, se sabe
+ * al compilar, no en produccion.
+ */
+export type MessagesSubset = {
+  [K in keyof Messages]?: Partial<Messages[K]>;
+};
 
 export function I18nProvider({
   locale,
@@ -16,7 +29,7 @@ export function I18nProvider({
   children,
 }: {
   locale: Locale;
-  messages: Messages;
+  messages: MessagesSubset;
   children: ReactNode;
 }) {
   const value = useMemo(() => ({ locale, messages }), [locale, messages]);
