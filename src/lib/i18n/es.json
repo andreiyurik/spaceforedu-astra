@@ -1107,7 +1107,10 @@
       "pin_final_side_2": "Plazo real para su país y su título",
       "pin_final_side_3": "Coste total desglosado, sin sorpresas",
       "pin_final_side_4": "La vía correcta: homologación o equivalencia",
-      "pin_final_side_5": "Los 100 € se descuentan si contrata"
+      "pin_final_side_5": "Los 100 € se descuentan si contrata",
+      "cal_titulo": "Reserva tu consulta en el calendario",
+      "cal_aviso": "La agenda la gestiona Google Calendar. Al pulsar, se carga contenido de Google y este puede instalar cookies propias. No se carga nada hasta que lo pidas tú.",
+      "cal_boton": "Cargar el calendario"
     },
     "terms": {
       "title": "Condiciones generales de contratación",

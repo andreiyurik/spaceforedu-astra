@@ -1,0 +1,79 @@
+---
+/**
+ * Agenda de Google Calendar, con carga bajo demanda.
+ *
+ * NO se incrusta el iframe al cargar la pagina. Google pone cookies propias en
+ * cuanto el iframe existe, asi que hacerlo sin intervencion del visitante seria
+ * tratar sus datos antes de que decida nada.
+ *
+ * El patron es "clic para cargar": se muestra un aviso con el proveedor, y el
+ * iframe solo se inserta cuando el visitante pulsa. Su clic es la base juridica
+ * mas defendible, y ademas no obliga a inventar una categoria nueva en el
+ * banner de cookies.
+ *
+ * Sin `bookingUrl` el componente no renderiza nada: la pagina cae a su CTA
+ * normal en vez de mostrar un hueco vacio.
+ */
+interface Props {
+  /** URL de reservas de Google Calendar (calendar.app.google/...). */
+  bookingUrl: string;
+  titulo: string;
+  aviso: string;
+  boton: string;
+}
+
+const { bookingUrl, titulo, aviso, boton } = Astro.props;
+---
+
+{
+  bookingUrl && (
+    <div
+      class="rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] p-6"
+      data-calendario
+      data-src={bookingUrl}
+    >
+      <h3 class="font-display text-[18px] font-bold text-[var(--ink)]">{titulo}</h3>
+      <p class="mt-2 text-sm leading-relaxed text-[var(--mute)]">{aviso}</p>
+      <button
+        type="button"
+        data-calendario-cargar
+        data-cta="calendario-cargar"
+        class="mt-5 inline-flex min-h-11 items-center rounded-md bg-[var(--primary)] px-5 text-sm font-bold text-white"
+      >
+        {boton}
+      </button>
+    </div>
+  )
+}
+
+<script>
+  // Inserta el iframe solo tras el clic. Se re-engancha en cada navegacion
+  // porque ClientRouter reemplaza el DOM sin recargar la pagina.
+  function armarCalendario() {
+    document.querySelectorAll("[data-calendario]").forEach((caja) => {
+      const boton = caja.querySelector("[data-calendario-cargar]");
+      const src = caja.getAttribute("data-src");
+      if (!boton || !src || caja.hasAttribute("data-armado")) return;
+      caja.setAttribute("data-armado", "");
+
+      boton.addEventListener("click", () => {
+        const marco = document.createElement("iframe");
+        marco.src = src;
+        marco.width = "100%";
+        marco.height = "620";
+        marco.style.border = "0";
+        marco.loading = "lazy";
+        marco.title = caja.querySelector("h3")?.textContent ?? "";
+        caja.replaceChildren(marco);
+
+        // `dataLayer` lo define GTM en tiempo de ejecucion; TypeScript no lo
+        // conoce en el tipo Window, de ahi el cast.
+        const w = window as unknown as { dataLayer?: unknown[] };
+        w.dataLayer = w.dataLayer || [];
+        w.dataLayer.push({ event: "sfe_calendario_abierto" });
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", armarCalendario);
+</script>
