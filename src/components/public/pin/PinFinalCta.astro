@@ -48,6 +48,7 @@ const sideItems = Array.from({ length: sideItemCount }, (_, i) => i + 1);
           </p>
           <div class="flex flex-col sm:flex-row gap-3">
             <ConsultationDialogButton
+              ctaId="final-consulta"
               client:visible
               strings={consultationStrings}
               triggerLabel={t(`${prefix}.pin_final_cta_primary`)}

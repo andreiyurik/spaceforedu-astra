@@ -76,6 +76,7 @@ const year = new Date().getFullYear();
               {socialLinks.map(({ name, href, label }) => (
                 <a
                   href={href}
+                  data-cta={`footer-social-${name}`}
                   target={name === "email" ? undefined : "_blank"}
                   rel={name === "email" ? undefined : "noopener noreferrer"}
                   aria-label={label}
