@@ -1146,7 +1146,9 @@
       "cta_title": "¿Prefieres que lo llevemos nosotros?",
       "cta_desc": "Expediente completo por 500 €, con el IVA y las tasas del Ministerio incluidas. O empieza por una consulta de 100 €, descontables si después contratas.",
       "cta_primario": "Ver el trámite de 500 €",
-      "cta_secundario": "Reservar consulta de 100 €"
+      "cta_secundario": "Reservar consulta de 100 €",
+      "consular_titulo": "¿Y si tu país no está en la lista?",
+      "consular_texto": "No todos los países usan la apostilla. Si el tuyo no es parte del Convenio de La Haya —es el caso de Siria, Irak, Egipto, Irán, Jordania, Catar, Nigeria, Ghana, Kenia, Angola, Haití y Cuba, entre otros— tus documentos necesitan legalización consular en vez de apostilla: un trámite distinto, más lento y con pasos que dependen del consulado. Escríbenos y te decimos exactamente cuál es tu vía antes de que empieces a mover papeles."
     },
     "bachillerato": {
       "hero_title_1": "Homologación de bachillerato,",

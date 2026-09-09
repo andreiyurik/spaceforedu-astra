@@ -74,6 +74,17 @@ const guias = (await getCollection("guias", (g) => g.data.locale === locale)).so
           </div>
         )
       }
+
+      <aside
+        class="mt-14 max-w-2xl rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-card)] p-6"
+      >
+        <h2 class="font-display text-[18px] font-bold text-[var(--ink)]">
+          {t(`${PREFIX}.consular_titulo`)}
+        </h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-[var(--mute)]">
+          {t(`${PREFIX}.consular_texto`)}
+        </p>
+      </aside>
     </Container>
   </section>
 </PublicLayout>

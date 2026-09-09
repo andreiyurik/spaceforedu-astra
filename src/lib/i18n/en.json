@@ -1146,7 +1146,9 @@
       "cta_title": "Would you rather we handled it?",
       "cta_desc": "The complete file for €500, VAT and Ministry fees included. Or start with a €100 consultation, deducted if you then go ahead.",
       "cta_primario": "See the €500 service",
-      "cta_secundario": "Book a €100 consultation"
+      "cta_secundario": "Book a €100 consultation",
+      "consular_titulo": "What if your country is not on the list?",
+      "consular_texto": "Not every country uses the apostille. If yours is not a party to the Hague Convention — Syria, Iraq, Egypt, Iran, Jordan, Qatar, Nigeria, Ghana, Kenya, Angola, Haiti and Cuba are among them — your documents need consular legalisation instead: a different procedure, slower and with steps that depend on the consulate. Write to us and we will tell you exactly which route is yours before you start moving paperwork."
     },
     "bachillerato": {
       "hero_title_1": "Secondary school recognition,",
