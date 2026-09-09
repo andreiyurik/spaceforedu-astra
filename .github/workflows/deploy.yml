@@ -7,7 +7,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Medido el 9-IX-2026 en un portatil:
+    #   sin cache de Astro (lo que hace CI tras `npm ci`)  234 s y 218 s
+    #   con node_modules/.astro caliente                    ~50 s (una lectura)
+    #
+    # CI siempre parte sin cache, asi que el numero que cuenta es el primero.
+    # El grueso es generar 36 imagenes OG con satori y resvg: trabajo de CPU
+    # que escala con el numero de paginas, y el sitio paso de 59 a 95 en esta
+    # tanda. Un runner de GitHub suele ser mas lento que un portatil en eso.
+    #
+    # 4 minutos de build + npm ci + rsync contra un tope de 10 era poco margen.
+    # 25 no oculta un build lento: si algun dia tarda 20 minutos hay que
+    # mirarlo. Solo evita que un despliegue correcto muera por el reloj.
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
