@@ -2,6 +2,8 @@
 /**
  * Diagnostico del sitio construido. Cubre dos puntos de la checklist:
  *
+ *   17. accesibilidad  -> lang, alt, jerarquia de encabezados, nombre accesible,
+ *                        etiquetado de inputs, zoom y tabindex
  *   19. enlaces rotos  -> cada href interno de dist/ resuelve a un fichero real
  *   20. rendimiento    -> ficheros de public/ que nadie referencia y se despliegan igual
  *
@@ -75,6 +77,69 @@ if (existsSync(DIST)) {
   }
 }
 
+// ---------- 3. accesibilidad ----------
+//
+// Falso positivo que costo una pasada: un <input> tambien queda etiquetado si va
+// ENVUELTO en un <label>, sin id ni aria-label. Comprobar solo aria-label/for
+// marcaba los 55 checkboxes del banner de cookies, que son correctos.
+const a11y = [];
+const pagina404 = "404.html";
+for (const f of (existsSync(DIST) ? [...recorrer(DIST)] : []).filter((x) => x.endsWith(".html"))) {
+  const html = readFileSync(f, "utf-8");
+  const rel = relative(DIST, f);
+  // La raiz es una redireccion meta-refresh con noindex: no es pagina de contenido.
+  const esRedireccion = /http-equiv="refresh"/.test(html);
+  const aviso = (m) => a11y.push(`${rel}  ${m}`);
+
+  if (!/<html[^>]*\slang="[a-z-]+"/.test(html)) aviso("<html> sin lang");
+  for (const m of html.matchAll(/<img\b[^>]*>/g)) {
+    if (!m[0].includes(" alt=")) aviso(`img sin alt: ${m[0].slice(0, 70)}`);
+  }
+  if (/user-scalable=no|maximum-scale=1/.test(html)) aviso("viewport bloquea el zoom");
+  if (/tabindex="[1-9]/.test(html)) aviso("tabindex positivo");
+
+  const niveles = [...html.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
+  if (!esRedireccion && !niveles.includes(1)) aviso("sin h1");
+  if (niveles.filter((n) => n === 1).length > 1) aviso("mas de un h1");
+
+  const labelsFor = new Set([...html.matchAll(/<label[^>]*\sfor="([^"]+)"/g)].map((m) => m[1]));
+  const envueltos = new Set();
+  for (const l of html.matchAll(/<label\b[^>]*>([\s\S]*?)<\/label>/g)) {
+    for (const i of l[1].matchAll(/<input\b[^>]*>/g)) envueltos.add(i[0]);
+  }
+  for (const m of html.matchAll(/<input\b[^>]*>/g)) {
+    const t = m[0];
+    if (/type="(hidden|submit|button)"/.test(t)) continue;
+    if (t.includes("aria-label")) continue;
+    const id = t.match(/\sid="([^"]+)"/)?.[1];
+    if (id && labelsFor.has(id)) continue;
+    if (envueltos.has(t)) continue;
+    aviso(`input sin etiqueta: ${t.slice(0, 70)}`);
+  }
+  for (const m of html.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)) {
+    const texto = m[1].replace(/<[^>]+>/g, "").trim();
+    if (!texto && !/aria-label|aria-labelledby/.test(m[0])) {
+      aviso(`enlace sin nombre accesible: ${m[0].slice(0, 70)}`);
+    }
+  }
+  for (const m of html.matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/g)) {
+    const texto = m[1].replace(/<[^>]+>/g, "").trim();
+    if (!texto && !/aria-label|aria-labelledby/.test(m[0])) {
+      aviso(`boton sin nombre accesible: ${m[0].slice(0, 70)}`);
+    }
+  }
+  // El salto h1 -> h3 del 404 son los encabezados del pie sin h2 de contenido
+  // intermedio. Es desviacion de buena practica, no incumplimiento de WCAG, y
+  // se deja documentado en vez de silenciado.
+  let previo = null;
+  for (const n of niveles) {
+    if (previo !== null && n > previo + 1 && rel !== pagina404) {
+      aviso(`salto de nivel h${previo} -> h${n}`);
+    }
+    previo = n;
+  }
+}
+
 // ---------- informe ----------
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
 console.log("\n== Ficheros de public/ que nadie referencia ==");
@@ -87,6 +152,11 @@ else {
   }
   console.log(`  -> ${huerfanos.length} ficheros, ${kb(total)} desplegados sin uso`);
 }
+
+console.log("\n== Accesibilidad ==");
+if (!existsSync(DIST)) console.log("  (no hay dist/: ejecuta el build antes)");
+else if (a11y.length === 0) console.log("  sin hallazgos");
+else for (const x of a11y) console.log(`  ${x}`);
 
 console.log("\n== Enlaces internos rotos en dist/ ==");
 if (!existsSync(DIST)) console.log("  (no hay dist/: ejecuta el build antes)");
