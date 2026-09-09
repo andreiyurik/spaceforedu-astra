@@ -6,6 +6,7 @@ import Reveal from "@/components/public/Reveal.astro";
 import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
 import FaqSection from "@/components/public/FaqSection.astro";
 import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
+import StripeBuyButton from "@/components/public/StripeBuyButton.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
 import { LOCALES, assertLocale, SITE_URL } from "@/lib/constants";
@@ -27,6 +28,11 @@ const PREFIX = "public.bachillerato";
 // Stripe Payment Link de los 500 EUR. Vacio en build -> el CTA cae a la pagina
 // de precios en vez de renderizar un boton muerto. Mismo patron que consulta.
 const STRIPE_BACHILLERATO = import.meta.env.PUBLIC_STRIPE_LINK_BACHILLERATO_500 ?? "";
+// Boton de pago incrustado. Si estan las dos variables se pinta el boton de
+// Stripe; si no, se mantiene el enlace de respaldo a precios.
+const STRIPE_PK = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
+const STRIPE_BTN_500 = import.meta.env.PUBLIC_STRIPE_BUY_BUTTON_500 ?? "";
+const botonIncrustado = Boolean(STRIPE_PK && STRIPE_BTN_500);
 
 const consultaHref = publicRoute(publicPages.consulta, locale);
 const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
@@ -137,13 +143,24 @@ const pasos = [1, 2, 3, 4] as const;
             <p class="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
               {t(`${PREFIX}.ruta_a_desc`)}
             </p>
-            <a
-              href={comprarHref}
-              data-cta={`${comprarCta}-ruta`}
-              class="mt-6 inline-flex min-h-12 items-center justify-center rounded-md bg-[var(--brand)] px-6 text-sm font-semibold text-white"
-            >
-              {t(`${PREFIX}.ruta_a_cta`)}
-            </a>
+            {
+              botonIncrustado ? (
+                <div class="mt-6">
+                  <StripeBuyButton
+                    buttonId={STRIPE_BTN_500}
+                    publishableKey={STRIPE_PK}
+                  />
+                </div>
+              ) : (
+                <a
+                  href={comprarHref}
+                  data-cta={`${comprarCta}-ruta`}
+                  class="mt-6 inline-flex min-h-12 items-center justify-center rounded-md bg-[var(--brand)] px-6 text-sm font-semibold text-white"
+                >
+                  {t(`${PREFIX}.ruta_a_cta`)}
+                </a>
+              )
+            }
           </div>
         </Reveal>
         <Reveal delay={80}>

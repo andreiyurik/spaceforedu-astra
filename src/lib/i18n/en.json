@@ -945,9 +945,17 @@
       "data_title": "Data we collect",
       "data_body": "We only collect the data you voluntarily provide when contacting us via WhatsApp, email or phone: name, contact details and the information you share about your case.",
       "use_title": "Use of data",
-      "use_body": "We use your data exclusively to respond to your enquiry and deliver the requested service. We do not sell or share it with third parties except where required by law.",
+      "use_body": "We use your data to answer your enquiry, provide the service you have contracted and, if you have expressly asked for it, send you our newsletter. We do not sell your data or pass it on for commercial purposes.",
       "rights_title": "Your rights",
-      "rights_body": "You can exercise the rights of access, rectification, deletion, restriction, portability and objection by writing to our contact email."
+      "rights_body": "You can exercise the rights of access, rectification, deletion, restriction, portability and objection by writing to our contact email.",
+      "terceros_title": "Who we share your data with",
+      "terceros_intro": "To provide the service we rely on suppliers acting as data processors. They only access the data they need, and only to provide us with their service:",
+      "terceros_1": "Stripe Payments Europe, Ltd. — processes payments. It receives your email address and the transaction details. We never see or store your card number.",
+      "terceros_2": "Google Ireland Ltd. — handles appointment booking and site analytics. Analytics is only activated if you accept the corresponding cookies.",
+      "terceros_3": "Hostinger International Ltd. — hosts the website and email.",
+      "terceros_cierre": "Some of these suppliers may process data outside the European Economic Area. Where that happens, they rely on the standard contractual clauses approved by the European Commission. Beyond these cases, we only disclose data where a legal obligation requires it.",
+      "conservacion_title": "How long we keep it",
+      "conservacion_body": "We keep your data for as long as our relationship with you lasts and, afterwards, for the periods tax and commercial law require for invoices. If you unsubscribe from the newsletter we stop writing to you immediately and keep only the minimum record evidencing that unsubscription."
     },
     "legal_notice": {
       "title": "Legal notice",
