@@ -16,6 +16,17 @@ const homeHref = publicRoute(publicPages.home, locale);
 // El 404 se sirve desde /404.html, sin prefijo de idioma. El conmutador, al no
 // encontrar prefijo, generaba /es/404/, /en/404/ y /ru/404/, que no existen:
 // desde un 404 se llegaba a otro 404. Ahora cada idioma va a su portada.
+// Un 404 que solo ofrece "volver al inicio" desperdicia la visita: quien llega
+// aqui venia buscando algo concreto. Estos son los destinos reales del sitio.
+const destinos = [
+  { href: publicRoute(publicPages.homologacion, locale), key: "l_homologacion" },
+  { href: publicRoute(publicPages.guias, locale), key: "l_guias" },
+  { href: publicRoute(publicPages.universidad, locale), key: "l_universidad" },
+  { href: publicRoute(publicPages.espanol, locale), key: "l_espanol" },
+  { href: publicRoute(publicPages.precios, locale), key: "l_precios" },
+  { href: publicRoute(publicPages.blog, locale), key: "l_blog" },
+];
+
 const localeHrefs = Object.fromEntries(
   LOCALES.map((l) => [l, publicRoute(publicPages.home, l)]),
 ) as Partial<Record<Locale, string>>;
@@ -48,5 +59,32 @@ const localeHrefs = Object.fromEntries(
         {t("public.not_found.cta")}
       </Button>
     </a>
+
+    <nav class="mt-14 w-full max-w-2xl" aria-labelledby="destinos-404">
+      <h2
+        id="destinos-404"
+        class="text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--ash)] mb-5"
+      >
+        {t("public.not_found.ayuda")}
+      </h2>
+      <ul class="grid gap-2 sm:grid-cols-2 text-left">
+        {
+          destinos.map(({ href, key }) => (
+            <li>
+              <a
+                href={href}
+                data-cta="404-destino"
+                class="block rounded-lg border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] px-4 py-3 text-[15px] font-semibold text-[var(--ink)] hover:border-[var(--primary)] transition-colors"
+              >
+                {t(`public.not_found.${key}`)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 text-[13px] text-[var(--ash)]">
+        {t("public.not_found.escribenos")}
+      </p>
+    </nav>
   </section>
 </PublicLayout>

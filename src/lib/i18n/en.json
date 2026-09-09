@@ -37,7 +37,15 @@
       "eyebrow": "404",
       "title": "Page not found",
       "desc": "This link doesn't exist or has expired. Head back to the home page.",
-      "cta": "Back to home"
+      "cta": "Back to home",
+      "ayuda": "Were you looking for one of these?",
+      "l_homologacion": "Degree recognition",
+      "l_guias": "Country guides",
+      "l_universidad": "University admission",
+      "l_espanol": "Spanish courses",
+      "l_precios": "Pricing",
+      "l_blog": "Blog",
+      "escribenos": "If you got here from one of our own links, tell us and we will fix it."
     },
     "sticky_cta": {
       "consultation": "Book a consultation",

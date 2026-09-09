@@ -37,7 +37,15 @@
       "eyebrow": "404",
       "title": "Página no encontrada",
       "desc": "El enlace no existe o ha caducado. Vuelve al inicio para continuar.",
-      "cta": "Volver al inicio"
+      "cta": "Volver al inicio",
+      "ayuda": "¿Buscabas alguna de estas?",
+      "l_homologacion": "Homologación de títulos",
+      "l_guias": "Guías por país",
+      "l_universidad": "Acceso a la universidad",
+      "l_espanol": "Cursos de español",
+      "l_precios": "Precios",
+      "l_blog": "Blog",
+      "escribenos": "Si llegaste aquí desde un enlace nuestro, avísanos y lo arreglamos."
     },
     "sticky_cta": {
       "consultation": "Reserva tu consulta",

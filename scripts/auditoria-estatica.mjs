@@ -83,7 +83,6 @@ if (existsSync(DIST)) {
 // ENVUELTO en un <label>, sin id ni aria-label. Comprobar solo aria-label/for
 // marcaba los 55 checkboxes del banner de cookies, que son correctos.
 const a11y = [];
-const pagina404 = "404.html";
 for (const f of (existsSync(DIST) ? [...recorrer(DIST)] : []).filter((x) => x.endsWith(".html"))) {
   const html = readFileSync(f, "utf-8");
   const rel = relative(DIST, f);
@@ -128,12 +127,13 @@ for (const f of (existsSync(DIST) ? [...recorrer(DIST)] : []).filter((x) => x.en
       aviso(`boton sin nombre accesible: ${m[0].slice(0, 70)}`);
     }
   }
-  // El salto h1 -> h3 del 404 son los encabezados del pie sin h2 de contenido
-  // intermedio. Es desviacion de buena practica, no incumplimiento de WCAG, y
-  // se deja documentado en vez de silenciado.
+  // La excepcion que habia aqui para 404.html ya no hace falta: al darle
+  // destinos utiles, la pagina gano un h2 propio y la jerarquia quedo
+  // h1 -> h2 -> h3. Un guardarrail con excepciones que sobran acaba tapando
+  // fallos reales, asi que se retira en cuanto deja de ser necesaria.
   let previo = null;
   for (const n of niveles) {
-    if (previo !== null && n > previo + 1 && rel !== pagina404) {
+    if (previo !== null && n > previo + 1) {
       aviso(`salto de nivel h${previo} -> h${n}`);
     }
     previo = n;
