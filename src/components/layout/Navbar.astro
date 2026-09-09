@@ -9,9 +9,11 @@ import LanguageSwitcher from "@/components/common/LanguageSwitcher.astro";
 interface Props {
   locale: Locale;
   currentPath: string;
+  /** Destino explicito por idioma; ver LanguageSwitcher. */
+  localeHrefs?: Partial<Record<Locale, string>>;
 }
 
-const { locale, currentPath } = Astro.props;
+const { locale, currentPath, localeHrefs } = Astro.props;
 const messages = getMessages(locale);
 const t = makeT(messages);
 
@@ -70,7 +72,7 @@ const homeHref = publicRoute(publicPages.home, locale);
     </nav>
 
     <div class="ml-auto hidden lg:flex items-center gap-2">
-      <LanguageSwitcher locale={locale} currentPath={currentPath} />
+      <LanguageSwitcher locale={locale} currentPath={currentPath} localeHrefs={localeHrefs} />
       {
         waHref && (
           <a
@@ -91,6 +93,7 @@ const homeHref = publicRoute(publicPages.home, locale);
         client:load
         locale={locale}
         currentPath={currentPath}
+        localeHrefs={localeHrefs}
         navLabels={{
           homologacion: t("nav.homologacion"),
           universidad: t("nav.universidad"),

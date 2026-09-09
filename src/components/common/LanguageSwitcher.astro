@@ -5,9 +5,16 @@ interface Props {
   locale: Locale;
   currentPath: string;
   variant?: "default" | "ghost-dark";
+  /**
+   * Destino explicito por idioma. Necesario donde la ruta NO es la misma en los
+   * tres idiomas: los articulos del blog tienen el slug traducido, asi que
+   * cambiar "/es/" por "/en/" en la URL actual lleva a un 404. Cuando no se
+   * pasa, se mantiene la sustitucion del prefijo, que es correcta para el resto.
+   */
+  localeHrefs?: Partial<Record<Locale, string>>;
 }
 
-const { locale, currentPath, variant = "default" } = Astro.props;
+const { locale, currentPath, variant = "default", localeHrefs } = Astro.props;
 
 const LANGUAGES = [
   { code: "es", label: "Español", countryCode: "es" },
@@ -61,7 +68,7 @@ const triggerClass =
   >
     {
       LANGUAGES.map((lang) => {
-        const href = `/${lang.code}${pathWithoutLocale}`;
+        const href = localeHrefs?.[lang.code] ?? `/${lang.code}${pathWithoutLocale}`;
         const isActive = locale === lang.code;
         return (
           <a
