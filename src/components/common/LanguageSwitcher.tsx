@@ -20,6 +20,11 @@ interface LanguageSwitcherProps {
   locale: Locale;
   /** Pathname including locale prefix, e.g. "/es/homologation/". */
   currentPath: string;
+  /**
+   * Destino explicito por idioma, para rutas cuyo slug NO es igual en los tres
+   * idiomas (los articulos del blog). Sin esto, sustituir el prefijo lleva a 404.
+   */
+  localeHrefs?: Partial<Record<Locale, string>>;
   /** Use on dark backgrounds (e.g. sidebar, dark panel). */
   variant?: "default" | "ghost-dark";
 }
@@ -28,8 +33,14 @@ export function LanguageSwitcher({
   locale,
   currentPath,
   variant = "default",
+  localeHrefs,
 }: LanguageSwitcherProps) {
   const changeLanguage = (code: string) => {
+    const explicito = localeHrefs?.[code as Locale];
+    if (explicito) {
+      window.location.assign(explicito);
+      return;
+    }
     const pattern = new RegExp(`^/(${LOCALES.join("|")})(/|$)`);
     const nextPath = pattern.test(currentPath)
       ? currentPath.replace(pattern, `/${code}$2`)

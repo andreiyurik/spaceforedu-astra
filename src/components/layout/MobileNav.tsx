@@ -31,6 +31,7 @@ const NAV_ICONS: Record<string, React.ElementType> = {
 export default function MobileNav({
   locale,
   currentPath,
+  localeHrefs,
   navLabels,
   navHrefs,
   menuLabel,
@@ -44,6 +45,8 @@ export default function MobileNav({
 }: {
   locale: Locale;
   currentPath: string;
+  /** Destino explicito por idioma; ver LanguageSwitcher. */
+  localeHrefs?: Partial<Record<Locale, string>>;
   navLabels: Record<"homologacion" | "universidad" | "espanol" | "precios" | "blog", string>;
   navHrefs: Record<
     "homologacion" | "universidad" | "espanol" | "precios" | "blog" | "home",
@@ -147,7 +150,7 @@ export default function MobileNav({
             </a>
           )}
           <div className="flex justify-start">
-            <LanguageSwitcher locale={locale} currentPath={currentPath} />
+            <LanguageSwitcher locale={locale} currentPath={currentPath} localeHrefs={localeHrefs} />
           </div>
           {waHref && (
             <a

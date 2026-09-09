@@ -5,6 +5,7 @@ import { getMessages, makeT } from "@/lib/i18n";
 import {
   SITE_URL,
   DEFAULT_LOCALE,
+  LOCALES,
   SOCIAL_FACEBOOK,
   SOCIAL_LINKEDIN,
   SOCIAL_TWITTER,
@@ -20,6 +21,7 @@ import {
   formatDate,
 } from "@/lib/blog";
 import { blogPosting, blogBreadcrumb, blogFaqPage } from "@/lib/structured-data";
+import { publicRoute, publicPages } from "@/lib/routes";
 import SocialIcon from "@/components/common/SocialIcon.astro";
 import { render } from "astro:content";
 
@@ -81,6 +83,18 @@ const allLangLinks = [
   ...translations,
 ];
 
+// Destino del conmutador de idioma. El slug de cada articulo esta traducido, asi
+// que el comportamiento por defecto del conmutador —sustituir "/es/" por "/en/"
+// sobre la URL actual— llevaba a un 404 en los tres idiomas. Cuando un articulo
+// no tiene traduccion a un idioma, ese idioma va al indice del blog en su lengua,
+// que es lo util: no existe el articulo, pero si el resto del blog.
+const localeHrefs = Object.fromEntries(
+  LOCALES.map((l) => {
+    const hermano = allLangLinks.find((x) => x.locale === l);
+    return [l, hermano ? `/${l}/blog/${hermano.slug}/` : publicRoute(publicPages.blog, l)];
+  }),
+) as Partial<Record<Locale, string>>;
+
 const authorInitial = post.data.author.name.charAt(0).toUpperCase();
 const pageTitle = `${post.data.title} — Space for Edu`;
 const canonicalUrl = `${SITE_URL}/${locale}/blog/${post.data.slug}/`;
@@ -97,6 +111,7 @@ const ogImage = `/og/blog/${locale}-${post.data.slug}.png`;
   ogImageHeight={630}
   canonicalUrl={canonicalUrl}
   ogType="article"
+  localeHrefs={localeHrefs}
 >
   <Fragment slot="head">
     {allLangLinks.map(({ locale: l, slug: s }) => (

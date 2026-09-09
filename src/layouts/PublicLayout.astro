@@ -35,6 +35,13 @@ interface Props {
   ogImageHeight?: number;
   /** Hide the sticky WhatsApp bubble + mobile CTA bar (for thank-you / privacy pages). */
   hideStickyCta?: boolean;
+  /**
+   * Destino del conmutador de idioma por locale. Solo hace falta donde la ruta
+   * NO es la misma en los tres idiomas — hoy, los articulos del blog, cuyo slug
+   * esta traducido. Sin esto el conmutador sustituye "/es/" por "/en/" sobre el
+   * slug espanol y aterriza en un 404.
+   */
+  localeHrefs?: Partial<Record<Locale, string>>;
   /** LCP image — preloaded with high priority. Path under /public. Used only if heroImageSrcset not provided. */
   heroImage?: string;
   /** MIME type of heroImage (default image/webp). */
@@ -63,6 +70,7 @@ const {
   ogImageWidth,
   ogImageHeight,
   hideStickyCta = false,
+  localeHrefs,
   heroImage,
   heroImageType = "image/webp",
   heroImageSrcset,
@@ -253,7 +261,7 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
       {skipLabel}
     </a>
     <div class={`min-h-screen flex flex-col ${hideStickyCta ? "" : "pb-[calc(72px+env(safe-area-inset-bottom))] lg:pb-0"}`}>
-      <Navbar locale={locale} currentPath={currentPath} />
+      <Navbar locale={locale} currentPath={currentPath} localeHrefs={localeHrefs} />
       <main id="main" class="flex-1 overflow-x-clip">
         <slot />
       </main>
