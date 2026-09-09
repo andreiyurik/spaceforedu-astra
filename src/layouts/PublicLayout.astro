@@ -147,6 +147,14 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
       <meta property="og:locale:alternate" content={l} />
     ))}
 
+    {/* Twitter Cards. X/Twitter no lee las etiquetas og: para el tipo de tarjeta, asi
+        que sin esto los enlaces compartidos salen como una linea de texto sin imagen.
+        La imagen es la misma absoluta que og:image, que es requisito de la tarjeta. */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
     <link
       rel="preload"
       as="font"

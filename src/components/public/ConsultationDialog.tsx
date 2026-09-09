@@ -141,18 +141,21 @@ export function ConsultationDialogButton({
   triggerLabel,
   triggerClass,
   arrow = false,
+  ctaId,
 }: {
   strings: ConsultationStrings;
   triggerLabel: string;
   triggerClass?: string;
   /** Render a trailing arrow that slides on hover (the trigger must use `group`). */
   arrow?: boolean;
+  /** Emitted as `data-cta`, the hook the GTM trigger listens on. */
+  ctaId?: string;
 }) {
   return (
     <ConsultationDialogView
       strings={strings}
       trigger={
-        <button type="button" className={triggerClass}>
+        <button type="button" className={triggerClass} data-cta={ctaId}>
           {triggerLabel}
           {arrow && (
             <ArrowRight className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" />

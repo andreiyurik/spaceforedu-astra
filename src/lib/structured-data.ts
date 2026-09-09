@@ -26,7 +26,20 @@ export function organization(): object {
     url: SITE_URL,
     logo: `${SITE_URL}/icon-512.png`,
     image: `${SITE_URL}/og.jpg`,
-    foundingDate: "2010",
+    foundingDate: "2009",
+    // Datos registrales de ROSFORD SL, el prestador del servicio. Coinciden con el
+    // aviso legal (art. 10 LSSI); si cambian alli, tienen que cambiar aqui.
+    legalName: "ROSFORD SL",
+    vatID: "ESB72654668",
+    taxID: "B72654668",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Calle de Velazquez 10, 1\u00ba",
+      addressLocality: "Madrid",
+      addressRegion: "Madrid",
+      postalCode: "28001",
+      addressCountry: "ES",
+    },
     areaServed: "ES",
     knowsLanguage: ["es", "en", "ru"],
     slogan: "Educación en España, de principio a fin",

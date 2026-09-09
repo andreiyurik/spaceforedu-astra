@@ -73,11 +73,12 @@ const btnClass =
       </p>
     )}
     {ctaHref ? (
-      <a href={ctaHref} target="_blank" rel="noopener noreferrer" class="block">
+      <a href={ctaHref} data-cta="pricing-plan" target="_blank" rel="noopener noreferrer" class="block">
         <button class={btnClass}>{cta}</button>
       </a>
     ) : (
       <ConsultationDialogButton
+        ctaId="precios-consulta"
         client:visible
         strings={consultationStrings}
         triggerLabel={cta}

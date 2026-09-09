@@ -62,6 +62,7 @@ function StickyCtaBarInner() {
             <>
               <a
                 href={`tel:+${CONTACT_WHATSAPP}`}
+                data-cta="sticky-tel"
                 aria-label={t("a11y.phone_aria")}
                 className="flex items-center justify-center w-13 text-[var(--primary)] active:bg-[var(--surface-card)] transition-colors"
               >
@@ -72,6 +73,7 @@ function StickyCtaBarInner() {
               <span className="w-px self-stretch my-2 bg-[var(--hairline-soft)]" aria-hidden="true" />
               <a
                 href={waHref!}
+                data-cta="sticky-whatsapp-movil"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t("public.sticky_cta.whatsapp_aria")}
@@ -85,6 +87,7 @@ function StickyCtaBarInner() {
           <ConsultationDialog>
             <button
               type="button"
+              data-cta="sticky-consulta"
               className="flex-1 flex items-center justify-center bg-[var(--primary)] text-white text-sm font-bold active:bg-[var(--primary-pressed)] transition-colors"
             >
               {t("public.sticky_cta.consultation")}
@@ -97,6 +100,7 @@ function StickyCtaBarInner() {
       {waHref && (
         <a
           href={waHref}
+          data-cta="sticky-whatsapp-escritorio"
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t("public.sticky_cta.whatsapp_aria")}
