@@ -1,0 +1,163 @@
+---
+/**
+ * Post-payment landing. Stripe's `success_url` points here, which makes it the
+ * only clean conversion point a static site can have: reaching this URL means
+ * the payment actually completed, unlike a click on a CTA.
+ *
+ * Two deliberate choices:
+ *  - `noindex` and out of the sitemap. It is a private confirmation, not content.
+ *  - The `dataLayer` push is de-duplicated per payment via sessionStorage, so a
+ *    refresh or a back-navigation does not count the same sale twice.
+ */
+import Container from "@/components/public/Container.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import { CONTACT_WHATSAPP, CONTACT_EMAIL, type Locale } from "@/lib/constants";
+import { publicRoute, publicPages, whatsappLink } from "@/lib/routes";
+
+interface Props {
+  /** i18n prefix, e.g. "public.gracias_homologacion" */
+  prefix: string;
+  t: (key: string) => string;
+  locale: Locale;
+  /** Sent to the dataLayer so GA4 can tell the two products apart. */
+  producto: string;
+}
+
+const { prefix, t, locale, producto } = Astro.props;
+
+const steps = [1, 2, 3] as const;
+const homeHref = publicRoute(publicPages.home, locale);
+const waHref = CONTACT_WHATSAPP ? whatsappLink(CONTACT_WHATSAPP) : "";
+---
+
+<section class="py-16 sm:py-24">
+  <Container>
+    <div class="mx-auto max-w-2xl">
+      <div class="flex items-center gap-3">
+        <span
+          class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-700"
+          aria-hidden="true"
+        >
+          <LucideIcon name="check" class="h-5 w-5" />
+        </span>
+        <span class="text-xs font-medium uppercase tracking-wider text-emerald-700">
+          {t(`${prefix}.eyebrow`)}
+        </span>
+      </div>
+
+      <h1 class="mt-5 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+        {t(`${prefix}.title`)}
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+        {t(`${prefix}.subtitle`)}
+      </p>
+
+      <ol class="mt-10 space-y-6">
+        {
+          steps.map((n) => (
+            <li class="flex gap-4">
+              <span
+                class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-sm font-semibold tabular-nums"
+                aria-hidden="true"
+              >
+                {n}
+              </span>
+              <div>
+                <h2 class="font-semibold leading-snug">{t(`${prefix}.step_${n}_title`)}</h2>
+                <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {t(`${prefix}.step_${n}_desc`)}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="mt-10 rounded-lg border bg-[var(--surface-soft)] p-5">
+        <h2 class="text-sm font-semibold">{t(`${prefix}.reference_title`)}</h2>
+        <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+          {t(`${prefix}.reference_desc`)}
+        </p>
+        <p
+          id="payment-reference"
+          class="mt-3 font-mono text-sm break-all"
+          data-missing={t(`${prefix}.reference_missing`)}
+        >
+          {t(`${prefix}.reference_missing`)}
+        </p>
+      </div>
+
+      <div class="mt-10 border-t pt-8">
+        <h2 class="font-semibold">{t(`${prefix}.help_title`)}</h2>
+        <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+          {t(`${prefix}.help_desc`)}
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          {
+            waHref && (
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cta="thankyou-whatsapp"
+                class="inline-flex min-h-11 items-center rounded-md bg-[#25D366] px-5 text-sm font-medium text-white"
+              >
+                {t(`${prefix}.cta_whatsapp`)}
+              </a>
+            )
+          }
+          {
+            CONTACT_EMAIL && (
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                data-cta="thankyou-email"
+                class="inline-flex min-h-11 items-center rounded-md border px-5 text-sm font-medium"
+              >
+                {CONTACT_EMAIL}
+              </a>
+            )
+          }
+          <a
+            href={homeHref}
+            data-cta="thankyou-home"
+            class="inline-flex min-h-11 items-center px-2 text-sm font-medium underline underline-offset-4"
+          >
+            {t(`${prefix}.cta_home`)}
+          </a>
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>
+
+<script define:vars={{ producto }}>
+  // Stripe appends ?session_id={CHECKOUT_SESSION_ID} when the success_url is
+  // configured with it. We show it as a human-quotable reference and use it as
+  // the de-duplication key, so a refresh cannot report the same sale twice.
+  function reportPurchase() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+
+    const el = document.getElementById("payment-reference");
+    if (el && sessionId) el.textContent = sessionId;
+
+    const key = `sfe_purchase_${sessionId ?? "sin-referencia"}`;
+    try {
+      if (window.sessionStorage.getItem(key)) return;
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      // Storage blocked: report anyway. A possible duplicate beats a lost sale.
+    }
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "sfe_purchase_confirmed",
+      sfe_producto: producto,
+      sfe_referencia: sessionId ?? null,
+    });
+  }
+
+  // ClientRouter is mounted site-wide, so this must run on every view transition,
+  // not just on the first load.
+  document.addEventListener("astro:page-load", reportPurchase);
+</script>

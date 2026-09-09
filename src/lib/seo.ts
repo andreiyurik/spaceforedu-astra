@@ -9,7 +9,9 @@ type PageKey =
   | "privacy"
   | "legalNotice"
   | "cookies"
-  | "blog";
+  | "blog"
+  | "graciasHomologacion"
+  | "graciasConsulta";
 
 const SEO: Record<PageKey, Record<Locale, { title: string; description: string }>> = {
   home: {
@@ -158,6 +160,40 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
     ru: {
       title: "Политика cookies — Space for Edu",
       description: "Какие cookies мы используем и как ими управлять.",
+    },
+  },
+  graciasHomologacion: {
+    es: {
+      title: "Pago recibido — Space for Edu",
+      description:
+        "Hemos recibido tu pago. Estos son los siguientes pasos de tu homologación y los documentos que necesitamos.",
+    },
+    en: {
+      title: "Payment received — Space for Edu",
+      description:
+        "We have received your payment. Here are the next steps of your homologation and the documents we need.",
+    },
+    ru: {
+      title: "Оплата получена — Space for Edu",
+      description:
+        "Мы получили вашу оплату. Вот следующие шаги омологации и документы, которые нам нужны.",
+    },
+  },
+  graciasConsulta: {
+    es: {
+      title: "Consulta reservada — Space for Edu",
+      description:
+        "Tu consulta con un experto está reservada. Te contamos qué pasa ahora y cómo prepararla.",
+    },
+    en: {
+      title: "Consultation booked — Space for Edu",
+      description:
+        "Your expert consultation is booked. Here is what happens next and how to prepare for it.",
+    },
+    ru: {
+      title: "Консультация забронирована — Space for Edu",
+      description:
+        "Ваша консультация с экспертом забронирована. Рассказываем, что дальше и как подготовиться.",
     },
   },
 };
