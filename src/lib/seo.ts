@@ -87,17 +87,17 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
   },
   precios: {
     es: {
-      title: "Precios — Space for Edu",
+      title: "Precios de homologación y trámites — Space for Edu",
       description:
         "Sin sorpresas: revisamos tus documentos antes de cobrar. Elige entre Homologación, Integral y VIP.",
     },
     en: {
-      title: "Pricing — Space for Edu",
+      title: "Recognition and paperwork pricing — Space for Edu",
       description:
         "Transparent pricing: we review your documents before charging. Choose from Homologation, Integral and VIP.",
     },
     ru: {
-      title: "Цены — Space for Edu",
+      title: "Цены на омологацию и оформление — Space for Edu",
       description:
         "Прозрачные цены: сначала проверяем документы, потом берём оплату. Тарифы Омологация, Интеграл и VIP.",
     },
@@ -118,12 +118,12 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
   },
   legalNotice: {
     es: {
-      title: "Aviso legal — Space for Edu",
+      title: "Aviso legal y datos del prestador — Space for Edu",
       description:
         "Información legal de Space for Edu: datos del prestador del servicio conforme a la LSSI-CE.",
     },
     en: {
-      title: "Legal notice — Space for Edu",
+      title: "Legal notice and provider details — Space for Edu",
       description:
         "Legal information about Space for Edu: service provider details per Spanish LSSI-CE.",
     },
@@ -135,36 +135,36 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
   },
   blog: {
     es: {
-      title: "Blog — Space for Edu",
+      title: "Blog: homologación, universidades y vida en España",
       description:
-        "Artículos expertos sobre homologación de títulos, universidades españolas, cursos de español y vida estudiantil en España. Guías actualizadas por el equipo de Space for Edu.",
+        "Guías sobre homologación de títulos, acceso a la universidad española y cursos de español, escritas por quienes tramitan estos expedientes cada semana.",
     },
     en: {
-      title: "Blog — Space for Edu",
+      title: "Blog: recognition, universities and life in Spain",
       description:
-        "Expert articles on degree homologation, Spanish universities, language courses and student life in Spain. Up-to-date guides by the Space for Edu team.",
+        "Guides on degree recognition, admission to Spanish universities and language courses, written by the people who file these applications every week.",
     },
     ru: {
-      title: "Блог — Space for Edu",
+      title: "Блог: омологация, университеты и жизнь в Испании",
       description:
-        "Экспертные статьи об омологации дипломов, испанских университетах, курсах испанского и студенческой жизни в Испании. Актуальные гиды от команды Space for Edu.",
+        "Руководства об омологации дипломов, поступлении в испанские университеты и курсах испанского от тех, кто ведёт эти дела каждую неделю.",
     },
   },
   guias: {
     es: {
       title: "Guías de homologación por país — Space for Edu",
       description:
-        "Qué documentos necesitas para homologar tu título en España según tu país de origen: apostilla, traducción jurada y plazos reales. Colombia, Perú, Venezuela, Ecuador y más.",
+        "Apostilla, traducción jurada y plazos reales para homologar tu título en España, país por país: Colombia, Perú, Venezuela, Ecuador, Italia y más.",
     },
     en: {
       title: "Country-by-country homologation guides — Space for Edu",
       description:
-        "The documents you need to have your qualification recognised in Spain, by country of origin: apostille, sworn translation and real timelines. Colombia, Peru, Venezuela, Ecuador and more.",
+        "Apostille, sworn translation and real timelines for getting your qualification recognised in Spain, country by country: Colombia, Peru, Ecuador and more.",
     },
     ru: {
       title: "Гиды по омологации по странам — Space for Edu",
       description:
-        "Какие документы нужны для омологации диплома в Испании в зависимости от страны: апостиль, присяжный перевод и реальные сроки. Колумбия, Перу, Венесуэла, Эквадор и другие.",
+        "Апостиль, присяжный перевод и реальные сроки омологации диплома в Испании по странам: Колумбия, Перу, Эквадор, Италия и другие.",
     },
   },
   cookies: {
