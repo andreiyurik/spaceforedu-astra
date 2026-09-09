@@ -32,7 +32,12 @@ export function LpHomologacionPage({
   waHref,
 }: {
   locale: Locale;
-  messages: Messages;
+  /**
+   * Subconjunto de mensajes, no el bundle completo: solo public.homologacion y
+   * lp.hom, que es lo unico que este componente lee. Pasar `Messages` entero
+   * serializaba 113 KB en cada landing de anuncios.
+   */
+  messages: Pick<Messages, "lp"> & { public: Pick<Messages["public"], "homologacion"> };
   waHref: string;
 }) {
   return (
