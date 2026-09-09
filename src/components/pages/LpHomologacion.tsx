@@ -17,6 +17,37 @@ import type { Locale } from "@/lib/constants";
 const P = "lp.hom";
 const H = "public.homologacion";
 
+/**
+ * Claves de `public.homologacion` que esta landing lee. El espacio de nombres
+ * tiene 246; aqui se usan 18. Pasarlo entero serializaba ~16 KB muertos en
+ * cada pagina de anuncios.
+ *
+ * Si se anade un `t(`${H}.nueva_clave`)` y no se anade a esta lista, la clave
+ * llegara sin resolver al HTML y `scripts/i18n-rendered.mjs` rompera el build.
+ * El desajuste se descubre al compilar, no en produccion.
+ */
+export const CLAVES_HOMOLOGACION = [
+  "adv_advisor_desc",
+  "adv_advisor_title",
+  "adv_expertise_desc",
+  "adv_expertise_title",
+  "adv_transparency_desc",
+  "adv_transparency_title",
+  "hero_photo_alt",
+  "hero_title_1",
+  "hero_title_accent",
+  "process_1_desc",
+  "process_1_title",
+  "process_2_desc",
+  "process_2_title",
+  "process_3_desc",
+  "process_3_title",
+  "testimonial_1_name",
+  "testimonial_1_role",
+  "testimonial_1_text",
+] as const;
+
+
 const LOGOS = [
   { src: "/images/universities/usal.webp", alt: "Universidad de Salamanca" },
   { src: "/images/universities/ucm.webp", alt: "Universidad Complutense de Madrid" },

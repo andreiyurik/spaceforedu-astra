@@ -1,6 +1,6 @@
 ---
 import LpLayout from "@/layouts/LpLayout.astro";
-import { LpHomologacionPage } from "@/components/pages/LpHomologacion";
+import { LpHomologacionPage, CLAVES_HOMOLOGACION } from "@/components/pages/LpHomologacion";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
 import { LOCALES, CONTACT_WHATSAPP, assertLocale } from "@/lib/constants";
@@ -19,8 +19,14 @@ const t = makeT(messages);
 // cada isla dentro del HTML, asi que eso metia 113 KB —el 78 % de la pagina—
 // en las paginas a las que se paga por clic. El componente solo lee dos
 // espacios de nombres: public.homologacion y lp.hom.
+// public.homologacion tiene 246 claves y esta landing lee 18. La lista vive en
+// el propio componente para que no se desincronice de lo que de verdad usa.
 const lpMessages = {
-  public: { homologacion: messages.public.homologacion },
+  public: {
+    homologacion: Object.fromEntries(
+      CLAVES_HOMOLOGACION.map((k) => [k, messages.public.homologacion[k]]),
+    ) as typeof messages.public.homologacion,
+  },
   lp: { hom: messages.lp.hom },
 };
 const seo = getSeo("homologacion", locale);
