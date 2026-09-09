@@ -1131,7 +1131,11 @@
       "subtitle": "Every country has its own apostille circuit, its own timelines and its own traps. These guides cover what you actually need, in the order you need it.",
       "leer": "Read the guide",
       "vacio": "The first guides are being prepared.",
-      "apostilla_desde": "has been a party to the Hague Convention since"
+      "apostilla_desde": "has been a party to the Hague Convention since",
+      "cta_title": "Would you rather we handled it?",
+      "cta_desc": "The complete file for €500, VAT and Ministry fees included. Or start with a €100 consultation, deducted if you then go ahead.",
+      "cta_primario": "See the €500 service",
+      "cta_secundario": "Book a €100 consultation"
     },
     "bachillerato": {
       "hero_title_1": "Secondary school recognition,",
