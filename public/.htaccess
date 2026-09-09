@@ -46,6 +46,18 @@ Redirect 301 /oferta/ /es/aviso-legal/
 Redirect 301 /policy/ /es/privacy-policy/
 Redirect 301 /cookie/ /es/cookies/
 
+# --- Blog slugs without the year --------------------------------------------
+# The "-2025" was dropped from six articles so URLs don't need migrating every
+# January. These 301s preserve whatever was already indexed. Done now on
+# purpose: the WAF has been blocking crawlers, so today the migration costs
+# almost nothing; once it is unblocked it would cost a great deal more.
+Redirect 301 /en/blog/guide-degree-homologation-spain-2025/ /en/blog/guide-degree-homologation-spain/
+Redirect 301 /en/blog/homologation-medical-degree-spain-2025/ /en/blog/homologation-medical-degree-spain/
+Redirect 301 /es/blog/guia-homologacion-titulo-espana-2025/ /es/blog/guia-homologacion-titulo-espana/
+Redirect 301 /es/blog/homologacion-titulo-medicina-espana-2025/ /es/blog/homologacion-titulo-medicina-espana/
+Redirect 301 /ru/blog/omologaciya-diploma-vracha-ispaniya-2025/ /ru/blog/omologaciya-diploma-vracha-ispaniya/
+Redirect 301 /ru/blog/polnoe-rukovodstvo-omologaciya-diploma-ispaniya-2025/ /ru/blog/polnoe-rukovodstvo-omologaciya-diploma-ispaniya/
+
 # --- Security headers -------------------------------------------------------
 <IfModule mod_headers.c>
   Header always set X-Frame-Options "DENY"
