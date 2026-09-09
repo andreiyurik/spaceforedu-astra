@@ -8,7 +8,10 @@
     "start": "Book a consultation",
     "start_aria": "Request a consultation on WhatsApp",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "bachillerato": "Recognise a diploma",
+    "guias": "Country guides",
+    "consulta": "Expert consultation"
   },
   "footer": {
     "tagline": "Your trusted platform for degree homologation and access to education in Spain.",
@@ -488,7 +491,10 @@
       "pin_final_side_2": "Document checklist for your case",
       "pin_final_side_3": "Realistic timeline for your country and degree",
       "pin_final_side_4": "Total cost — fees, sworn translations, apostilles",
-      "pin_final_side_5": "Next-step plan within 24h"
+      "pin_final_side_5": "Next-step plan within 24h",
+      "producto_banda_title": "Is it a secondary school qualification you need recognised?",
+      "producto_banda_desc": "That procedure has a closed price: €500, with VAT and the Ministry fees included.",
+      "producto_banda_cta": "See the product"
     },
     "universidad": {
       "hero_title_1": "Get into a",

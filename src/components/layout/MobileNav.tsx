@@ -47,7 +47,7 @@ export default function MobileNav({
   currentPath: string;
   /** Destino explicito por idioma; ver LanguageSwitcher. */
   localeHrefs?: Partial<Record<Locale, string>>;
-  navLabels: Record<"homologacion" | "universidad" | "espanol" | "precios" | "blog", string>;
+  navLabels: Record<"homologacion" | "universidad" | "espanol" | "guias" | "precios" | "blog", string>;
   navHrefs: Record<
     "homologacion" | "universidad" | "espanol" | "precios" | "blog" | "home",
     string
