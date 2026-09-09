@@ -1107,7 +1107,10 @@
       "pin_final_side_2": "A real timeline for your country and degree",
       "pin_final_side_3": "Total cost, itemised, with no surprises",
       "pin_final_side_4": "The right route: homologation or equivalence",
-      "pin_final_side_5": "The €100 is deducted if you hire us"
+      "pin_final_side_5": "The €100 is deducted if you hire us",
+      "cal_titulo": "Book your consultation in the calendar",
+      "cal_aviso": "The booking calendar is run by Google Calendar. When you click, content from Google loads and it may set its own cookies. Nothing loads until you ask for it.",
+      "cal_boton": "Load the calendar"
     },
     "terms": {
       "title": "General terms of service",

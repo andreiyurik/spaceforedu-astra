@@ -8,6 +8,8 @@ import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
 import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
 import FaqSection from "@/components/public/FaqSection.astro";
 import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
+import StripeBuyButton from "@/components/public/StripeBuyButton.astro";
+import CalendarEmbed from "@/components/public/CalendarEmbed.astro";
 import { getMessages, makeT } from "@/lib/i18n";
 import { getSeo } from "@/lib/seo";
 import { LOCALES, assertLocale, SITE_URL } from "@/lib/constants";
@@ -30,6 +32,11 @@ const PREFIX = "public.consulta";
 // Stripe Payment Link. Empty at build time -> the CTA falls back to the
 // consultation dialog rather than rendering a dead button.
 const STRIPE_CONSULTA = import.meta.env.PUBLIC_STRIPE_LINK_CONSULTA_100 ?? "";
+const STRIPE_PK = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
+const STRIPE_BTN_100 = import.meta.env.PUBLIC_STRIPE_BUY_BUTTON_100 ?? "";
+const botonIncrustado = Boolean(STRIPE_PK && STRIPE_BTN_100);
+// Agenda de Google. Vacia -> no se renderiza y la pagina se comporta como hoy.
+const CALENDARIO = import.meta.env.PUBLIC_CALENDAR_BOOKING_URL ?? "";
 
 const consultationStrings = buildConsultationStrings(t);
 const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
@@ -106,7 +113,12 @@ const howItems = [1, 2, 3] as const;
         <Reveal delay={220}>
           <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
             {
-              STRIPE_CONSULTA ? (
+              botonIncrustado ? (
+                <StripeBuyButton
+                  buttonId={STRIPE_BTN_100}
+                  publishableKey={STRIPE_PK}
+                />
+              ) : STRIPE_CONSULTA ? (
                 <a
                   href={STRIPE_CONSULTA}
                   data-cta="consulta-pagar"
@@ -209,6 +221,23 @@ const howItems = [1, 2, 3] as const;
       <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
     </Container>
   </section>
+
+  {
+    CALENDARIO && (
+      <section class="py-14 sm:py-16">
+        <Container>
+          <div class="mx-auto max-w-2xl">
+            <CalendarEmbed
+              bookingUrl={CALENDARIO}
+              titulo={t(`${PREFIX}.cal_titulo`)}
+              aviso={t(`${PREFIX}.cal_aviso`)}
+              boton={t(`${PREFIX}.cal_boton`)}
+            />
+          </div>
+        </Container>
+      </section>
+    )
+  }
 
   <PinFinalCta
     prefix={PREFIX}
