@@ -1,0 +1,79 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { LOCALES, assertLocale } from "@/lib/constants";
+import { getSeo } from "@/lib/seo";
+import { breadcrumbList } from "@/lib/structured-data";
+import { getCollection } from "astro:content";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("guias", locale);
+const PREFIX = "public.guias";
+
+// Se ordenan por volumen real de solicitudes, no alfabeticamente: la guia que
+// mas gente necesita va primero.
+const guias = (await getCollection("guias", (g) => g.data.locale === locale)).sort(
+  (a, b) => (b.data.leads ?? 0) - (a.data.leads ?? 0),
+);
+---
+
+<PublicLayout
+  title={seo.title}
+  description={seo.description}
+  locale={locale}
+  page="guias"
+>
+  <JsonLd
+    slot="structured-data"
+    data={breadcrumbList(locale, t(`${PREFIX}.title`), "guias")}
+  />
+
+  <section class="py-16 sm:py-24 bg-[var(--surface-soft)]">
+    <Container>
+      <span class="t-eyebrow">{t(`${PREFIX}.eyebrow`)}</span>
+      <h1
+        class="font-display text-[32px] sm:text-[44px] font-bold tracking-[-1px] text-[var(--ink)] leading-[1.1] mt-3 mb-5 max-w-3xl"
+      >
+        {t(`${PREFIX}.title`)}
+      </h1>
+      <p class="text-lg text-[var(--mute)] leading-relaxed max-w-2xl mb-12">
+        {t(`${PREFIX}.subtitle`)}
+      </p>
+
+      {
+        guias.length === 0 ? (
+          <p class="text-[var(--mute)]">{t(`${PREFIX}.vacio`)}</p>
+        ) : (
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {guias.map((g) => (
+              <a
+                href={`/${locale}/guias/${g.data.slug}/`}
+                data-cta="guia-pais"
+                class="group flex flex-col rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] p-6 hover:border-[var(--primary)] transition-colors"
+              >
+                <h2 class="font-display text-[19px] font-bold leading-snug text-[var(--ink)] mb-2">
+                  {g.data.pais}
+                </h2>
+                <p class="text-sm text-[var(--mute)] leading-relaxed line-clamp-3 mb-4">
+                  {g.data.description}
+                </p>
+                <span class="mt-auto text-[13px] font-semibold text-[var(--primary)]">
+                  {t(`${PREFIX}.leer`)} &rarr;
+                </span>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </Container>
+  </section>
+</PublicLayout>
