@@ -37,6 +37,18 @@ jobs:
           PUBLIC_SOCIAL_YOUTUBE: ${{ secrets.PUBLIC_SOCIAL_YOUTUBE }}
           PUBLIC_SOCIAL_TWITTER: ${{ secrets.PUBLIC_SOCIAL_TWITTER }}
           PUBLIC_SOCIAL_GOOGLE_BUSINESS: ${{ secrets.PUBLIC_SOCIAL_GOOGLE_BUSINESS }}
+          # Cobro. Sin estas, los botones de pago caen al enlace de respaldo y
+          # el sitio se despliega en verde sin poder cobrar nada: exactamente
+          # lo que le pasaba a PUBLIC_GTM_ID antes de arreglarlo.
+          PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          PUBLIC_STRIPE_BUY_BUTTON_500: ${{ secrets.PUBLIC_STRIPE_BUY_BUTTON_500 }}
+          PUBLIC_STRIPE_BUY_BUTTON_100: ${{ secrets.PUBLIC_STRIPE_BUY_BUTTON_100 }}
+          PUBLIC_STRIPE_LINK_BACHILLERATO_500: ${{ secrets.PUBLIC_STRIPE_LINK_BACHILLERATO_500 }}
+          PUBLIC_STRIPE_LINK_CONSULTA_100: ${{ secrets.PUBLIC_STRIPE_LINK_CONSULTA_100 }}
+          # Agenda de citas. Vacia -> el bloque no se renderiza.
+          PUBLIC_CALENDAR_BOOKING_URL: ${{ secrets.PUBLIC_CALENDAR_BOOKING_URL }}
+          # Vista previa del panel de cliente. Sigue oculta hasta desplegar Rails.
+          PUBLIC_FEATURE_DASHBOARD: ${{ secrets.PUBLIC_FEATURE_DASHBOARD }}
         run: npm run build
 
       - name: Setup SSH key

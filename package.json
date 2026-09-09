@@ -12,7 +12,8 @@
     "astro": "astro",
     "i18n:check": "node scripts/i18n-parity.mjs",
     "i18n:rendered": "node scripts/i18n-rendered.mjs",
-    "auditoria": "node scripts/auditoria-estatica.mjs"
+    "auditoria": "node scripts/auditoria-estatica.mjs",
+    "env:check": "node scripts/variables-entorno.mjs"
   },
   "repository": {
     "type": "git",

@@ -978,8 +978,8 @@
       "what_body": "Las cookies son pequeños archivos que un sitio web guarda en tu dispositivo para recordar tus preferencias y mejorar tu experiencia.",
       "usage_title": "Qué cookies usamos",
       "usage_body": "Utilizamos cookies técnicas estrictamente necesarias para el funcionamiento del sitio. Con tu consentimiento, podemos utilizar cookies de analítica a través de Google Tag Manager para entender cómo se usa el sitio y mejorarlo. No utilizamos cookies publicitarias.",
-      "thirdparty_title": "Terceros — Google Tag Manager",
-      "thirdparty_body": "Empleamos Google Tag Manager (Google LLC) para gestionar etiquetas de analítica. Si aceptas las cookies de análisis, GTM puede instalar cookies de Google Analytics. Si rechazas o eliges solo las necesarias, GTM no instala ninguna cookie de seguimiento. Puedes cambiar tu preferencia en cualquier momento desde el botón «Configurar» de abajo.",
+      "thirdparty_title": "Terceros que pueden instalar cookies",
+      "thirdparty_body": "Google Tag Manager (Google LLC) gestiona las etiquetas de analítica y solo instala cookies si aceptas la categoría de análisis. Stripe Payments Europe instala cookies propias necesarias para procesar el pago y prevenir el fraude cuando inicias una compra. Google Calendar puede instalar cookies si pulsas para cargar la agenda de citas: no se carga sola, precisamente para que nada se instale sin tu intervención.",
       "manage_title": "Gestión de cookies",
       "manage_body": "Puedes bloquear o eliminar las cookies desde la configuración de tu navegador. Hacerlo no afectará al uso del sitio."
     },
