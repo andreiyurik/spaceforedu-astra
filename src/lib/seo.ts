@@ -10,6 +10,7 @@ type PageKey =
   | "legalNotice"
   | "cookies"
   | "blog"
+  | "guias"
   | "terminos"
   | "consulta"
   | "graciasHomologacion"
@@ -147,6 +148,23 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
       title: "Блог — Space for Edu",
       description:
         "Экспертные статьи об омологации дипломов, испанских университетах, курсах испанского и студенческой жизни в Испании. Актуальные гиды от команды Space for Edu.",
+    },
+  },
+  guias: {
+    es: {
+      title: "Guías de homologación por país — Space for Edu",
+      description:
+        "Qué documentos necesitas para homologar tu título en España según tu país de origen: apostilla, traducción jurada y plazos reales. Colombia, Perú, Venezuela, Ecuador y más.",
+    },
+    en: {
+      title: "Country-by-country homologation guides — Space for Edu",
+      description:
+        "The documents you need to have your qualification recognised in Spain, by country of origin: apostille, sworn translation and real timelines. Colombia, Peru, Venezuela, Ecuador and more.",
+    },
+    ru: {
+      title: "Гиды по омологации по странам — Space for Edu",
+      description:
+        "Какие документы нужны для омологации диплома в Испании в зависимости от страны: апостиль, присяжный перевод и реальные сроки. Колумбия, Перу, Венесуэла, Эквадор и другие.",
     },
   },
   cookies: {

@@ -1110,6 +1110,14 @@
       "conflictos_body": "Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales del domicilio del consumidor, sin perjuicio de los derechos que le reconozca la normativa de consumo. El cliente puede dirigir cualquier reclamación al correo electrónico de contacto, que será atendida en el plazo más breve posible.",
       "modificacion_title": "10. Modificación de las condiciones",
       "modificacion_body": "ROSFORD podrá modificar estas condiciones. La versión aplicable a cada contratación es la vigente en el momento en que esta se realiza, y se facilita al cliente junto con el justificante de pago."
+    },
+    "guias": {
+      "eyebrow": "Guías por país",
+      "title": "Homologación paso a paso, según tu país",
+      "subtitle": "Cada país tiene su propio circuito de apostilla, sus plazos y sus trampas. Estas guías cubren lo que de verdad necesitas, en el orden en que lo necesitas.",
+      "leer": "Leer la guía",
+      "vacio": "Estamos preparando las primeras guías.",
+      "apostilla_desde": "es parte del Convenio de La Haya desde el"
     }
   },
   "lp": {

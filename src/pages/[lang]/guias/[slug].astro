@@ -1,0 +1,94 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import BlogCta from "@/components/public/BlogCta.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { LOCALES, SITE_URL, assertLocale, type Locale } from "@/lib/constants";
+import { getSeo } from "@/lib/seo";
+import { breadcrumbList } from "@/lib/structured-data";
+import { publicRoute, publicPages } from "@/lib/routes";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const guias = await getCollection("guias");
+  return guias.map((guia) => ({
+    params: { lang: guia.data.locale, slug: guia.data.slug },
+    props: { guia, guias },
+  }));
+}
+
+const { guia, guias } = Astro.props;
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("guias", locale);
+const PREFIX = "public.guias";
+
+const { Content } = await render(guia);
+const canonicalUrl = `${SITE_URL}/${locale}/guias/${guia.data.slug}/`;
+
+// El slug de cada guia esta traducido, igual que en el blog: sin esto el
+// conmutador de idioma sustituiria el prefijo y aterrizaria en un 404.
+// Se agrupan por paisCodigo, no por slug.
+const localeHrefs = Object.fromEntries(
+  LOCALES.map((l) => {
+    const hermana = guias.find(
+      (g) => g.data.paisCodigo === guia.data.paisCodigo && g.data.locale === l,
+    );
+    return [
+      l,
+      hermana ? `/${l}/guias/${hermana.data.slug}/` : publicRoute(publicPages.guias, l),
+    ];
+  }),
+) as Partial<Record<Locale, string>>;
+---
+
+<PublicLayout
+  title={`${guia.data.title} — Space for Edu`}
+  description={guia.data.description}
+  locale={locale}
+  page="guias"
+  canonicalUrl={canonicalUrl}
+  localeHrefs={localeHrefs}
+>
+  <JsonLd
+    slot="structured-data"
+    data={breadcrumbList(locale, t(`${PREFIX}.title`), "guias")}
+  />
+
+  <article class="py-14 sm:py-20">
+    <Container>
+      <a
+        href={publicRoute(publicPages.guias, locale)}
+        class="text-[13px] font-semibold text-[var(--mute)] hover:text-[var(--ink)] transition-colors"
+      >
+        &larr; {t(`${PREFIX}.title`)}
+      </a>
+
+      <h1
+        class="font-display text-[32px] sm:text-[42px] font-bold tracking-[-1px] text-[var(--ink)] leading-[1.1] mt-4 mb-5 max-w-3xl"
+      >
+        {guia.data.title}
+      </h1>
+
+      {
+        guia.data.apostilla.esParte && (
+          <p class="inline-block rounded-lg bg-[var(--surface-card)] px-4 py-2 text-sm text-[var(--mute)] mb-8">
+            <strong class="text-[var(--ink)]">{guia.data.pais}</strong>{" "}
+            {t(`${PREFIX}.apostilla_desde`)} {guia.data.apostilla.enVigorDesde}
+          </p>
+        )
+      }
+
+      <div class="prose-article max-w-2xl">
+        <Content />
+      </div>
+
+      <div class="max-w-2xl mt-10">
+        <BlogCta locale={locale} />
+      </div>
+    </Container>
+  </article>
+</PublicLayout>
