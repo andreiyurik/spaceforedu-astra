@@ -1,0 +1,219 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import Reveal from "@/components/public/Reveal.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
+import PinFinalCta from "@/components/public/pin/PinFinalCta.astro";
+import FaqSection from "@/components/public/FaqSection.astro";
+import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { getSeo } from "@/lib/seo";
+import { LOCALES, assertLocale, SITE_URL } from "@/lib/constants";
+import { publicRoute, publicPages } from "@/lib/routes";
+import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
+import { buildConsultationStrings } from "@/lib/consultation";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("consulta", locale);
+
+const PREFIX = "public.consulta";
+
+// Stripe Payment Link. Empty at build time -> the CTA falls back to the
+// consultation dialog rather than rendering a dead button.
+const STRIPE_CONSULTA = import.meta.env.PUBLIC_STRIPE_LINK_CONSULTA_100 ?? "";
+
+const consultationStrings = buildConsultationStrings(t);
+const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+
+// Service + Offer. The price is what the visitor pays, VAT included, which is
+// what Spanish consumer law requires a price shown to a consumer to be.
+const serviceLd = {
+  ...service({
+    locale,
+    name: seo.title,
+    description: seo.description,
+    page: publicPages.consulta,
+    serviceType: "Educational credential assessment consultation",
+    audience:
+      "Holders of a foreign qualification who need to know whether Spanish recognition is viable before committing to the process",
+  }),
+  offers: {
+    "@type": "Offer",
+    price: "100",
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    url: SITE_URL + publicRoute(publicPages.consulta, locale),
+    priceSpecification: {
+      "@type": "PriceSpecification",
+      price: "100",
+      priceCurrency: "EUR",
+      valueAddedTaxIncluded: true,
+    },
+  },
+};
+const faqLd = faqPage(messages, PREFIX);
+const breadcrumbLd = breadcrumbList(locale, t(`${PREFIX}.hero_cta`), publicPages.consulta);
+
+const getItems = [
+  { icon: "shield-check", n: 1 },
+  { icon: "clock", n: 2 },
+  { icon: "file-check", n: 3 },
+  { icon: "scale", n: 4 },
+] as const;
+
+const howItems = [1, 2, 3] as const;
+---
+
+<PublicLayout
+  title={seo.title}
+  description={seo.description}
+  locale={locale}
+  page={publicPages.consulta}
+>
+  <JsonLd slot="structured-data" data={serviceLd} />
+  <JsonLd slot="structured-data" data={breadcrumbLd} />
+  {faqLd && <JsonLd slot="structured-data" data={faqLd} />}
+
+  <section class="bg-[var(--surface-soft)] pt-20 pb-14 sm:pt-24 sm:pb-16">
+    <Container>
+      <div class="mx-auto max-w-3xl text-center">
+        <Reveal>
+          <h1 class="text-3xl font-bold tracking-tight text-balance sm:text-5xl">
+            {t(`${PREFIX}.hero_title_1`)}{" "}
+            <span class="text-[var(--brand)]">{t(`${PREFIX}.hero_title_accent`)}</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={80}>
+          <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {t(`${PREFIX}.hero_sub`)}
+          </p>
+        </Reveal>
+        <Reveal delay={160}>
+          <div class="mt-8 flex flex-col items-center gap-2">
+            <p class="text-4xl font-bold tabular-nums">{t(`${PREFIX}.hero_price`)}</p>
+            <p class="text-sm text-muted-foreground">{t(`${PREFIX}.hero_price_note`)}</p>
+          </div>
+        </Reveal>
+        <Reveal delay={220}>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {
+              STRIPE_CONSULTA ? (
+                <a
+                  href={STRIPE_CONSULTA}
+                  data-cta="consulta-pagar"
+                  class="inline-flex min-h-12 items-center rounded-md bg-[var(--brand)] px-7 text-sm font-semibold text-white"
+                >
+                  {t(`${PREFIX}.hero_cta`)}
+                </a>
+              ) : (
+                <a
+                  href={preciosHref}
+                  data-cta="consulta-pagar-fallback"
+                  class="inline-flex min-h-12 items-center rounded-md bg-[var(--brand)] px-7 text-sm font-semibold text-white"
+                >
+                  {t(`${PREFIX}.hero_cta`)}
+                </a>
+              )
+            }
+            <a
+              href={preciosHref}
+              data-cta="consulta-ver-precios"
+              class="inline-flex min-h-12 items-center px-3 text-sm font-medium underline underline-offset-4"
+            >
+              {t(`${PREFIX}.hero_secondary`)}
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </Container>
+  </section>
+
+  <UniversityLogoBar t={t} titleKey="public.precios.trust_bar_title" noBorderTop />
+
+  <section class="bg-white py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.get_title_1`)}
+        accent={t(`${PREFIX}.get_title_accent`)}
+        sub={t(`${PREFIX}.get_sub`)}
+      />
+      <div class="grid gap-4 sm:grid-cols-2">
+        {
+          getItems.map((item, i) => (
+            <Reveal delay={i * 70}>
+              <div class="h-full rounded-lg border bg-white p-6">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-[var(--surface-soft)]" aria-hidden="true">
+                  <LucideIcon name={item.icon} class="h-4 w-4" />
+                </span>
+                <h3 class="mt-4 font-semibold leading-snug">{t(`${PREFIX}.get_${item.n}_title`)}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {t(`${PREFIX}.get_${item.n}_desc`)}
+                </p>
+              </div>
+            </Reveal>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-[var(--surface-soft)] py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.how_title_1`)}
+        accent={t(`${PREFIX}.how_title_accent`)}
+        sub={t(`${PREFIX}.how_sub`)}
+      />
+      <ol class="grid gap-6 sm:grid-cols-3">
+        {
+          howItems.map((n) => (
+            <li>
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full border bg-white text-sm font-semibold tabular-nums" aria-hidden="true">
+                {n}
+              </span>
+              <h3 class="mt-4 font-semibold leading-snug">{t(`${PREFIX}.how_${n}_title`)}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {t(`${PREFIX}.how_${n}_desc`)}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="mx-auto mt-12 max-w-2xl rounded-lg border bg-white p-6 sm:p-8">
+        <h3 class="text-lg font-semibold">{t(`${PREFIX}.deduct_title`)}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {t(`${PREFIX}.deduct_body`)}
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-white py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t("public.precios.pin_faq_title_1")}
+        accent={t("public.precios.pin_faq_title_accent")}
+        sub={t(`${PREFIX}.get_sub`)}
+        align="center"
+      />
+      <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
+    </Container>
+  </section>
+
+  <PinFinalCta
+    prefix={PREFIX}
+    t={t}
+    consultationStrings={consultationStrings}
+    sideItemCount={5}
+  />
+</PublicLayout>

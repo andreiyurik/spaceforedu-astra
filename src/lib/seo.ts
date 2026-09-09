@@ -10,6 +10,7 @@ type PageKey =
   | "legalNotice"
   | "cookies"
   | "blog"
+  | "consulta"
   | "graciasHomologacion"
   | "graciasConsulta";
 
@@ -194,6 +195,23 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
       title: "Консультация забронирована — Space for Edu",
       description:
         "Ваша консультация с экспертом забронирована. Рассказываем, что дальше и как подготовиться.",
+    },
+  },
+  consulta: {
+    es: {
+      title: "Consulta con un experto en homologación — Space for Edu",
+      description:
+        "30 minutos con un experto que revisa tus documentos y te dice si tu caso es viable, cuánto tarda y cuánto cuesta. Se descuenta del servicio si contratas.",
+    },
+    en: {
+      title: "Expert consultation on degree homologation — Space for Edu",
+      description:
+        "30 minutes with an expert who reviews your documents and tells you whether your case is viable, how long it takes and what it costs. Deducted if you hire us.",
+    },
+    ru: {
+      title: "Консультация эксперта по омологации — Space for Edu",
+      description:
+        "30 минут с экспертом: проверяем документы и говорим, проходной ли ваш случай, сколько времени и денег потребуется. Вычитается из стоимости услуги.",
     },
   },
 };
