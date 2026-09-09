@@ -48,6 +48,9 @@ const { heroAvif, heroWebp } = await setupServiceHero(heroSrc);
 const heroSizes = "(min-width: 1024px) 40vw, 50vw";
 
 const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+// La pagina de servicio explica el tramite; el producto es donde se compra.
+// Sin este enlace, la pagina de bachillerato quedaba huerfana.
+const bachilleratoHref = publicRoute(publicPages.bachillerato, locale);
 const consultationStrings = buildConsultationStrings(t);
 
 const whatItems = [
@@ -158,6 +161,30 @@ const riskItems = [
         align="center"
       />
       <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
+    </Container>
+  </section>
+
+  <section class="bg-[var(--surface-card)] py-12">
+    <Container>
+      <div
+        class="mx-auto flex max-w-3xl flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2 class="font-display text-[20px] font-bold text-[var(--ink)]">
+            {t(`${PREFIX}.producto_banda_title`)}
+          </h2>
+          <p class="mt-1 text-[15px] text-[var(--mute)]">
+            {t(`${PREFIX}.producto_banda_desc`)}
+          </p>
+        </div>
+        <a
+          href={bachilleratoHref}
+          data-cta="homologacion-a-producto"
+          class="inline-flex min-h-11 shrink-0 items-center rounded-md bg-[var(--primary)] px-5 text-sm font-bold text-white"
+        >
+          {t(`${PREFIX}.producto_banda_cta`)}
+        </a>
+      </div>
     </Container>
   </section>
 

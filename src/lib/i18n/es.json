@@ -8,7 +8,10 @@
     "start": "Reservar consulta",
     "start_aria": "Solicitar consulta por WhatsApp",
     "menu": "Menú",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "bachillerato": "Homologar bachillerato",
+    "guias": "Guías por país",
+    "consulta": "Consulta con experto"
   },
   "footer": {
     "tagline": "Tu plataforma de confianza para la homologación de títulos y acceso a la educación en España.",
@@ -488,7 +491,10 @@
       "pin_final_side_2": "Checklist de documentos para su caso",
       "pin_final_side_3": "Plazo realista para su país y su título",
       "pin_final_side_4": "Coste total — tasas, traducciones juradas, apostillas",
-      "pin_final_side_5": "Siguientes pasos en 24 h"
+      "pin_final_side_5": "Siguientes pasos en 24 h",
+      "producto_banda_title": "¿Es un bachillerato lo que necesitas homologar?",
+      "producto_banda_desc": "Ese trámite tiene precio cerrado: 500 €, con el IVA y las tasas del Ministerio incluidas.",
+      "producto_banda_cta": "Ver el producto"
     },
     "universidad": {
       "hero_title_1": "Ingresa en una",
