@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { ConsultationDialog } from "@/components/public/ConsultationDialog";
+import { ConsultationDialogView } from "@/components/public/ConsultationDialog";
 import { CONTACT_WHATSAPP } from "@/lib/constants";
-import { I18nProvider, useTranslation } from "@/lib/i18n/react";
 import { ICON_PATHS } from "@/lib/icon-paths";
-import type { Messages } from "@/lib/i18n";
-import type { Locale } from "@/lib/constants";
+import type { ConsultationStrings } from "@/lib/consultation";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -47,8 +45,7 @@ function useIsOnline(): boolean {
   return online;
 }
 
-function StickyCtaBarInner() {
-  const { t } = useTranslation();
+function StickyCtaBarInner({ strings }: { strings: StickyCtaStrings }) {
   const isOnline = useIsOnline();
   const hasWhatsApp = CONTACT_WHATSAPP.length > 0;
   const waHref = hasWhatsApp ? `https://wa.me/${CONTACT_WHATSAPP}` : null;
@@ -63,7 +60,7 @@ function StickyCtaBarInner() {
               <a
                 href={`tel:+${CONTACT_WHATSAPP}`}
                 data-cta="sticky-tel"
-                aria-label={t("a11y.phone_aria")}
+                aria-label={strings.phoneAria}
                 className="flex items-center justify-center w-13 text-[var(--primary)] active:bg-[var(--surface-card)] transition-colors"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -76,7 +73,7 @@ function StickyCtaBarInner() {
                 data-cta="sticky-whatsapp-movil"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={t("public.sticky_cta.whatsapp_aria")}
+                aria-label={strings.whatsappAria}
                 className="flex items-center justify-center w-13 text-[#25D366] active:bg-[var(--surface-card)] transition-colors"
               >
                 <WhatsAppIcon className="h-5 w-5" />
@@ -84,15 +81,18 @@ function StickyCtaBarInner() {
               <span className="w-px self-stretch my-2 bg-[var(--hairline-soft)]" aria-hidden="true" />
             </>
           )}
-          <ConsultationDialog>
+          <ConsultationDialogView
+            strings={strings.consultationDialog}
+            trigger={
             <button
               type="button"
               data-cta="sticky-consulta"
               className="flex-1 flex items-center justify-center bg-[var(--primary)] text-white text-sm font-bold active:bg-[var(--primary-pressed)] transition-colors"
             >
-              {t("public.sticky_cta.consultation")}
+              {strings.consultation}
             </button>
-          </ConsultationDialog>
+            }
+          />
         </div>
       </div>
 
@@ -103,7 +103,7 @@ function StickyCtaBarInner() {
           data-cta="sticky-whatsapp-escritorio"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={t("public.sticky_cta.whatsapp_aria")}
+          aria-label={strings.whatsappAria}
           className="hidden lg:flex fixed bottom-6 right-6 z-40 items-center justify-center h-14 w-14 rounded-full bg-[#25D366] text-white ring-2 ring-white/90 shadow-lg shadow-[#25D366]/30 hover:scale-105 hover:shadow-xl transition-all duration-300"
         >
           <WhatsAppIcon className="h-5 w-5" />
@@ -119,16 +119,22 @@ function StickyCtaBarInner() {
   );
 }
 
-export function StickyCtaBar({
-  locale,
-  messages,
-}: {
-  locale: Locale;
-  messages: Messages;
-}) {
-  return (
-    <I18nProvider locale={locale} messages={messages}>
-      <StickyCtaBarInner />
-    </I18nProvider>
-  );
+/**
+ * Las cadenas que esta isla necesita, resueltas en el build.
+ *
+ * Antes recibia `messages: Messages` — el bundle i18n entero — solo para leer
+ * tres cadenas y las del dialogo de consulta. Astro serializa los props de cada
+ * isla dentro del HTML, asi que eso metia ~104 KB en CADA pagina: el 58 % del
+ * peso del HTML de la home, para pintar tres botones. El patron correcto ya
+ * estaba en el repo (`buildConsultationStrings` + `ConsultationDialogView`).
+ */
+export type StickyCtaStrings = {
+  phoneAria: string;
+  whatsappAria: string;
+  consultation: string;
+  consultationDialog: ConsultationStrings;
+};
+
+export function StickyCtaBar({ strings }: { strings: StickyCtaStrings }) {
+  return <StickyCtaBarInner strings={strings} />;
 }

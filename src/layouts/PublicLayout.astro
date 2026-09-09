@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar.astro";
 import Footer from "@/components/layout/Footer.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
 import { StickyCtaBar } from "@/components/public/StickyCtaBar.tsx";
+import { buildConsultationStrings } from "@/lib/consultation";
 import CookieBanner from "@/components/common/CookieBanner.astro";
 import GtmHead from "@/components/common/GtmHead.astro";
 import GtmBody from "@/components/common/GtmBody.astro";
@@ -71,9 +72,19 @@ const {
   noindex = false,
 } = Astro.props;
 const currentPath = Astro.url.pathname;
-const stickyMessages = getMessages(locale);
-const t = makeT(stickyMessages);
+const messages = getMessages(locale);
+const t = makeT(messages);
 const skipLabel = t("a11y.skip_to_content");
+
+// Cadenas de la barra sticky, resueltas aqui en el build. Pasarle el objeto
+// `messages` entero serializaba ~104 KB de i18n en cada pagina (el 58 % del HTML
+// de la home) para pintar tres botones.
+const stickyStrings = {
+  phoneAria: t("a11y.phone_aria"),
+  whatsappAria: t("public.sticky_cta.whatsapp_aria"),
+  consultation: t("public.sticky_cta.consultation"),
+  consultationDialog: buildConsultationStrings(t),
+};
 
 const canonicalUrl = canonicalUrlProp ?? SITE_URL + publicRoute(page, locale);
 const emitLayoutHreflang = !canonicalUrlProp;
@@ -249,17 +260,25 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
       <Footer locale={locale} />
     </div>
     {!hideStickyCta && (
-      <StickyCtaBar client:load locale={locale} messages={stickyMessages} />
+      <StickyCtaBar client:load strings={stickyStrings} />
     )}
     <CookieBanner locale={locale} />
 
     <script>
-      import Lenis from "lenis";
+      // Lenis se carga con import() dinamico DESPUES de las comprobaciones: en tactil
+      // y con reduced-motion nunca llega a ejecutarse, asi que un import estatico
+      // hacia que el 100 % del trafico movil se descargara una libreria que no usa.
+      type LenisInstance = import("lenis").default;
 
-      let lenis: Lenis | null = null;
+      let lenis: LenisInstance | null = null;
       let rafId: number | null = null;
+      // ClientRouter puede disparar otra navegacion mientras se descarga el modulo;
+      // sin este contador, la instancia vieja se quedaria corriendo.
+      let generation = 0;
 
-      function initLenis() {
+      async function initLenis() {
+        const mine = ++generation;
+
         if (rafId != null) cancelAnimationFrame(rafId);
         lenis?.destroy();
         lenis = null;
@@ -267,6 +286,9 @@ const interFont = useCyrillic ? interCyrillic : interLatin;
 
         if (window.matchMedia("(hover: none)").matches) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const { default: Lenis } = await import("lenis");
+        if (mine !== generation) return;
 
         lenis = new Lenis({ duration: 1.15, easing: (t) => 1 - Math.pow(1 - t, 4) });
 
