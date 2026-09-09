@@ -1,0 +1,286 @@
+---
+import PublicLayout from "@/layouts/PublicLayout.astro";
+import JsonLd from "@/components/common/JsonLd.astro";
+import Container from "@/components/public/Container.astro";
+import Reveal from "@/components/public/Reveal.astro";
+import LucideIcon from "@/components/common/LucideIcon.astro";
+import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
+import FaqSection from "@/components/public/FaqSection.astro";
+import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
+import { getMessages, makeT } from "@/lib/i18n";
+import { getSeo } from "@/lib/seo";
+import { LOCALES, assertLocale, SITE_URL } from "@/lib/constants";
+import { publicRoute, publicPages } from "@/lib/routes";
+import { service, faqPage, breadcrumbList } from "@/lib/structured-data";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = assertLocale(lang);
+const messages = getMessages(locale);
+const t = makeT(messages);
+const seo = getSeo("bachillerato", locale);
+
+const PREFIX = "public.bachillerato";
+
+// Stripe Payment Link de los 500 EUR. Vacio en build -> el CTA cae a la pagina
+// de precios en vez de renderizar un boton muerto. Mismo patron que consulta.
+const STRIPE_BACHILLERATO = import.meta.env.PUBLIC_STRIPE_LINK_BACHILLERATO_500 ?? "";
+
+const consultaHref = publicRoute(publicPages.consulta, locale);
+const preciosHref = publicRoute(publicPages.precios, locale) + "#plans";
+const guiasHref = publicRoute(publicPages.guias, locale);
+const comprarHref = STRIPE_BACHILLERATO || preciosHref;
+const comprarCta = STRIPE_BACHILLERATO ? "bachillerato-pagar" : "bachillerato-pagar-fallback";
+
+// El precio publicado es el que paga el consumidor, IVA incluido, como exige la
+// normativa espanola de consumo. Las tasas del Ministerio van dentro y NO se
+// desglosan: el cliente ve un unico importe.
+const serviceLd = {
+  ...service({
+    locale,
+    name: seo.title,
+    description: seo.description,
+    page: publicPages.bachillerato,
+    serviceType: "Foreign secondary education credential recognition",
+    audience:
+      "Holders of a foreign secondary school qualification who need it recognised in Spain",
+  }),
+  offers: {
+    "@type": "Offer",
+    price: "500",
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    url: SITE_URL + publicRoute(publicPages.bachillerato, locale),
+    priceSpecification: {
+      "@type": "PriceSpecification",
+      price: "500",
+      priceCurrency: "EUR",
+      valueAddedTaxIncluded: true,
+    },
+  },
+};
+const faqLd = faqPage(messages, PREFIX);
+const breadcrumbLd = breadcrumbList(locale, t(`${PREFIX}.hero_cta`), publicPages.bachillerato);
+
+const incluye = [
+  { icon: "shield-check", n: 1 },
+  { icon: "send", n: 2 },
+  { icon: "receipt", n: 3 },
+  { icon: "life-buoy", n: 4 },
+] as const;
+
+const pasos = [1, 2, 3, 4] as const;
+---
+
+<PublicLayout
+  title={seo.title}
+  description={seo.description}
+  locale={locale}
+  page={publicPages.bachillerato}
+>
+  <JsonLd slot="structured-data" data={serviceLd} />
+  <JsonLd slot="structured-data" data={breadcrumbLd} />
+  {faqLd && <JsonLd slot="structured-data" data={faqLd} />}
+
+  <section class="bg-[var(--surface-soft)] pt-20 pb-14 sm:pt-24 sm:pb-16">
+    <Container>
+      <div class="mx-auto max-w-3xl text-center">
+        <Reveal>
+          <h1 class="text-3xl font-bold tracking-tight text-balance sm:text-5xl">
+            {t(`${PREFIX}.hero_title_1`)}{" "}
+            <span class="text-[var(--brand)]">{t(`${PREFIX}.hero_title_accent`)}</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={80}>
+          <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {t(`${PREFIX}.hero_sub`)}
+          </p>
+        </Reveal>
+        <Reveal delay={160}>
+          <div class="mt-8 flex flex-col items-center gap-2">
+            <p class="text-4xl font-bold tabular-nums">{t(`${PREFIX}.hero_price`)}</p>
+            <p class="text-sm text-muted-foreground">{t(`${PREFIX}.hero_price_note`)}</p>
+          </div>
+        </Reveal>
+        <Reveal delay={220}>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={comprarHref}
+              data-cta={comprarCta}
+              class="inline-flex min-h-12 items-center rounded-md bg-[var(--brand)] px-7 text-sm font-semibold text-white"
+            >
+              {t(`${PREFIX}.hero_cta`)}
+            </a>
+            <a
+              href={consultaHref}
+              data-cta="bachillerato-ir-consulta"
+              class="inline-flex min-h-12 items-center px-3 text-sm font-medium underline underline-offset-4"
+            >
+              {t(`${PREFIX}.hero_secondary`)}
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </Container>
+  </section>
+
+  <UniversityLogoBar t={t} />
+
+  <section class="py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.incluye_title_1`)}
+        accent={t(`${PREFIX}.incluye_title_accent`)}
+        sub={t(`${PREFIX}.incluye_sub`)}
+      />
+      <div class="mt-12 grid gap-6 sm:grid-cols-2">
+        {
+          incluye.map(({ icon, n }, i) => (
+            <Reveal delay={i * 70}>
+              <div class="h-full rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] p-6">
+                <LucideIcon name={icon} class="h-6 w-6 text-[var(--brand)]" />
+                <h3 class="mt-4 text-[17px] font-bold text-[var(--ink)]">
+                  {t(`${PREFIX}.incluye_${n}_title`)}
+                </h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {t(`${PREFIX}.incluye_${n}_desc`)}
+                </p>
+              </div>
+            </Reveal>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-[var(--surface-soft)] py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.rutas_title_1`)}
+        accent={t(`${PREFIX}.rutas_title_accent`)}
+        sub={t(`${PREFIX}.rutas_sub`)}
+      />
+      <div class="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+        <Reveal>
+          <div class="flex h-full flex-col rounded-xl border-2 border-[var(--brand)] bg-[var(--surface-elevated)] p-7">
+            <h3 class="text-[19px] font-bold text-[var(--ink)]">
+              {t(`${PREFIX}.ruta_a_title`)}
+            </h3>
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+              {t(`${PREFIX}.ruta_a_desc`)}
+            </p>
+            <a
+              href={comprarHref}
+              data-cta={`${comprarCta}-ruta`}
+              class="mt-6 inline-flex min-h-12 items-center justify-center rounded-md bg-[var(--brand)] px-6 text-sm font-semibold text-white"
+            >
+              {t(`${PREFIX}.ruta_a_cta`)}
+            </a>
+          </div>
+        </Reveal>
+        <Reveal delay={80}>
+          <div class="flex h-full flex-col rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] p-7">
+            <h3 class="text-[19px] font-bold text-[var(--ink)]">
+              {t(`${PREFIX}.ruta_b_title`)}
+            </h3>
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+              {t(`${PREFIX}.ruta_b_desc`)}
+            </p>
+            <a
+              href={consultaHref}
+              data-cta="bachillerato-ruta-consulta"
+              class="mt-6 inline-flex min-h-12 items-center justify-center rounded-md border border-[var(--ink)] px-6 text-sm font-semibold text-[var(--ink)]"
+            >
+              {t(`${PREFIX}.ruta_b_cta`)}
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </Container>
+  </section>
+
+  <section class="py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.pasos_title_1`)}
+        accent={t(`${PREFIX}.pasos_title_accent`)}
+        sub={t(`${PREFIX}.pasos_sub`)}
+      />
+      <ol class="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+        {
+          pasos.map((n, i) => (
+            <Reveal delay={i * 70}>
+              <li class="rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] p-6">
+                <span class="text-[13px] font-bold tabular-nums text-[var(--brand)]">
+                  {String(n).padStart(2, "0")}
+                </span>
+                <h3 class="mt-2 text-[17px] font-bold text-[var(--ink)]">
+                  {t(`${PREFIX}.paso_${n}_title`)}
+                </h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {t(`${PREFIX}.paso_${n}_desc`)}
+                </p>
+              </li>
+            </Reveal>
+          ))
+        }
+      </ol>
+    </Container>
+  </section>
+
+  <section class="bg-[var(--surface-soft)] py-16 sm:py-20">
+    <Container>
+      <div class="mx-auto max-w-2xl">
+        <h2 class="text-2xl font-bold tracking-tight text-[var(--ink)] sm:text-3xl">
+          {t(`${PREFIX}.volante_title`)}
+        </h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          {t(`${PREFIX}.volante_desc`)}
+        </p>
+        <a
+          href={guiasHref}
+          data-cta="bachillerato-volante"
+          class="mt-5 inline-flex text-sm font-semibold underline underline-offset-4"
+        >
+          {t(`${PREFIX}.volante_cta`)}
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-[var(--surface-soft)] py-16 sm:py-20">
+    <Container>
+      <PinSectionHead
+        title1={t(`${PREFIX}.faq_title_1`)}
+        accent={t(`${PREFIX}.faq_title_accent`)}
+        sub={t(`${PREFIX}.faq_sub`)}
+        align="center"
+      />
+      <FaqSection translationPrefix={PREFIX} t={t} messages={messages} />
+    </Container>
+  </section>
+
+  <section class="py-16 sm:py-20">
+    <Container>
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-2xl font-bold tracking-tight text-balance text-[var(--ink)] sm:text-3xl">
+          {t(`${PREFIX}.final_title_1`)}{" "}
+          <span class="text-[var(--brand)]">{t(`${PREFIX}.final_title_accent`)}</span>
+        </h2>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          {t(`${PREFIX}.final_sub`)}
+        </p>
+        <a
+          href={comprarHref}
+          data-cta={`${comprarCta}-final`}
+          class="mt-8 inline-flex min-h-12 items-center rounded-md bg-[var(--brand)] px-7 text-sm font-semibold text-white"
+        >
+          {t(`${PREFIX}.final_cta`)}
+        </a>
+      </div>
+    </Container>
+  </section>
+</PublicLayout>

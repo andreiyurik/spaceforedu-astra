@@ -11,6 +11,7 @@ export const publicPages = {
   cookies: "cookies",
   terminos: "terminos",
   consulta: "consulta",
+  bachillerato: "homologacion-bachillerato",
   blog: "blog",
   guias: "guias",
   // Post-payment landing pages. Stripe's success_url points here, so they are
