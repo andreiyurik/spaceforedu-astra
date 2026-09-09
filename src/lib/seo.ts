@@ -13,6 +13,7 @@ type PageKey =
   | "guias"
   | "terminos"
   | "consulta"
+  | "bachillerato"
   | "graciasHomologacion"
   | "graciasConsulta";
 
@@ -148,6 +149,23 @@ const SEO: Record<PageKey, Record<Locale, { title: string; description: string }
       title: "Блог: омологация, университеты и жизнь в Испании",
       description:
         "Руководства об омологации дипломов, поступлении в испанские университеты и курсах испанского от тех, кто ведёт эти дела каждую неделю.",
+    },
+  },
+  bachillerato: {
+    es: {
+      title: "Homologación de bachillerato en España por 500 € — Space for Edu",
+      description:
+        "Precio cerrado de 500 €, IVA y tasas del Ministerio incluidas. Nos ocupamos del expediente completo: revisión, presentación, seguimiento y requerimientos.",
+    },
+    en: {
+      title: "Secondary school recognition in Spain for €500 — Space for Edu",
+      description:
+        "A closed price of €500, VAT and Ministry fees included. We handle the complete file: review, submission, follow-up and correction requests.",
+    },
+    ru: {
+      title: "Омологация аттестата в Испании за 500 € — Space for Edu",
+      description:
+        "Фиксированная цена 500 €, НДС и министерские пошлины включены. Ведём дело целиком: проверка, подача, сопровождение и ответы на запросы.",
     },
   },
   guias: {
