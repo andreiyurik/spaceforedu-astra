@@ -23,7 +23,8 @@
     "trust_company": "Registrada en España",
     "trust_payments": "Atención personal",
     "trust_gdpr": "Cumplimiento GDPR",
-    "trust_languages": "ES · EN · RU"
+    "trust_languages": "ES · EN · RU",
+    "terms": "Condiciones de contratación"
   },
   "a11y": {
     "skip_to_content": "Saltar al contenido principal",
@@ -1085,6 +1086,30 @@
       "pin_final_side_3": "Coste total desglosado, sin sorpresas",
       "pin_final_side_4": "La vía correcta: homologación o equivalencia",
       "pin_final_side_5": "Los 100 € se descuentan si contrata"
+    },
+    "terms": {
+      "title": "Condiciones generales de contratación",
+      "intro": "Estas condiciones regulan la contratación de los servicios ofrecidos por ROSFORD, S.L. a través de spaceforedu.com. Al contratar cualquiera de nuestros servicios, el cliente declara haberlas leído y aceptado. Se recomienda conservar una copia.",
+      "objeto_title": "1. Objeto y prestador",
+      "objeto_body": "ROSFORD, S.L. (NIF B72654668), con domicilio en calle de Velázquez 10, 1.º, 28001 Madrid, presta servicios de asesoramiento y tramitación en materia de homologación, equivalencia y convalidación de títulos extranjeros, así como de acceso a universidades españolas y formación en lengua española. La resolución de los expedientes corresponde en exclusiva a la Administración española: ROSFORD prepara, presenta y hace seguimiento del expediente, pero no resuelve ni puede garantizar el sentido de la resolución.",
+      "precio_title": "2. Precio",
+      "precio_body": "Los precios publicados se expresan en euros e incluyen el Impuesto sobre el Valor Añadido aplicable. Cada servicio indica en su ficha qué conceptos comprende. Salvo que se indique lo contrario en la ficha del servicio, no están incluidas las traducciones juradas ni las apostillas o legalizaciones consulares, que el cliente abona directamente a los profesionales u organismos correspondientes.",
+      "pago_title": "3. Forma de pago",
+      "pago_body": "El pago se realiza mediante tarjeta a través de Stripe Payments Europe, Ltd., que actúa como proveedor de servicios de pago. ROSFORD no almacena en ningún momento los datos completos de la tarjeta. El cliente recibe justificante del pago por correo electrónico. La contratación se perfecciona con la confirmación del pago.",
+      "ejecucion_title": "4. Plazo de ejecución",
+      "ejecucion_body": "ROSFORD se compromete a revisar la documentación aportada y comunicar al cliente el estado de su expediente en un plazo razonable desde la recepción completa de los documentos. Los plazos de resolución dependen de la Administración competente y no son atribuibles a ROSFORD. Cualquier estimación de plazo facilitada es orientativa y se basa en la experiencia con expedientes similares.",
+      "desistimiento_title": "5. Derecho de desistimiento",
+      "desistimiento_body": "El cliente que actúe como consumidor dispone de un plazo de catorce días naturales para desistir del contrato sin necesidad de justificación, contados desde su celebración. Para ejercerlo basta con comunicarlo de forma inequívoca al correo electrónico de contacto. No obstante, conforme a la normativa de consumidores, el derecho de desistimiento no será aplicable a los servicios completamente ejecutados cuando la ejecución haya comenzado con el consentimiento expreso previo del cliente y con su reconocimiento de que, una vez ejecutado el contrato, perderá su derecho de desistimiento. Si el cliente solicita expresamente que la prestación comience durante el plazo de desistimiento y posteriormente desiste, abonará la parte proporcional del servicio ya prestado.",
+      "reembolso_title": "6. Reembolsos y viabilidad del caso",
+      "reembolso_body": "Si tras la revisión experta de la documentación ROSFORD concluye que el caso no es viable y no procede continuar, se reembolsará el importe abonado, descontando en su caso los gastos ya incurridos y comunicados previamente al cliente. Los reembolsos se practican por el mismo medio de pago empleado en la compra. Una resolución desfavorable de la Administración no genera por sí sola derecho a reembolso cuando el expediente se haya preparado y presentado correctamente, sin perjuicio del asesoramiento sobre los recursos disponibles.",
+      "obligaciones_title": "7. Obligaciones del cliente",
+      "obligaciones_body": "El cliente se compromete a facilitar documentación veraz, completa y legible, y a comunicar cualquier cambio relevante en su situación. La aportación de documentación falsa o incompleta puede motivar la denegación del expediente y faculta a ROSFORD para resolver el contrato sin derecho a reembolso.",
+      "responsabilidad_title": "8. Responsabilidad",
+      "responsabilidad_body": "ROSFORD responde de la correcta prestación de sus servicios de asesoramiento y tramitación. No responde del sentido ni de los plazos de las resoluciones administrativas, ni de los perjuicios derivados de información inexacta facilitada por el cliente, ni de decisiones adoptadas por centros educativos u organismos ajenos.",
+      "conflictos_title": "9. Resolución de conflictos",
+      "conflictos_body": "Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales del domicilio del consumidor, sin perjuicio de los derechos que le reconozca la normativa de consumo. El cliente puede dirigir cualquier reclamación al correo electrónico de contacto, que será atendida en el plazo más breve posible.",
+      "modificacion_title": "10. Modificación de las condiciones",
+      "modificacion_body": "ROSFORD podrá modificar estas condiciones. La versión aplicable a cada contratación es la vigente en el momento en que esta se realiza, y se facilita al cliente junto con el justificante de pago."
     }
   },
   "lp": {
