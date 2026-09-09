@@ -3,7 +3,6 @@ import PublicLayout from "@/layouts/PublicLayout.astro";
 import JsonLd from "@/components/common/JsonLd.astro";
 import Container from "@/components/public/Container.astro";
 import Reveal from "@/components/public/Reveal.astro";
-import LucideIcon from "@/components/common/LucideIcon.astro";
 import PinSectionHead from "@/components/public/pin/PinSectionHead.astro";
 import FaqSection from "@/components/public/FaqSection.astro";
 import UniversityLogoBar from "@/components/public/UniversityLogoBar.astro";
@@ -65,13 +64,6 @@ const serviceLd = {
 const faqLd = faqPage(messages, PREFIX);
 const breadcrumbLd = breadcrumbList(locale, t(`${PREFIX}.hero_cta`), publicPages.bachillerato);
 
-const incluye = [
-  { icon: "shield-check", n: 1 },
-  { icon: "send", n: 2 },
-  { icon: "receipt", n: 3 },
-  { icon: "life-buoy", n: 4 },
-] as const;
-
 const pasos = [1, 2, 3, 4] as const;
 ---
 
@@ -128,33 +120,6 @@ const pasos = [1, 2, 3, 4] as const;
   </section>
 
   <UniversityLogoBar t={t} />
-
-  <section class="py-16 sm:py-20">
-    <Container>
-      <PinSectionHead
-        title1={t(`${PREFIX}.incluye_title_1`)}
-        accent={t(`${PREFIX}.incluye_title_accent`)}
-        sub={t(`${PREFIX}.incluye_sub`)}
-      />
-      <div class="mt-12 grid gap-6 sm:grid-cols-2">
-        {
-          incluye.map(({ icon, n }, i) => (
-            <Reveal delay={i * 70}>
-              <div class="h-full rounded-xl border border-[var(--hairline-soft)] bg-[var(--surface-elevated)] p-6">
-                <LucideIcon name={icon} class="h-6 w-6 text-[var(--brand)]" />
-                <h3 class="mt-4 text-[17px] font-bold text-[var(--ink)]">
-                  {t(`${PREFIX}.incluye_${n}_title`)}
-                </h3>
-                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {t(`${PREFIX}.incluye_${n}_desc`)}
-                </p>
-              </div>
-            </Reveal>
-          ))
-        }
-      </div>
-    </Container>
-  </section>
 
   <section class="bg-[var(--surface-soft)] py-16 sm:py-20">
     <Container>
