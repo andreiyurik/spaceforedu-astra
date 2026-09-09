@@ -1131,7 +1131,11 @@
       "subtitle": "Cada país tiene su propio circuito de apostilla, sus plazos y sus trampas. Estas guías cubren lo que de verdad necesitas, en el orden en que lo necesitas.",
       "leer": "Leer la guía",
       "vacio": "Estamos preparando las primeras guías.",
-      "apostilla_desde": "es parte del Convenio de La Haya desde el"
+      "apostilla_desde": "es parte del Convenio de La Haya desde el",
+      "cta_title": "¿Prefieres que lo llevemos nosotros?",
+      "cta_desc": "Expediente completo por 500 €, con el IVA y las tasas del Ministerio incluidas. O empieza por una consulta de 100 €, descontables si después contratas.",
+      "cta_primario": "Ver el trámite de 500 €",
+      "cta_secundario": "Reservar consulta de 100 €"
     },
     "bachillerato": {
       "hero_title_1": "Homologación de bachillerato,",
