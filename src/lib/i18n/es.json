@@ -945,9 +945,17 @@
       "data_title": "Datos que recogemos",
       "data_body": "Recogemos únicamente los datos que nos facilitas voluntariamente al contactarnos por WhatsApp, correo electrónico o teléfono: nombre, datos de contacto y la información que nos envíes sobre tu caso.",
       "use_title": "Uso de los datos",
-      "use_body": "Usamos tus datos exclusivamente para responder a tu consulta y prestarte el servicio solicitado. No los vendemos ni compartimos con terceros salvo obligación legal.",
+      "use_body": "Usamos tus datos para responder a tu consulta, prestarte el servicio contratado y, si nos lo has pedido expresamente, enviarte nuestro boletín. No vendemos tus datos ni los cedemos con fines comerciales.",
       "rights_title": "Tus derechos",
-      "rights_body": "Puedes ejercer los derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición escribiéndonos al correo de contacto."
+      "rights_body": "Puedes ejercer los derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición escribiéndonos al correo de contacto.",
+      "terceros_title": "Con quién compartimos tus datos",
+      "terceros_intro": "Para prestar el servicio nos apoyamos en proveedores que actúan como encargados del tratamiento. Solo acceden a los datos necesarios y únicamente para prestarnos su servicio:",
+      "terceros_1": "Stripe Payments Europe, Ltd. — procesa los pagos. Recibe tu correo electrónico y los datos de la operación. Nosotros nunca vemos ni almacenamos tu número de tarjeta.",
+      "terceros_2": "Google Ireland Ltd. — gestiona la reserva de citas y la analítica del sitio. La analítica solo se activa si aceptas las cookies correspondientes.",
+      "terceros_3": "Hostinger International Ltd. — aloja el sitio web y el correo.",
+      "terceros_cierre": "Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo. En ese caso se amparan en las cláusulas contractuales tipo aprobadas por la Comisión Europea. Fuera de estos casos, solo cedemos datos cuando lo exige una obligación legal.",
+      "conservacion_title": "Cuánto tiempo los conservamos",
+      "conservacion_body": "Conservamos los datos mientras dure la relación contigo y, después, durante los plazos que exige la normativa fiscal y mercantil para las facturas. Si te das de baja del boletín, dejamos de escribirte de inmediato y solo guardamos el registro mínimo que acredita esa baja."
     },
     "legal_notice": {
       "title": "Aviso legal",

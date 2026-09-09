@@ -1,0 +1,42 @@
+---
+/**
+ * Boton de pago de Stripe incrustado en la pagina.
+ *
+ * A diferencia de un Payment Link —que saca al visitante a otra pestana— el
+ * Buy Button vive aqui y abre el checkout de Stripe encima. Es la unica forma
+ * de pago realmente integrada que admite un sitio estatico, porque no necesita
+ * servidor: Stripe lo resuelve todo en su lado.
+ *
+ * Las dos variables son PUBLICAS por diseno. La clave publicable (pk_...) esta
+ * pensada para ir en el HTML; la secreta (sk_...) NO debe aparecer jamas aqui
+ * ni en el repositorio.
+ *
+ * Si falta cualquiera de las dos, el componente no renderiza nada y la pagina
+ * cae al enlace de respaldo. Preferible a pintar un boton muerto.
+ */
+interface Props {
+  /** ID del boton creado en Stripe: Productos -> Buy button. */
+  buttonId: string;
+  /** Clave publicable de la cuenta. */
+  publishableKey: string;
+  /** Se envia a Stripe y vuelve en checkout.session.completed: cruza pago y lead. */
+  clientReferenceId?: string;
+}
+
+const { buttonId, publishableKey, clientReferenceId } = Astro.props;
+const listo = Boolean(buttonId && publishableKey);
+---
+
+{
+  listo && (
+    <>
+      <script is:inline async src="https://js.stripe.com/v3/buy-button.js" />
+      <stripe-buy-button
+        buy-button-id={buttonId}
+        publishable-key={publishableKey}
+        client-reference-id={clientReferenceId}
+        data-cta="stripe-buy-button"
+      />
+    </>
+  )
+}
